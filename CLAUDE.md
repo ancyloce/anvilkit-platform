@@ -23,9 +23,15 @@ These turbo tasks orchestrate JS/TS workspace packages (tooling, contracts, mock
 
 ## Services are git submodules
 
-`services/static-publisher` is a git submodule pointing at <https://github.com/ancyloce/anvilkit-static-publisher.git>. After cloning the platform repo, run `git submodule update --init --recursive`. Changes to service code are committed and pushed in the service's own repository; the platform repo only pins the submodule SHA.
+Each worker is an independent Go service living in its own repository, added under `services/` as a git submodule. After cloning the platform repo, run `git submodule update --init --recursive`. Changes to service code are committed and pushed in the service's own repository; the platform repo only pins the submodule SHA.
 
-Naming note: `anvilkit-static-publisher` is the service the PRDs call `anvilkit-render-worker`. When the PRDs say `services/render-worker`, the actual path is `services/static-publisher`. The "static" in the name describes the MVP scope only — see "Scope evolution" below.
+### Worker naming convention
+
+- Suffix semantics: `*-service` is a synchronous API authority that owns data (`deployment-service`, `cdn-service` — all external to this repo); `*-worker` is a stateless, queue-driven executor that owns no data.
+- Workers are named `anvilkit-<stage>-worker` after the pipeline stage they own — never after a render mode, output format, technology, or delivery target. A new mode of an existing stage (e.g. React project build vs. static HTML fetch) is a new driver inside the existing worker; a new worker is justified only by a new stage with its own event to consume, its own scaling profile, and its own failure domain.
+- The stage name propagates identically to every surface: repo `anvilkit-<stage>-worker`, path `services/<stage>-worker`, container image / Kubernetes Deployment / queue consumer group `<stage>-worker`, metrics namespace `anvilkit_<stage>_worker`.
+
+The first worker is **`anvilkit-export-worker`** (`services/export-worker`). It owns the export stage: consume `deployment.export.requested`, convert the published page (Puck editor data rendered by `anvilkit-studio`) into a static artifact bundle, upload it for CDN delivery, and emit `deployment.artifact.ready` — matching the `deployment.export.*` vocabulary already used by the contracts. Older names for this same service: the PRDs call it `anvilkit-render-worker` at `services/render-worker`, and the existing submodule repo predates the decision and is still named `anvilkit-static-publisher` at `services/static-publisher`, pending rename. A likely second stage is `anvilkit-delivery-worker` (push artifacts to configured targets: CDN, user-specified servers); until it exists, delivery beyond artifact storage belongs to the external `cdn-service`.
 
 ## Architecture (big picture)
 
