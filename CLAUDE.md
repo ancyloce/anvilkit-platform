@@ -25,11 +25,19 @@ These turbo tasks orchestrate JS/TS workspace packages (tooling, contracts, mock
 
 `services/static-publisher` is a git submodule pointing at <https://github.com/ancyloce/anvilkit-static-publisher.git>. After cloning the platform repo, run `git submodule update --init --recursive`. Changes to service code are committed and pushed in the service's own repository; the platform repo only pins the submodule SHA.
 
-Naming note: `anvilkit-static-publisher` is the service the PRDs call `anvilkit-render-worker` — the stateless Go worker that converts deployment events into versioned static artifacts for CDN delivery. When the PRDs say `services/render-worker`, the actual path is `services/static-publisher`.
+Naming note: `anvilkit-static-publisher` is the service the PRDs call `anvilkit-render-worker`. When the PRDs say `services/render-worker`, the actual path is `services/static-publisher`. The "static" in the name describes the MVP scope only — see "Scope evolution" below.
 
 ## Architecture (big picture)
 
 The worker pipeline (PRD 0008 §5, 0010 §5.1): consume `deployment.export.requested` from the queue (Redis Streams at MVP, Kafka at GA, behind a driver abstraction) → load the authoritative deployment record from `deployment-service` → acquire a per-`deploymentId` distributed lock → CAS status `EXPORT_QUEUED → EXPORTING` → fetch version-pinned HTML from `anvilkit-render-origin` over internal HTTP (service token + `X-AnvilKit-Page-Id`/`X-AnvilKit-Version` headers) → harvest dependencies deterministically → upload hashed artifacts + `artifact-manifest.json` to S3-compatible storage → submit the manifest pointer → CAS `EXPORTING → ARTIFACT_READY` → emit `deployment.artifact.ready`. CDN upload/purge/verify/activation happens downstream in `cdn-service`.
+
+### Scope evolution — don't hard-code "static"
+
+Today the worker does one thing: convert pages published by `anvilkit-studio` into static HTML plus mirrored assets and hand them to artifact storage for CDN delivery (`fetch_route` render mode). The intended direction is broader: PRD 0008 already defers `react_ssr` and `html_export` render modes, and the product direction includes building pages as a full React project and deploying the output to a user-specified server rather than only to CDN storage. Consequences for implementation work:
+
+- Treat the pipeline stages as pluggable strategies — render/build mode, artifact builder, delivery target — mirroring the existing queue-driver seam (Redis Streams → Kafka). New modes should land as new drivers, not rewrites.
+- Don't bake static-HTML or CDN-only assumptions into contract schemas, manifest semantics, or package names when a mode-neutral shape costs the same. `renderMode` and `targetId` already exist in the event/record contracts — extend those rather than inventing parallel mechanisms.
+- Delivery beyond artifact storage is currently owned downstream by `cdn-service` (a hard boundary below); a deploy-to-server mode would revisit that boundary. Like any scope expansion, it requires its own PRD before implementation (per PRD 0009).
 
 ### Hard boundaries
 
