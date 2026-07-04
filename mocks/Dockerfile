@@ -3,7 +3,7 @@
 #
 #   docker build -f mocks/Dockerfile --build-arg SERVICE=deployment-service-mock .
 #   docker build -f mocks/Dockerfile --build-arg SERVICE=asset-service-mock .
-FROM golang:1.24-alpine AS build
+FROM golang:1.26-alpine AS build
 ARG SERVICE=deployment-service-mock
 WORKDIR /src
 COPY services/export-worker/ services/export-worker/
