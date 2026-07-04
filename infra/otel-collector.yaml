@@ -1,0 +1,18 @@
+# Minimal local OpenTelemetry collector config (EW-OBS-003): receive OTLP
+# from the worker and print span summaries — enough to inspect one publish
+# end to end. Run with: docker compose --profile tracing up -d
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+exporters:
+  debug:
+    verbosity: normal
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [debug]

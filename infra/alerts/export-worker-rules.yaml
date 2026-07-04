@@ -1,0 +1,103 @@
+# Prometheus alert rules for anvilkit-export-worker (EW-OBS-006; PRD 0010
+# §15.4 — thresholds marked "initial" are tuned in staging failure drills
+# before the M5 launch review; the queue-backlog N is To Be Confirmed).
+#
+# Loadable as a plain Prometheus rule file or wrapped in a PrometheusRule CR.
+groups:
+  - name: anvilkit-export-worker.rules
+    rules:
+      - alert: ExportWorkerDLQGrowth
+        expr: increase(anvilkit_export_worker_dlq_total[5m]) > 0
+        labels:
+          severity: high
+        annotations:
+          summary: "Export DLQ is growing"
+          description: >-
+            Messages are reaching anvilkit:deployment.export.dlq (retry
+            exhaustion or unparseable input). Inspect the DLQ entries and run
+            the replay runbook (infra/README.md) after fixing the root cause.
+
+      - alert: ExportWorkerJobFailureRate
+        expr: >-
+          increase(anvilkit_export_worker_jobs_failed_total[15m])
+            / clamp_min(increase(anvilkit_export_worker_jobs_total[15m]), 1) > 0.05
+        for: 15m
+        labels:
+          severity: high
+        annotations:
+          summary: "Export job failure rate above 5% over 15m"
+
+      - alert: ExportWorkerLatencySLO
+        expr: >-
+          histogram_quantile(0.95,
+            rate(anvilkit_export_worker_job_duration_ms_bucket[15m])) > 20000
+        for: 15m
+        labels:
+          severity: medium
+        annotations:
+          summary: "Export P95 job duration above the 20s SLO (§16)"
+
+      - alert: ExportWorkerAuthFailures
+        expr: increase(anvilkit_export_worker_auth_failures_total[5m]) > 0
+        labels:
+          severity: high
+        annotations:
+          summary: "Internal service auth failure ({{ $labels.code }})"
+          description: >-
+            A per-service 401/403 classification occurred — token rotation or
+            scope misconfiguration (§11.1). All auth codes are non-retryable;
+            deployments are failing terminally until the token is fixed.
+
+      - alert: ExportWorkerUnparseableEvents
+        expr: increase(anvilkit_export_worker_unparseable_events_total[5m]) > 0
+        labels:
+          severity: high
+        annotations:
+          summary: "Unparseable events routed to the DLQ"
+          description: >-
+            A producer is emitting payloads without an extractable
+            deploymentId (FR-003). Originals are in the DLQ with full
+            metadata.
+
+      - alert: ExportWorkerLockConflictGrowth
+        expr: increase(anvilkit_export_worker_lock_conflict_total[15m]) > 50
+        for: 15m
+        labels:
+          severity: medium
+        annotations:
+          summary: "Sustained per-deployment lock contention (initial threshold)"
+
+      - alert: ExportWorkerRetryDispatchStall
+        expr: anvilkit_export_worker_retry_dispatch_lag_ms > 300000
+        for: 5m
+        labels:
+          severity: high
+        annotations:
+          summary: "Due retry envelopes undated for 5m — dispatcher stalled"
+
+      - alert: ExportWorkerDown
+        expr: up{job="anvilkit-export-worker"} == 0
+        for: 2m
+        labels:
+          severity: high
+        annotations:
+          summary: "export-worker target down for 2 scrape intervals"
+
+      - alert: ExportWorkerStorageGrowth
+        # EW-OBS-007 / AC-032: artifact GC is deferred (P1-008) — growth is
+        # correctness-harmless but needs visibility; threshold is an initial
+        # 24h delta, tuned with real traffic. Response: the artifact cleanup
+        # runbook (docs/runbooks/artifact-cleanup.md).
+        expr: increase(anvilkit_export_worker_artifact_bytes_total[24h]) > 10737418240
+        labels:
+          severity: medium
+        annotations:
+          summary: "Artifact storage grew >10GiB in 24h (GC is deferred — see the cleanup runbook)"
+
+      - alert: ExportWorkerQueueBacklog
+        expr: anvilkit_export_worker_queue_pending > 100
+        for: 10m
+        labels:
+          severity: medium
+        annotations:
+          summary: "Export queue backlog above 100 for 10m (N is To Be Confirmed)"

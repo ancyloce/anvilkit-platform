@@ -1,0 +1,15 @@
+{
+  "eventId": "evt_local_002",
+  "eventType": "deployment.export.requested",
+  "deploymentId": "dep_local_002",
+  "teamId": "team_local",
+  "siteId": "site_local",
+  "pageId": "page_broken_asset",
+  "slug": "broken-asset-ref",
+  "version": "v1",
+  "renderMode": "fetch_route",
+  "targetId": "target_platform_local",
+  "environment": "production",
+  "idempotencyKey": "dep_local_002",
+  "createdAt": "2026-07-01T17:00:00Z"
+}

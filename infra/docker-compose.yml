@@ -1,0 +1,135 @@
+# Local development stack (EW-LOCAL-001, PLAN-0001 §11): Redis, MinIO
+# (+ bucket init), the contract-conformant mocks (deployment-service,
+# asset-service, render-origin stand-in per BD-007/ADR-007), and the worker
+# running the full M3 export pipeline. The otel-collector joins with M4
+# tracing.
+#
+# Quickstart: see infra/README.md.
+name: anvilkit-platform
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 minioadmin minioadmin &&
+      mc mb --ignore-existing local/anvilkit-artifacts &&
+      echo 'bucket anvilkit-artifacts ready'"
+
+  deployment-service-mock:
+    build:
+      context: ..
+      dockerfile: mocks/Dockerfile
+      args:
+        SERVICE: deployment-service-mock
+    environment:
+      PORT: "8080"
+      INTERNAL_SERVICE_TOKENS: local-dev-token
+      SEED_DIR: /fixtures
+    volumes:
+      - ./fixtures:/fixtures:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  asset-service-mock:
+    build:
+      context: ..
+      dockerfile: mocks/Dockerfile
+      args:
+        SERVICE: asset-service-mock
+    environment:
+      PORT: "8080"
+      INTERNAL_SERVICE_TOKENS: local-dev-token
+    ports:
+      - "127.0.0.1:8081:8080"
+
+  # render-origin contract stand-in (§8.3). The REAL render-origin is hosted
+  # by anvilkit-studio and replaces this service once BD-007/ADR-007 is
+  # confirmed with the studio owners (pinned published image + seeded page
+  # data). The worker cannot tell the difference — that is the point of the
+  # contract; it never imports render code either way.
+  render-origin-mock:
+    build:
+      context: ..
+      dockerfile: mocks/Dockerfile
+      args:
+        SERVICE: render-origin-mock
+    environment:
+      PORT: "3000"
+      INTERNAL_SERVICE_TOKENS: local-dev-token
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  # Local trace inspection (EW-OBS-003): opt in with
+  #   docker compose --profile tracing up -d
+  # and set OTEL_EXPORTER_OTLP_ENDPOINT on the worker below.
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    profiles: [tracing]
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "127.0.0.1:4318:4318"
+
+  export-worker:
+    build:
+      context: ../services/export-worker
+    depends_on:
+      redis:
+        condition: service_healthy
+      deployment-service-mock:
+        condition: service_started
+      asset-service-mock:
+        condition: service_started
+      render-origin-mock:
+        condition: service_started
+      minio-init:
+        condition: service_completed_successfully
+    environment:
+      ENVIRONMENT: local
+      QUEUE_DRIVER: redis
+      REDIS_URL: redis://redis:6379
+      RENDER_ORIGIN_URL: http://render-origin-mock:3000
+      DEPLOYMENT_SERVICE_URL: http://deployment-service-mock:8080
+      ASSET_SERVICE_URL: http://asset-service-mock:8080
+      INTERNAL_SERVICE_TOKEN: local-dev-token
+      ARTIFACT_STORAGE_DRIVER: s3
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+      ARTIFACT_BUCKET: anvilkit-artifacts
+      WORKER_CONCURRENCY: "4"
+      LOG_LEVEL: debug
+      # OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318  # with --profile tracing
+    ports:
+      - "127.0.0.1:18081:8081" # /healthz /readyz
+      - "127.0.0.1:19091:9091" # /metrics

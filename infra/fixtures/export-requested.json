@@ -1,0 +1,15 @@
+{
+  "eventId": "evt_local_001",
+  "eventType": "deployment.export.requested",
+  "deploymentId": "dep_local_001",
+  "teamId": "team_local",
+  "siteId": "site_local",
+  "pageId": "page_home",
+  "slug": "home",
+  "version": "v1",
+  "renderMode": "fetch_route",
+  "targetId": "target_platform_local",
+  "environment": "production",
+  "idempotencyKey": "dep_local_001",
+  "createdAt": "2026-07-01T17:00:00Z"
+}

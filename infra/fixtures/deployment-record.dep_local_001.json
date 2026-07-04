@@ -1,0 +1,12 @@
+{
+  "deploymentId": "dep_local_001",
+  "teamId": "team_local",
+  "siteId": "site_local",
+  "pageId": "page_home",
+  "slug": "home",
+  "version": "v1",
+  "status": "EXPORT_QUEUED",
+  "renderMode": "fetch_route",
+  "targetId": "target_platform_local",
+  "environment": "production"
+}

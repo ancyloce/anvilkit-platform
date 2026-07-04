@@ -1,0 +1,12 @@
+{
+  "deploymentId": "dep_local_003",
+  "teamId": "team_local",
+  "siteId": "site_local",
+  "pageId": "page_next_image",
+  "slug": "next-image",
+  "version": "v1",
+  "status": "EXPORT_QUEUED",
+  "renderMode": "fetch_route",
+  "targetId": "target_platform_local",
+  "environment": "production"
+}

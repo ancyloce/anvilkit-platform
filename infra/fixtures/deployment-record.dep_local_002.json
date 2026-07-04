@@ -1,0 +1,12 @@
+{
+  "deploymentId": "dep_local_002",
+  "teamId": "team_local",
+  "siteId": "site_local",
+  "pageId": "page_broken_asset",
+  "slug": "broken-asset-ref",
+  "version": "v1",
+  "status": "EXPORT_QUEUED",
+  "renderMode": "fetch_route",
+  "targetId": "target_platform_local",
+  "environment": "production"
+}
