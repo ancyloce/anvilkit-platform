@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ancyloce/anvilkit-platform/contracts/events/v1/deployment.export.requested.schema.json",
+  "title": "deployment.export.requested",
+  "description": "Inbound export request event consumed by anvilkit-export-worker from the queue (Redis Streams stream anvilkit:deployment.export.requested at MVP). Field vocabulary preserves PRD 0008 §8.1 exactly. Event fields renderMode/version/slug are hints only: the worker reconciles them against the authoritative deployment record (FR-004); a mismatch is non-retryable VALIDATION_FAILED. Additive evolution only — removing or renaming a field requires a schema version bump (FR-002). Consumers must tolerate unknown additional properties.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "eventId",
+    "eventType",
+    "deploymentId",
+    "teamId",
+    "siteId",
+    "pageId",
+    "slug",
+    "version",
+    "renderMode",
+    "targetId",
+    "environment",
+    "idempotencyKey"
+  ],
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Event ID"
+    },
+    "eventType": {
+      "const": "deployment.export.requested",
+      "description": "Always deployment.export.requested"
+    },
+    "deploymentId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Deployment record ID — the authoritative idempotency anchor (one deploymentId → at most one artifact manifest)"
+    },
+    "teamId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Team ID"
+    },
+    "siteId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Site ID"
+    },
+    "pageId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Page ID"
+    },
+    "slug": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Page path"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Published version — must be pinned at render (PRD 0008 §12.1 / FR-004)"
+    },
+    "renderMode": {
+      "type": "string",
+      "enum": ["fetch_route", "react_ssr", "html_export"],
+      "description": "Render mode; fetch_route is the MVP mode, react_ssr and html_export are deferred"
+    },
+    "targetId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "CDN target ID (passed through to downstream)"
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["production", "preview"],
+      "description": "Deployment environment"
+    },
+    "requestedBy": {
+      "type": "string",
+      "description": "Requesting user, for auditing (optional)"
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Producer-supplied queue-dedup hint only; the worker derives its own artifact key from deploymentId (PRD 0008 §12)"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Emit time, ISO 8601 (optional)"
+    }
+  }
+}

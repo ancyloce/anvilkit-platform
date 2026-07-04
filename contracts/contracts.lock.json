@@ -1,0 +1,33 @@
+{
+  "_comment": "Freeze lock for versioned contracts (ADR-001, AC-029). Frozen files are immutable: contracts evolve additively via generate.ts --update-lock (visible in review) or a new version directory. CI verifies via packages/contracts-codegen/check-freeze.ts.",
+  "lockVersion": 1,
+  "files": {
+    "contracts/artifact/v1/artifact-manifest.schema.json": "3125f7882732ec3356e215c2284e3b250f092c418efb41fa7de9dd74e2902b31",
+    "contracts/artifact/v1/fixtures/artifact-manifest.json": "9c76a0547532c77958838f55f584a72daa897a357d9c20baa6ab06869d51a3b6",
+    "contracts/artifact/v1/fixtures/invalid/artifact-manifest.etag-content-hash.json": "1999f7a86db1c54795e1b62f02b8ff59f64397b5288852c057e23b28ca0b61c1",
+    "contracts/artifact/v1/fixtures/invalid/artifact-manifest.routes-missing.json": "fef2c58e8970865566992cb620b720558cd5d9721ff5f43fc98b57a1114f5c96",
+    "contracts/events/v1/deployment.artifact.ready.schema.json": "0ccf8f7199faa2938929749074c07a7895c53894a1cba48804b98dae31d892c5",
+    "contracts/events/v1/deployment.export.failed.schema.json": "04d270ccce1b9061b8fad7ddfb24b30f225f7fd8349e95baaf5f0a54849e7b7f",
+    "contracts/events/v1/deployment.export.requested.schema.json": "8c729df010232a24552e9ba2aebba990016ca4bdf141d0af5b002f817a5bff12",
+    "contracts/events/v1/fixtures/deployment.artifact.ready.json": "46a2cd692d091aaff0111a5618bf62f83891098aa84f7d9d29f3fd4dcd3eb4e8",
+    "contracts/events/v1/fixtures/deployment.export.failed.json": "10f5514b9a6ad52dfee0daa3459a87498b43e5cbbee3a01fbc533688f25f9a7d",
+    "contracts/events/v1/fixtures/deployment.export.requested.json": "b36b8ec4a5836a27ef2e4d3b653590b25bf91012736f7e0aeda2ff4faec0ae60",
+    "contracts/events/v1/fixtures/invalid/deployment.artifact.ready.files-count-not-integer.json": "b896c04f9237446f1c0ab661e4b36dd2e79f462aa15307b9ce9bf8f80cd0a69f",
+    "contracts/events/v1/fixtures/invalid/deployment.export.failed.bad-classification.json": "bd4ebfd3db26fa7ba77487912a832ec27b3747cf9dc719954f5bb4d1b4e087cf",
+    "contracts/events/v1/fixtures/invalid/deployment.export.requested.missing-deployment-id.json": "b7d363d146dbc2b22cfafa09227d3567e94c1ce5a4ca47623a26e6bdfb33c843",
+    "contracts/openapi/v1/asset-service.internal.json": "944b012f78ed66654242a39984c51658fb5902a394ee987850a98ab9644481af",
+    "contracts/openapi/v1/deployment-service.internal.json": "ee73ccb4b72db22ef47cc40f5ef4395e9f642a12af3434101b29ee39031ac82d",
+    "contracts/openapi/v1/fixtures/artifact-pointer.json": "1ad7749df7538b8ea7c8bdeec51e5c5d5e8a5424cb449ce2b1b397136eaffa83",
+    "contracts/openapi/v1/fixtures/deployment-record.json": "2232549e34979fccc35c08aeef46512c573bed21b8ac8f2b8b67519c3cdf9ea3",
+    "contracts/openapi/v1/fixtures/invalid/artifact-pointer.bad-digest-prefix.json": "abcfcb7d8701e0fcdfbea50ca0d0e37aef8f58d8d5056dca4fd4c4317ef6be16",
+    "contracts/openapi/v1/fixtures/invalid/deployment-record.bad-render-mode.json": "65579608999c3c24c047b15e2f3c52f42c4b613591221ad451654a23b84fa867",
+    "contracts/openapi/v1/fixtures/invalid/resolve-batch-request.bad-ref-scheme.json": "93f3e333ef1e105c25b3d6acd257516524224bf28b020fadf12992280ebdb960",
+    "contracts/openapi/v1/fixtures/invalid/resolve-batch-response.bad-content-hash.json": "65ba741b62c295539b12ed1074c25d9fb6805ea57b04ad0d0c7b6a61ddbb0e41",
+    "contracts/openapi/v1/fixtures/invalid/status-conflict.bad-error-const.json": "32677a383750dfade08c224bf6f2598b2b0a2dcec9cf7c0a884522a384a34ee7",
+    "contracts/openapi/v1/fixtures/invalid/status-update.missing-trace-id.json": "6edff9328befc0f9e69f82af2a78dab177c1853bcd61498a2ac55b5b9e529b17",
+    "contracts/openapi/v1/fixtures/resolve-batch-request.json": "6a68632975a7aecbd465f093b633034352127a833ad50bb4523a6f2fc6d6ac6a",
+    "contracts/openapi/v1/fixtures/resolve-batch-response.json": "1ed438d1a847382ebb25afeed50cf540fc8571dd0d7ce554b1200c015c90734c",
+    "contracts/openapi/v1/fixtures/status-conflict.json": "a8730b92daa8cf57bdbe7945c93fdab47a60660ce908d67e14f58574a54cfad5",
+    "contracts/openapi/v1/fixtures/status-update.json": "fe74b512782df8df046db3036e5459afabd4a75ff6032e502a2b53ab5b1cdf42"
+  }
+}

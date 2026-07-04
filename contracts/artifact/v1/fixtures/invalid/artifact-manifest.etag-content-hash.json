@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "deploymentId": "dep_01",
+  "siteId": "site_01",
+  "pageId": "page_01",
+  "slug": "home",
+  "version": "v12",
+  "environment": "production",
+  "renderMode": "fetch_route",
+  "artifactBasePath": "sites/site_01/deployments/dep_01",
+  "entry": "/home/index.html",
+  "files": [
+    {
+      "path": "/home/index.html",
+      "storageKey": "sites/site_01/deployments/dep_01/home/index.html",
+      "contentHash": "d41d8cd98f00b204e9800998ecf8427e-3",
+      "sizeBytes": 48219,
+      "mimeType": "text/html",
+      "cacheControl": "public, max-age=60, stale-while-revalidate=300"
+    }
+  ],
+  "routes": [],
+  "createdAt": "2026-06-30T18:01:00Z"
+}

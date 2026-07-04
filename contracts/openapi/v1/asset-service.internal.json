@@ -1,0 +1,136 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "asset-service internal API (consumed contract)",
+    "version": "1.0.0",
+    "description": "Internal API surface of the external asset-service, as consumed by anvilkit-export-worker. Request/response shapes preserve PRD 0008 §8.4 / PRD 0010 §8.4 exactly. Usage boundary (confirmed): the worker is a post-render VERIFIER — asset resolution before HTML emission is owned by render-origin/render-runtime; the worker may use this API for verification support only and must not own asset permissions. asset-service is external to anvilkit-platform: never implemented here; a contract-conformant mock (FR-022) encodes these shapes with auth-rejection modes. All calls carry Authorization: Bearer <INTERNAL_SERVICE_TOKEN> (§11.1, BD-002/ADR-002). Auth failures classify non-retryable ASSET_SERVICE_401 / ASSET_SERVICE_403 with ops alerts (PRD 0010 §13)."
+  },
+  "servers": [
+    {
+      "url": "http://asset-service:8080",
+      "description": "Internal cluster address (mock asset-service in local compose)"
+    }
+  ],
+  "security": [
+    {
+      "internalServiceToken": []
+    }
+  ],
+  "paths": {
+    "/internal/assets/resolve-batch": {
+      "post": {
+        "operationId": "resolveAssetsBatch",
+        "summary": "Resolve a batch of asset:// references",
+        "description": "Verification support for harvested output. Residual asset:// references in rendered HTML or same-origin CSS are an UNRESOLVED_ASSET_REF failure (FR-008) — this endpoint does not repair them; upstream resolution is render-origin's responsibility.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveBatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resolved assets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveBatchResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Service identity rejected — worker classifies ASSET_SERVICE_401 (non-retryable, ops alert)"
+          },
+          "403": {
+            "description": "Caller refused — worker classifies ASSET_SERVICE_403 (non-retryable, ops alert)"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "internalServiceToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "INTERNAL_SERVICE_TOKEN — internal service-to-service bearer token (PRD 0010 §11.1, ADR-002). Dual-token acceptance during rotation."
+      }
+    },
+    "schemas": {
+      "ResolveBatchRequest": {
+        "type": "object",
+        "description": "Batch resolve request (PRD 0008 §8.4)",
+        "additionalProperties": true,
+        "required": ["teamId", "siteId", "refs"],
+        "properties": {
+          "teamId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "siteId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "refs": {
+            "type": "array",
+            "description": "asset:// references to resolve",
+            "items": {
+              "type": "string",
+              "pattern": "^asset://"
+            }
+          }
+        }
+      },
+      "ResolveBatchResponse": {
+        "type": "object",
+        "description": "Batch resolve response (PRD 0008 §8.4)",
+        "additionalProperties": true,
+        "required": ["assets"],
+        "properties": {
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResolvedAsset"
+            }
+          }
+        }
+      },
+      "ResolvedAsset": {
+        "type": "object",
+        "description": "One resolved asset reference",
+        "additionalProperties": true,
+        "required": ["ref", "url", "mimeType", "sizeBytes", "contentHash"],
+        "properties": {
+          "ref": {
+            "type": "string",
+            "pattern": "^asset://",
+            "description": "The asset:// reference that was resolved"
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Resolved URL"
+          },
+          "mimeType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "contentHash": {
+            "type": "string",
+            "pattern": "^sha256-",
+            "description": "SHA-256 content hash (never an S3 ETag)"
+          }
+        }
+      }
+    }
+  }
+}

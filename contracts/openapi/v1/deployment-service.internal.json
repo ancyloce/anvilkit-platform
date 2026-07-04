@@ -1,0 +1,342 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "deployment-service internal API (consumed contract)",
+    "version": "1.0.0",
+    "description": "Internal API surface of the external deployment-service, as consumed by anvilkit-export-worker. Request/response shapes preserve PRD 0008 §8.2 / PRD 0010 §8.2 exactly — this document is the cross-service contract, not an invention of this repo. deployment-service is external to anvilkit-platform: it is never implemented here; a contract-conformant mock (FR-022) encodes these shapes plus the BD-004 interim semantics (ADR-004: idempotent accept of an identical pointer re-POST). All calls carry Authorization: Bearer <INTERNAL_SERVICE_TOKEN> (§11.1, BD-002/ADR-002). Timeouts/5xx map to retryable DEPLOYMENT_SERVICE_TIMEOUT; auth failures classify non-retryable DEPLOYMENT_SERVICE_401 / DEPLOYMENT_SERVICE_403 with ops alerts (PRD 0010 §13)."
+  },
+  "servers": [
+    {
+      "url": "http://deployment-service:8080",
+      "description": "Internal cluster address (mock deployment-service in local compose)"
+    }
+  ],
+  "security": [
+    {
+      "internalServiceToken": []
+    }
+  ],
+  "paths": {
+    "/internal/deployments/{deploymentId}": {
+      "get": {
+        "operationId": "getDeployment",
+        "summary": "Load the authoritative deployment record",
+        "description": "The record — not the event — drives the job (FR-004). Event hints (renderMode/version/slug) are reconciled against this record; a mismatch is non-retryable VALIDATION_FAILED.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/deploymentId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authoritative deployment record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeploymentRecord"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Service identity rejected — worker classifies DEPLOYMENT_SERVICE_401 (non-retryable, ops alert)"
+          },
+          "403": {
+            "description": "Caller refused — worker classifies DEPLOYMENT_SERVICE_403 (non-retryable, ops alert)"
+          },
+          "404": {
+            "description": "Deployment record not found"
+          }
+        }
+      }
+    },
+    "/internal/deployments/{deploymentId}/status": {
+      "patch": {
+        "operationId": "updateDeploymentStatus",
+        "summary": "Compare-and-set status transition",
+        "description": "All status writes are CAS (from → to). The worker sets only EXPORTING, ARTIFACT_READY, EXPORT_FAILED (FR-006). On 409 STATUS_CONFLICT the worker stops safely and acks only when the deployment is terminal/non-actionable. Success response body is unspecified by the source contract; 204 No Content is the Recommended Approach (To Be Confirmed with the deployment-service owner alongside BD-004).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/deploymentId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "CAS applied"
+          },
+          "401": {
+            "description": "Service identity rejected — DEPLOYMENT_SERVICE_401"
+          },
+          "403": {
+            "description": "Caller refused — DEPLOYMENT_SERVICE_403"
+          },
+          "404": {
+            "description": "Deployment record not found"
+          },
+          "409": {
+            "description": "CAS mismatch — another actor advanced the deployment; worker stops safely (STATUS_CONFLICT, PRD 0010 §13)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusConflictError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/deployments/{deploymentId}/artifact": {
+      "post": {
+        "operationId": "submitArtifact",
+        "summary": "Submit the artifact manifest pointer",
+        "description": "Keyed by deploymentId: one deploymentId → at most one artifact manifest (FR-012, FR-015). deployment-service treats the manifest in storage as canonical and stores this pointer/summary alongside it. Repeat submission with an identical pointer must be accepted or answered with a benign conflict — BD-004, To Be Confirmed with the deployment-service owner; the interim mock semantics are idempotent accept (ADR-004).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/deploymentId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtifactPointer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Pointer accepted (including idempotent accept of an identical re-POST, per the ADR-004 interim default)"
+          },
+          "401": {
+            "description": "Service identity rejected — DEPLOYMENT_SERVICE_401"
+          },
+          "403": {
+            "description": "Caller refused — DEPLOYMENT_SERVICE_403"
+          },
+          "404": {
+            "description": "Deployment record not found"
+          },
+          "409": {
+            "description": "Reserved for the BD-004 benign-conflict branch (non-identical re-POST, or identical re-POST if BD-004 resolves to benign conflict). Shape To Be Confirmed; not generated into clients until BD-004 is resolved."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "deploymentId": {
+        "name": "deploymentId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "Deployment record ID — the canonical idempotency key"
+      }
+    },
+    "securitySchemes": {
+      "internalServiceToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "INTERNAL_SERVICE_TOKEN — internal service-to-service bearer token (PRD 0010 §11.1, ADR-002). Dual-token acceptance during rotation."
+      }
+    },
+    "schemas": {
+      "DeploymentRecord": {
+        "type": "object",
+        "description": "Authoritative deployment record (read shape of PRD 0008 §8.2). The deployment-service owns this data; the worker never reads its database directly.",
+        "additionalProperties": true,
+        "required": [
+          "deploymentId",
+          "teamId",
+          "siteId",
+          "pageId",
+          "slug",
+          "version",
+          "status",
+          "renderMode",
+          "targetId",
+          "environment"
+        ],
+        "properties": {
+          "deploymentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "teamId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "siteId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pageId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slug": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "$ref": "#/components/schemas/DeploymentStatus"
+          },
+          "renderMode": {
+            "type": "string",
+            "enum": ["fetch_route", "react_ssr", "html_export"]
+          },
+          "targetId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "environment": {
+            "type": "string",
+            "enum": ["production", "preview"]
+          }
+        }
+      },
+      "DeploymentStatus": {
+        "type": "string",
+        "description": "Full DeploymentStatus enum owned by deployment-service (PRD 0010 §6.3). The worker sets only EXPORTING, ARTIFACT_READY, EXPORT_FAILED via CAS.",
+        "enum": [
+          "PENDING",
+          "EXPORT_QUEUED",
+          "EXPORTING",
+          "ARTIFACT_READY",
+          "CDN_UPLOADING",
+          "CDN_PURGING",
+          "VERIFYING",
+          "ACTIVE",
+          "EXPORT_FAILED",
+          "CANCELLED"
+        ]
+      },
+      "StatusUpdateRequest": {
+        "type": "object",
+        "description": "CAS status transition body (PRD 0008 §8.2 with reason/traceId per report 0010 §10.2). Every transition is audited: deployment-service writes deployment_events.",
+        "additionalProperties": true,
+        "required": ["from", "to", "reason", "traceId"],
+        "properties": {
+          "from": {
+            "$ref": "#/components/schemas/DeploymentStatus"
+          },
+          "to": {
+            "$ref": "#/components/schemas/DeploymentStatus"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Machine-readable transition reason, e.g. worker_started"
+          },
+          "traceId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "StatusConflictError": {
+        "type": "object",
+        "description": "409 body on CAS mismatch (PRD 0008 §8.2). The worker stops safely; ack only when the deployment is terminal/non-actionable.",
+        "additionalProperties": true,
+        "required": ["error", "currentStatus"],
+        "properties": {
+          "error": {
+            "const": "STATUS_CONFLICT"
+          },
+          "currentStatus": {
+            "$ref": "#/components/schemas/DeploymentStatus"
+          }
+        }
+      },
+      "ArtifactPointer": {
+        "type": "object",
+        "description": "Artifact manifest pointer/summary (PRD 0008 §8.2, manifestDigest/entry/routes per D-3). Unlike the deployment.artifact.ready event (ADR-001), this submission DOES carry routes[] — always an array.",
+        "additionalProperties": true,
+        "required": [
+          "manifestStorageKey",
+          "artifactBasePath",
+          "manifestDigest",
+          "entry",
+          "filesCount",
+          "totalBytes",
+          "routes"
+        ],
+        "properties": {
+          "manifestStorageKey": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Storage key of artifact-manifest.json"
+          },
+          "artifactBasePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Storage base path, confined to sites/{siteId}/deployments/{deploymentId} (FR-010)"
+          },
+          "manifestDigest": {
+            "type": "string",
+            "pattern": "^sha256-",
+            "description": "SHA-256 digest of the manifest"
+          },
+          "entry": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Entry HTML path, e.g. /home/index.html"
+          },
+          "filesCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "totalBytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "routes": {
+            "type": "array",
+            "description": "Route table — always an array (FR-012 invariant)",
+            "items": {
+              "$ref": "#/components/schemas/ArtifactRoute"
+            }
+          }
+        }
+      },
+      "ArtifactRoute": {
+        "type": "object",
+        "description": "One route mapping within the artifact",
+        "additionalProperties": true,
+        "required": ["path", "entry"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Public route path, e.g. /home"
+          },
+          "entry": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Artifact-relative entry file, e.g. /home/index.html"
+          }
+        }
+      }
+    }
+  }
+}

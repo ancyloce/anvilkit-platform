@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ancyloce/anvilkit-platform/contracts/events/v1/deployment.artifact.ready.schema.json",
+  "title": "deployment.artifact.ready",
+  "description": "Outbound success event emitted by anvilkit-export-worker after the CAS transition to ARTIFACT_READY succeeds (CAS-then-emit, FR-013). Minimum schema per PRD 0010 §10.3.2. routes[] is intentionally omitted (BD-001 / ADR-001): cdn-service reads route data from artifact-manifest.json, where routes[] remains present and always an array (FR-012); routes[] may be added to this event later only as an additive optimization field. Emission is at-least-once — consumers must be duplicate-tolerant keyed by deploymentId. Additive evolution only — removing or renaming a field requires a schema version bump (FR-002).",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "eventType",
+    "deploymentId",
+    "teamId",
+    "siteId",
+    "pageId",
+    "slug",
+    "version",
+    "environment",
+    "renderMode",
+    "artifactBasePath",
+    "manifestStorageKey",
+    "manifestDigest",
+    "entry",
+    "filesCount",
+    "totalBytes",
+    "traceId",
+    "createdAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Outbound event schema version"
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Event ID"
+    },
+    "eventType": {
+      "const": "deployment.artifact.ready",
+      "description": "Always deployment.artifact.ready"
+    },
+    "deploymentId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Deployment record ID — consumer dedup key"
+    },
+    "teamId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Team ID"
+    },
+    "siteId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Site ID"
+    },
+    "pageId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Page ID"
+    },
+    "slug": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Page path"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Published version the artifact was rendered from"
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["production", "preview"],
+      "description": "Deployment environment"
+    },
+    "renderMode": {
+      "type": "string",
+      "enum": ["fetch_route", "react_ssr", "html_export"],
+      "description": "Render mode used to produce the artifact"
+    },
+    "artifactBasePath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Storage base path of the artifact, confined to sites/{siteId}/deployments/{deploymentId} (FR-010)"
+    },
+    "manifestStorageKey": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Storage key of artifact-manifest.json (internal-only object, never public — FR-012)"
+    },
+    "manifestDigest": {
+      "type": "string",
+      "pattern": "^sha256-",
+      "description": "SHA-256 digest of the manifest, sha256-<hex> form"
+    },
+    "entry": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Entry HTML path within the artifact, e.g. /home/index.html"
+    },
+    "filesCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of files in the artifact"
+    },
+    "totalBytes": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total artifact size in bytes"
+    },
+    "traceId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Trace ID of the producing job (cross-boundary traceability, FR-020)"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Emit time, ISO 8601 — field name matches the inbound event vocabulary (PRD 0008 §8.1)"
+    }
+  }
+}
