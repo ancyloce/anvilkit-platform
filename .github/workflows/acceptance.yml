@@ -1,0 +1,41 @@
+# Acceptance/regression suite on main and release tags (PLAN-0001 §10;
+# EW-TEST-009): the full T-* suite including the live compose E2E and the
+# T-origin-stopped-verification release gate. PR-level checks live in ci.yml.
+name: acceptance
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: services/export-worker/go.mod
+      - name: Bring up the stack
+        run: docker compose -f infra/docker-compose.yml up -d --build
+      - name: Wait for readiness
+        run: |
+          for i in $(seq 1 30); do
+            curl -fsS http://localhost:18081/readyz && exit 0 || sleep 2
+          done
+          docker compose -f infra/docker-compose.yml logs export-worker
+          exit 1
+      - name: Acceptance suite
+        run: ./scripts/acceptance.sh
+      - name: Stack logs on failure
+        if: failure()
+        run: docker compose -f infra/docker-compose.yml logs
+      - name: Teardown
+        if: always()
+        run: docker compose -f infra/docker-compose.yml down

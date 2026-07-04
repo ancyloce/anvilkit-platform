@@ -1,0 +1,58 @@
+# Environment promotion (EW-K8S-004; ADR-008: dev → staging → production
+# with a manual approval gate into production, implemented via GitHub
+# environment protection rules on the "production" environment).
+#
+# ACTIVATION IS GATED ON BD-006: this workflow refuses to run until the
+# target cluster is provisioned and its kubeconfig is registered as the
+# KUBECONFIG_B64 environment secret (secret-manager wiring per ADR-006 —
+# secrets are never repo files). Until then it exists as the reviewed,
+# ready-to-enable promotion pipeline.
+name: deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        type: choice
+        options: [dev, staging, production]
+      image_tag:
+        description: "Immutable image tag to deploy (git sha or vX.Y.Z — never latest)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: BD-006 gate — cluster must be provisioned
+        env:
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+        run: |
+          if [ -z "$KUBECONFIG_B64" ]; then
+            echo "::error::No cluster is provisioned for '${{ inputs.environment }}' yet (BD-006/ADR-006)."
+            echo "Register the environment's kubeconfig as the KUBECONFIG_B64 secret to enable deploys."
+            exit 1
+          fi
+      - name: Reject mutable tags
+        run: |
+          case "${{ inputs.image_tag }}" in
+            latest|main|"") echo "::error::Immutable tags only (ADR-008)"; exit 1 ;;
+          esac
+      - name: Configure cluster access
+        env:
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+        run: |
+          mkdir -p "$HOME/.kube"
+          echo "$KUBECONFIG_B64" | base64 -d > "$HOME/.kube/config"
+      - name: Apply manifests (rolling update; SIGTERM drain does the rest)
+        run: |
+          sed "s/IMAGE_TAG/${{ inputs.image_tag }}/" infra/k8s/export-worker-deployment.yaml | \
+            kubectl apply -f -
+          kubectl rollout status deployment/export-worker --timeout=5m
