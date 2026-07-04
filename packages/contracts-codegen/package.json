@@ -1,0 +1,11 @@
+{
+  "name": "@anvilkit/contracts-codegen",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Contract codegen pipeline (EW-CONTRACT-004): validates contracts/ fixtures against the JSON Schemas / OpenAPI documents and generates Go types + thin clients into services/export-worker/contracts/. Tooling only — never a production service (PRD 0009 Node/TS confinement rule).",
+  "type": "module",
+  "scripts": {
+    "generate": "bun run generate.ts",
+    "check-freeze": "bun run check-freeze.ts"
+  }
+}
