@@ -7,7 +7,7 @@ Guidance for Claude Code (claude.ai/code) when working in this repository.
 - **Git is read-only for Claude. Automatic commits are disabled.** Never stage, commit, amend, rebase, merge, reset, clean, tag, push, switch branches, or open PRs on your own initiative — finishing a task is never a reason to commit. Details in Git Rules.
 - **Never edit** `docs/prd/` (AC-019) or generated code (`services/export-worker/contracts/`) — edit the contract source and regenerate.
 - **Never break the contract freeze silently** — re-locks happen only via `generate.ts --update-lock` so the diff is reviewed; breaking changes need a new version directory.
-- **Never add** React, Next.js, Puck, `@anvilkit/*` frontend packages, cross-repo imports of `anvilkit-studio`, or any dep that bumps the Go directive past 1.24 (downgrade the dep instead). CI enforces this via the dependency audits.
+- **Never add** React, Next.js, Puck, `@anvilkit/*` frontend packages, cross-repo imports of `anvilkit-studio`, or any dep that bumps the Go directive past 1.26 (downgrade the dep instead). CI enforces this via the dependency audits.
 - **Never weaken** tests, lints, gates, auth, or validation to get green. Never log or commit secrets.
 - New git submodules require team confirmation first. External services are contracts + mocks only — never implemented here, never given directories under `services/`.
 
@@ -71,7 +71,7 @@ The compose stack's render-origin is a **contract stand-in** (`mocks/renderorigi
 
 ## Go Standards
 
-- **Toolchain**: Go 1.24 is pinned in both modules — `gofmt`-clean, `go vet`-clean (enforced by `make all`), `golangci-lint` via `make lint`. Tests always run with `-race`.
+- **Toolchain**: Go 1.26 is pinned in both modules — `gofmt`-clean, `go vet`-clean (enforced by `make all`), `golangci-lint` via `make lint`. Tests always run with `-race`.
 - **Layering**: the processor (`internal/worker`) owns ack/retry/DLQ decisions; the pipeline (`internal/export`) sits behind the `Exporter` seam; each stage package (`queue`, `deployment`, `lock`, `render`, `harvest`, `storage`, `emit`) owns exactly its concern. Business logic never lives in transport code or `main`.
 - **Interfaces**: define them next to the consumer and keep them minimal — the `Exporter` and queue-driver seams are the template. Accept interfaces, return concrete types. No new abstraction until a second implementation is real or planned (Kafka, new render modes).
 - **Errors**: wrap with `fmt.Errorf("...: %w", err)` adding context at each hop; preserve sentinel and typed errors callers branch on; never discard an error silently. Classify via `internal/errclass` into §13 registry codes — **classification drives ack/retry/DLQ, so a misclassified error is a reliability bug**. Error payloads in events/statuses carry the registry code + failed stage, never internal diagnostics (stack traces, credentials, raw upstream bodies).
@@ -89,7 +89,7 @@ The compose stack's render-origin is a **contract stand-in** (`mocks/renderorigi
 - `mocks/go.mod` imports the worker's generated bindings via a local `replace` directive — keep it intact.
 - New worker packages go under `internal/` — except the generated `contracts/` package, which is **public on purpose** (mocks and future Go consumers import it; never move it to `internal/`).
 - Shared cross-service code goes under `packages/`, and only once a second consumer actually exists — otherwise keep code local to the service.
-- Dependencies: clear reason required; prefer stdlib; scope to the module that needs them; run `go mod tidy` only in the affected module; keep `bun.lock` consistent with `package.json`. Check every new Go dep against the 1.24 directive rule (Hard Rules). Don't remove a dep unless confirmed unused across the workspace/module.
+- Dependencies: clear reason required; prefer stdlib; scope to the module that needs them; run `go mod tidy` only in the affected module; keep `bun.lock` consistent with `package.json`. Check every new Go dep against the 1.26 directive rule (Hard Rules). Don't remove a dep unless confirmed unused across the workspace/module.
 - Changing anything under `contracts/` or the generated bindings means checking **all** importers: the worker, `mocks/`, and the fixture corpora.
 
 ## Contracts and Codegen
