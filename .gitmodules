@@ -1,0 +1,3 @@
+[submodule "services/export-worker"]
+	path = services/export-worker
+	url = https://github.com/ancyloce/anvilkit-export-worker
