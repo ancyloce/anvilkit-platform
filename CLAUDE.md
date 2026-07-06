@@ -15,12 +15,6 @@ Guidance for Claude Code (claude.ai/code) when working in this repository.
 
 - `anvilkit-platform` is the **backend platform monorepo** for AnvilKit, deliberately separate from `anvilkit-studio` (the frontend/editor monorepo). The two integrate **only** through the versioned contracts in `contracts/` — never source imports, in either direction.
 - The repo is **Go-first** (PRD 0009): production services are Go. Node/TypeScript (Bun) is confined to tooling and contract generation — never production services.
-- The first production service is **`anvilkit-export-worker`** (`services/export-worker`, a git submodule): a stateless, queue-driven worker that consumes `deployment.export.requested`, converts the published page into a static artifact bundle, uploads it for CDN delivery, and emits `deployment.artifact.ready`. All five MVP milestones (M1–M5) of `docs/plans/0001-export-worker-implementation-roadmap-*.md` are implemented; remaining work is tracked there and in the acceptance report.
-- Requirements authority is `docs/prd/` — read the relevant PRD before changing pipeline behavior:
-  - `0008-render-worker-service-*.md` — **behavioral authority**: events, deployment state machine, artifact contract, reliability semantics. Where documents overlap, 0008 wins on pipeline behavior.
-  - `0009-render-worker-platform-monorepo-split-*.md` — repository boundary; Go-first direction (supersedes 0008's Node.js recommendation).
-  - `0010-render-worker-platform-backend-requirements-*.md` — FR-xxx requirements, BD-xxx blocking decisions, §13 error-code registry, §14 config, test matrix.
-  - The PRDs keep the old `anvilkit-render-worker` name; ADR-015 is the naming bridge.
 
 ## Repository Structure
 
