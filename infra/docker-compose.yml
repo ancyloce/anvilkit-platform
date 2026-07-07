@@ -103,6 +103,11 @@ services:
   export-worker:
     build:
       context: ../services/export-worker
+    # The worker is fail-fast at boot by design (FR-019 + hard-dependency
+    # checks) and relies on a supervisor to retry — the K8s Deployment in
+    # deployed environments, this restart policy locally. Without it, a
+    # transient Redis/MinIO hiccup at boot kills the local worker for good.
+    restart: unless-stopped
     depends_on:
       redis:
         condition: service_healthy
