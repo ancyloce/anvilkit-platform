@@ -108,7 +108,7 @@ trim job lands with the deployed environments, BD-006). **Floors (PRD 0010 §10.
 
 | Symptom | Likely cause | Check |
 | --- | --- | --- |
-| Worker exits immediately at boot | Missing/invalid required config, demo guard, or unreachable Redis/MinIO (fail-fast) | Startup error on stderr; `ENVIRONMENT`; `RENDER_ORIGIN_URL` |
+| Worker restart-loops at boot (`restart: unless-stopped` retries the fail-fast exit) | Missing/invalid required config, demo guard, or unreachable Redis/MinIO (fail-fast) | `docker compose logs export-worker` for the startup error; `ENVIRONMENT`; `RENDER_ORIGIN_URL`. Transient dependency outages self-heal once the dependency is back |
 | `/readyz` returns 503 | Redis/MinIO unreachable at boot | `docker compose ps`; `REDIS_URL` / `S3_ENDPOINT` |
 | Job fails with RENDER_ORIGIN_401/403 | Token mismatch between worker and render-origin | `INTERNAL_SERVICE_TOKEN` vs `INTERNAL_SERVICE_TOKENS` parity |
 | Job fails with VERSION_SLUG_MISMATCH (409) | Event/record version differs from the published page | seeded page version vs record `version` |
