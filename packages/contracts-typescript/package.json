@@ -1,0 +1,19 @@
+{
+  "name": "@anvilkit/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./agent-service": "./src/generated/agent-service.ts",
+    "./pagix-agent-integration": "./src/generated/pagix-agent-integration.ts",
+    "./schema": "./src/generated/schema.ts",
+    "./generation-trace": "./src/generated/trace.json"
+  },
+  "scripts": {
+    "check": "tsc --noEmit && bun test"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
