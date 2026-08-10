@@ -1,0 +1,15 @@
+{
+  "fixtureSetVersion": 1,
+  "status": "m5-t01-candidate-unapproved",
+  "cases": [
+    {"id":"closed-minimal","path":"contracts/bom/v1/fixtures/valid/closed-minimal.bom.json","operation":"bom-graph","expectedCodes":[]},
+    {"id":"conflicting-component","path":"contracts/bom/v1/fixtures/adversarial/conflicting-component.bom.json","operation":"bom-graph","expectedCodes":["BOM_COMPONENT_CONFLICT"]},
+    {"id":"dependency-cycle","path":"contracts/bom/v1/fixtures/adversarial/dependency-cycle.bom.json","operation":"bom-graph","expectedCodes":["BOM_DEPENDENCY_CYCLE"]},
+    {"id":"duplicate-component","path":"contracts/bom/v1/fixtures/adversarial/duplicate-component.bom.json","operation":"bom-graph","expectedCodes":["BOM_COMPONENT_DUPLICATE"]},
+    {"id":"missing-dependency","path":"contracts/bom/v1/fixtures/adversarial/missing-dependency.bom.json","operation":"bom-graph","expectedCodes":["BOM_DEPENDENCY_MISSING"]},
+    {"id":"mutable-selector","path":"contracts/bom/v1/fixtures/adversarial/mutable-selector.bom.json","operation":"bom-graph","expectedCodes":["BOM_MUTABLE_SELECTOR"]},
+    {"id":"unsorted-components","path":"contracts/bom/v1/fixtures/adversarial/unsorted-components.bom.json","operation":"bom-graph","expectedCodes":["BOM_COMPONENT_UNSORTED"]},
+    {"id":"reference-missing-oci-digest","path":"contracts/bom/v1/fixtures/adversarial/reference-missing-oci-digest.json","operation":"bom-reference","expectedCodes":["BOM_REFERENCE_INCOMPLETE"]},
+    {"id":"reference-missing-semantic-digest","path":"contracts/bom/v1/fixtures/adversarial/reference-missing-semantic-digest.json","operation":"bom-reference","expectedCodes":["BOM_REFERENCE_INCOMPLETE"]}
+  ]
+}
