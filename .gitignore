@@ -13,11 +13,22 @@ node_modules
 output-file.txt
 a-different-file.txt
 dist
+**/target/
+**/__pycache__/
+*.py[cod]
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.venv/
+
 
 # Debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Claude
+.claude/worktrees/
 
 # Misc
 .DS_Store
@@ -39,6 +50,9 @@ yarn-error.log*
 coverage.*
 *.coverprofile
 profile.cov
+*.test
+*.out
+*.coverprofile
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
@@ -53,3 +67,12 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Docs
+docs/
+
+# Governance
+contracts/governance/
+
+# Mock data
+mocks/
