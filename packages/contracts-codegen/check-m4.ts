@@ -76,16 +76,16 @@ for (const expected of ["type Example struct", "ID string `json:\"id\"`", "Count
 
 const candidatesPath = join(REPO_ROOT, "contracts", "governance", "m0", "dp008", "candidates.json");
 const candidates = JSON.parse(readFileSync(candidatesPath, "utf8")) as {
-  records: Array<{ language: string; capability: string; exactVersion: string; decision: string }>;
+  records: Array<{ language: string; capability: string; exactVersion: string; decision: string; evidence?: string }>;
 };
 for (const language of ["go", "typescript", "python", "java"]) {
   const records = candidates.records.filter((record) => record.language === language &&
     ["json-schema-validation", "openapi-generation", "json-schema-type-generation"].includes(record.capability));
   if (records.length === 0) failures.push(`${language}: DP-008 generator/validator candidates missing`);
   for (const record of records) {
-    if (record.exactVersion !== "TBD" || record.decision !== "pending-evidence") {
-      failures.push(`${language}: M4 gate must be updated when DP-008 becomes approved`);
-    }
+    const pending = record.exactVersion === "TBD" && record.decision === "pending-evidence";
+    const approved = record.exactVersion !== "TBD" && record.decision === "accepted" && Boolean(record.evidence);
+    if (!pending && !approved) failures.push(`${language}: inconsistent DP-008 candidate state`);
   }
 }
 
@@ -100,5 +100,5 @@ if (failures.length > 0) {
 
 console.log(
   "M4-T01 foundation valid: explicit source-validation, fixture-execution, normalized-model, and Go generation stages; " +
-  "unknown keywords fail; native package/parity/freeze tasks remain blocked by M3 and DP-008 approvals",
+  "unknown keywords fail; exact DP-008 decisions are enforced when promoted",
 );

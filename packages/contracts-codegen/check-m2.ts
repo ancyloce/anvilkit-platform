@@ -138,9 +138,21 @@ const schemaPaths = readdirSync(SCHEMA_DIR)
   .sort(compareUtf8)
   .map((name) => join(SCHEMA_DIR, name));
 
-if (schemaPaths.length !== 20) {
-  failures.push("AK-CAT-002 expected 19 catalog schemas plus shared primitives, got " + schemaPaths.length);
+const expectedSchemaNames = new Set([
+  "shared-primitives.schema.json",
+  "contract-signature-statement.schema.json",
+  "contract-trust-root.schema.json",
+  "contract-revocation-snapshot.schema.json",
+]);
+if (schemaPaths.length !== 23) {
+  failures.push("AK-CAT-002 expected 19 catalog schemas, shared primitives, and three M3 security schemas, got " + schemaPaths.length);
 }
+for (const path of schemaPaths) {
+  const name = path.slice(path.lastIndexOf("/") + 1);
+  if (!expectedSchemaNames.has(name)) continue;
+  expectedSchemaNames.delete(name);
+}
+if (expectedSchemaNames.size > 0) failures.push("AK-CAT-002 supplemental schema set is incomplete: " + [...expectedSchemaNames].sort().join(", "));
 
 const documents: ReferenceDocument[] = [];
 const schemasByLogicalId = new Map<string, { path: string; bytes: Buffer; schema: JsonObject; metadata: ContractMetadata; uri: string }>();

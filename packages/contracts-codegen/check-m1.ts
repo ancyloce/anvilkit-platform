@@ -164,6 +164,21 @@ expectCodes(
   ["AK-REF-004"],
 );
 expectCodes(
+  "reference/root-digest-mismatch",
+  codeSet(resolveClosedReferences([
+    { logicalUri: mismatchUri, bytes: bytesB, schema: { type: "string" } },
+  ])),
+  ["AK-REF-004"],
+);
+expectCodes(
+  "reference/duplicate-logical-uri",
+  codeSet(resolveClosedReferences([
+    { logicalUri: uriA, bytes: bytesA, schema: { type: "string" } },
+    { logicalUri: uriA, bytes: bytesA, schema: { type: "string" } },
+  ])),
+  ["AK-REF-009"],
+);
+expectCodes(
   "reference/cycle",
   codeSet(resolveClosedReferences([
     { logicalUri: uriA, bytes: bytesA, schema: { $ref: uriB } },
@@ -213,7 +228,7 @@ const governedProblemCodes = new Set(
 );
 const emittedProblemCodes = [
   ...Array.from({ length: 15 }, (_, index) => `AK-SRC-${String(index + 1).padStart(3, "0")}`),
-  ...Array.from({ length: 8 }, (_, index) => `AK-REF-${String(index + 1).padStart(3, "0")}`),
+  ...Array.from({ length: 9 }, (_, index) => `AK-REF-${String(index + 1).padStart(3, "0")}`),
   ...Array.from({ length: 6 }, (_, index) => `AK-REG-${String(index + 1).padStart(3, "0")}`),
   ...Array.from({ length: 3 }, (_, index) => `AK-COMPAT-${String(index + 1).padStart(3, "0")}`),
   ...Array.from({ length: 4 }, (_, index) => `AK-FREEZE-${String(index + 1).padStart(3, "0")}`),

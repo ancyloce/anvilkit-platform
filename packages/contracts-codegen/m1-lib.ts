@@ -82,7 +82,7 @@ const ALLOWED_VOCABULARIES = new Set([
 ]);
 
 const ALLOWED_KEYWORDS = new Set([
-  "$schema", "$id", "$ref", "$dynamicRef", "$anchor", "$dynamicAnchor", "$vocabulary",
+  "$schema", "$id", "$ref", "$anchor", "$vocabulary",
   "$comment", "$defs", "type", "enum", "const", "multipleOf", "maximum", "exclusiveMaximum",
   "minimum", "exclusiveMinimum", "maxLength", "minLength", "pattern", "format",
   "contentEncoding", "contentMediaType", "contentSchema", "maxItems", "minItems", "uniqueItems",
@@ -288,6 +288,14 @@ export function lintSchema(root: JsonObject): Finding[] {
         }
       }
     }
+    if (schemaPath !== "" && "$id" in schema) {
+      findings.push(finding(
+        "AK-SRC-003",
+        `${schemaPath}/$id`,
+        "/profile/closedReferences",
+        "nested resource identifiers are forbidden because they alter closed reference scope",
+      ));
+    }
 
     const types = typesOf(schema);
     if (types.includes("object")) {
@@ -428,19 +436,25 @@ export type ReferenceDocument = {
   schema: JsonObject;
 };
 
-function externalRefs(schema: JsonObject): string[] {
-  const refs: string[] = [];
-  const walk = (node: Json): void => {
+type ExternalReference = { ref: string; path: string };
+
+function externalRefs(schema: JsonObject): ExternalReference[] {
+  const refs: ExternalReference[] = [];
+  const walk = (node: Json, path: string): void => {
     if (Array.isArray(node)) {
-      node.forEach(walk);
+      node.forEach((item, index) => walk(item, `${path}/${index}`));
       return;
     }
     if (!isObject(node)) return;
-    if (typeof node.$ref === "string" && !node.$ref.startsWith("#")) refs.push(node.$ref);
-    Object.values(node).forEach(walk);
+    if (typeof node.$ref === "string" && !node.$ref.startsWith("#")) {
+      refs.push({ ref: node.$ref, path: `${path}/$ref` });
+    }
+    for (const [key, value] of Object.entries(node)) {
+      walk(value, `${path}/${escapePointer(key)}`);
+    }
   };
-  walk(schema);
-  return refs.sort(compareUtf8);
+  walk(schema, "");
+  return refs.sort((left, right) => compareUtf8(left.path, right.path) || compareUtf8(left.ref, right.ref));
 }
 
 export function resolveClosedReferences(
@@ -448,14 +462,29 @@ export function resolveClosedReferences(
   maximumDepth = MAX_REFERENCE_DEPTH,
 ): Finding[] {
   const findings: Finding[] = [];
-  const byUri = new Map(roots.map((document) => [document.logicalUri, document]));
+  const byUri = new Map<string, ReferenceDocument>();
+  for (const document of [...roots].sort((left, right) => compareUtf8(left.logicalUri, right.logicalUri))) {
+    const syntax = referenceSyntaxFinding(document.logicalUri, document.logicalUri);
+    if (syntax) findings.push(syntax);
+    const declaredDigest = /[?&]digest=(sha256:[0-9a-f]{64})/.exec(document.logicalUri)?.[1];
+    const actualDigest = `sha256:${createHash("sha256").update(document.bytes).digest("hex")}`;
+    if (declaredDigest !== undefined && declaredDigest !== actualDigest) {
+      findings.push(finding("AK-REF-004", document.logicalUri, "/profile/referenceDigest", "root logical URI digest does not match its document bytes"));
+    }
+    if (byUri.has(document.logicalUri)) {
+      findings.push(finding("AK-REF-009", document.logicalUri, "/profile/closedReferences", "closed graph contains a duplicate logical URI"));
+      continue;
+    }
+    byUri.set(document.logicalUri, document);
+  }
   const visit = (document: ReferenceDocument, stack: string[], depth: number): void => {
     if (depth > maximumDepth) {
       findings.push(finding("AK-REF-006", document.logicalUri, "/profile/referenceDepth", `reference graph exceeds depth ${maximumDepth}`));
       return;
     }
-    for (const ref of externalRefs(document.schema)) {
-      const syntax = referenceSyntaxFinding(ref, `${document.logicalUri}#/$ref`);
+    for (const reference of externalRefs(document.schema)) {
+      const { ref } = reference;
+      const syntax = referenceSyntaxFinding(ref, `${document.logicalUri}#${reference.path}`);
       if (syntax) {
         findings.push(syntax);
         continue;
@@ -479,7 +508,7 @@ export function resolveClosedReferences(
       visit(target, [...stack, target.logicalUri], depth + 1);
     }
   };
-  for (const root of [...roots].sort((a, b) => compareUtf8(a.logicalUri, b.logicalUri))) {
+  for (const root of [...byUri.values()].sort((a, b) => compareUtf8(a.logicalUri, b.logicalUri))) {
     visit(root, [root.logicalUri], 0);
   }
   return stableFindings(findings);

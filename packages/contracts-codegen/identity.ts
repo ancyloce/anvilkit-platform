@@ -27,7 +27,7 @@ function assertUnicodeScalarString(value: string, label: string): void {
     const unit = value.charCodeAt(index);
     if (unit >= 0xd800 && unit <= 0xdbff) {
       const next = value.charCodeAt(index + 1);
-      if (next < 0xdc00 || next > 0xdfff) {
+      if (!(next >= 0xdc00 && next <= 0xdfff)) {
         throw new IdentityProfileError("JCS_INVALID_UNICODE", `${label} contains an unpaired high surrogate`);
       }
       index += 1;

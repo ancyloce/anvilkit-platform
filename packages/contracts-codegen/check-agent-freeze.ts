@@ -2,7 +2,7 @@
 
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, resolve, sep } from "node:path";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..");
 const LOCK_PATH = join(REPO_ROOT, "contracts", "freeze", "v1", "contracts.lock.json");
@@ -42,6 +42,19 @@ type Lock = {
 
 function digest(bytes: Uint8Array): string {
   return createHash("sha256").update(bytes).digest("hex");
+}
+
+function repositoryEvidence(path: string, label: string): string | undefined {
+  const resolved = resolve(REPO_ROOT, path);
+  if (resolved !== REPO_ROOT && !resolved.startsWith(`${REPO_ROOT}${sep}`)) {
+    failures.push(`AK-FREEZE-004 ${label} escapes the repository: ${path}`);
+    return undefined;
+  }
+  if (!existsSync(resolved) || !statSync(resolved).isFile()) {
+    failures.push(`AK-FREEZE-004 ${label} is missing: ${path}`);
+    return undefined;
+  }
+  return resolved;
 }
 
 function compareUtf8(left: string, right: string): number {
@@ -120,10 +133,8 @@ for (const source of lock.sources) {
     if (!source.compatibilityEvidence) {
       failures.push(`AK-FREEZE-004 classified source lacks compatibility evidence: ${source.path}`);
     } else {
-      const evidencePath = join(REPO_ROOT, source.compatibilityEvidence);
-      if (!existsSync(evidencePath)) {
-        failures.push(`AK-FREEZE-004 compatibility evidence is missing: ${source.compatibilityEvidence}`);
-      } else {
+      const evidencePath = repositoryEvidence(source.compatibilityEvidence, "compatibility evidence");
+      if (evidencePath) {
         const report = JSON.parse(readFileSync(evidencePath, "utf8")) as {
           candidateSource?: string;
           candidateDigest?: string;
@@ -156,6 +167,15 @@ for (const source of lock.sources) {
         }
         if (source.classification === "behaviorally-narrowing" && (report.consumerEvidence?.length ?? 0) === 0) {
           failures.push(`AK-FREEZE-004 narrowing lock update lacks consumer evidence: ${source.path}`);
+        }
+        if (source.classification === "behaviorally-narrowing") {
+          for (const evidence of report.consumerEvidence ?? []) {
+            if (typeof evidence !== "string") {
+              failures.push(`AK-FREEZE-004 narrowing consumer evidence path is invalid: ${source.path}`);
+            } else {
+              repositoryEvidence(evidence, "narrowing consumer evidence");
+            }
+          }
         }
       }
     }
@@ -205,6 +225,47 @@ if (lock.status === "approved" || lock.authorization.status === "approved") {
   for (const reviewer of lock.authorization.reviewers) {
     if (reviewer.decision !== "approved" || !reviewer.evidence) {
       failures.push(`AK-FREEZE-004 approved lock lacks reviewer evidence: ${reviewer.role}`);
+    } else {
+      repositoryEvidence(reviewer.evidence, `reviewer evidence for ${reviewer.role}`);
+    }
+  }
+  if (lock.authorization.evidence) {
+    const authorizationPath = repositoryEvidence(lock.authorization.evidence, "lock authorization evidence");
+    if (authorizationPath) {
+      try {
+        const authorization = JSON.parse(readFileSync(authorizationPath, "utf8")) as {
+          authorizationVersion?: number;
+          status?: string;
+          classificationReports?: unknown[];
+          registryDiffReport?: unknown;
+          consumerEvidence?: unknown[];
+          reviewers?: Array<{ role?: string; decision?: string; evidence?: string | null }>;
+        };
+        if (authorization.authorizationVersion !== 1 || authorization.status !== "approved") {
+          failures.push("AK-FREEZE-004 lock authorization evidence is not an approved version 1 record");
+        }
+        for (const evidence of authorization.classificationReports ?? []) {
+          if (typeof evidence !== "string") failures.push("AK-FREEZE-004 authorization classification report path is invalid");
+          else repositoryEvidence(evidence, "authorization classification report");
+        }
+        if (authorization.registryDiffReport !== null && authorization.registryDiffReport !== undefined) {
+          if (typeof authorization.registryDiffReport !== "string") failures.push("AK-FREEZE-004 authorization registry report path is invalid");
+          else repositoryEvidence(authorization.registryDiffReport, "authorization registry report");
+        }
+        for (const evidence of authorization.consumerEvidence ?? []) {
+          if (typeof evidence !== "string") failures.push("AK-FREEZE-004 authorization consumer evidence path is invalid");
+          else repositoryEvidence(evidence, "authorization consumer evidence");
+        }
+        const decisions = new Map((authorization.reviewers ?? []).map((reviewer) => [reviewer.role, reviewer]));
+        for (const reviewer of lock.authorization.reviewers) {
+          const decision = decisions.get(reviewer.role);
+          if (decision?.decision !== "approved" || decision.evidence !== reviewer.evidence) {
+            failures.push(`AK-FREEZE-004 authorization does not bind approved reviewer ${reviewer.role}`);
+          }
+        }
+      } catch (error) {
+        failures.push(`AK-FREEZE-004 cannot parse lock authorization evidence: ${error}`);
+      }
     }
   }
 }

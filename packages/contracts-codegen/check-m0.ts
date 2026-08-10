@@ -6,7 +6,7 @@
 
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, resolve, sep } from "node:path";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..");
 const M0_DIR = join(REPO_ROOT, "contracts", "governance", "m0");
@@ -66,6 +66,7 @@ type Catalog = {
 };
 
 type Candidates = {
+  status: string;
   records: Array<{
     id: string;
     capability: string;
@@ -79,6 +80,27 @@ type Candidates = {
     evidence?: string;
   }>;
 };
+
+type ReviewedCandidateEvidence = {
+  candidateId: string;
+  exactVersion: string;
+  decision: string;
+  rawEvidence?: string;
+  reviewers?: Array<{ role: string; decision: string; evidence?: string }>;
+};
+
+function repositoryFile(path: string, label: string): string | undefined {
+  const resolved = resolve(REPO_ROOT, path);
+  if (resolved !== REPO_ROOT && !resolved.startsWith(`${REPO_ROOT}${sep}`)) {
+    failures.push(`${label} escapes repository: ${path}`);
+    return undefined;
+  }
+  if (!existsSync(resolved) || !statSync(resolved).isFile()) {
+    failures.push(`${label} is missing: ${path}`);
+    return undefined;
+  }
+  return resolved;
+}
 
 const inventory = readJson<Inventory>(join(M0_DIR, "inventory.json"));
 const lock = readJson<{ files: Record<string, string> }>(
@@ -97,7 +119,7 @@ const datasets = readJson<{
 }>(
   join(M0_DIR, "dp008", "dataset-plan.json"),
 );
-const decisions = readJson<{ items: Array<{ id: string; status: string }> }>(
+const decisions = readJson<{ items: Array<{ id: string; status: string; decisionEvidence?: string }> }>(
   join(M0_DIR, "decision-backlog.json"),
 );
 const evidence = readJson<{
@@ -234,6 +256,30 @@ for (const record of candidates.records) {
   if (record.decision === "accepted" && record.exactVersion === "TBD") {
     failures.push(`accepted DP-008 candidate has no exact version: ${record.id}`);
   }
+  if (record.evidence) {
+    const path = repositoryFile(record.evidence, `DP-008 evidence for ${record.id}`);
+    if (path) {
+      const reviewed = readJson<ReviewedCandidateEvidence>(path);
+      if (reviewed.candidateId !== record.id || reviewed.exactVersion !== record.exactVersion || reviewed.decision !== record.decision) {
+        failures.push(`DP-008 evidence does not bind candidate/version/decision: ${record.id}`);
+      }
+      if (!reviewed.reviewers?.some((reviewer) => reviewer.decision === "approved" && reviewer.evidence)) {
+        failures.push(`DP-008 evidence lacks an approved reviewer binding: ${record.id}`);
+      }
+      if (reviewed.rawEvidence) repositoryFile(reviewed.rawEvidence, `DP-008 raw evidence for ${record.id}`);
+    }
+  }
+}
+const acceptedCandidateCount = candidates.records.filter((record) => record.decision === "accepted").length;
+const pendingCandidateCount = candidates.records.filter((record) => record.decision.startsWith("pending-")).length;
+const expectedCandidateStatus = pendingCandidateCount === 0
+  ? `complete-${acceptedCandidateCount}-accepted-0-pending`
+  : `in-progress-${acceptedCandidateCount}-accepted-${pendingCandidateCount}-pending`;
+if (candidates.status !== expectedCandidateStatus) {
+  failures.push("DP-008 matrix status does not match decision counts");
+}
+if (candidates.records.length !== 29 || acceptedCandidateCount !== 29 || pendingCandidateCount !== 0) {
+  failures.push(`M0 requires all 29 DP-008 records accepted; found ${acceptedCandidateCount} accepted and ${pendingCandidateCount} pending`);
 }
 for (const field of ["p50LatencyNanoseconds", "p95LatencyNanoseconds", "throughputPerSecond", "cpuUserNanoseconds", "peakResidentBytes", "coldStartNanoseconds", "artifactDeltaBytes", "directDependencyCount", "transitiveDependencyCount"]) {
   if (!benchmark.requiredMeasurements.includes(field)) failures.push(`benchmark plan missing ${field}`);
@@ -250,6 +296,40 @@ for (const category of ["valid", "invalid", "adversarial", "maximum-bound"]) {
 // M0-T06/T07: decision and evidence governance remain explicit and unsigned.
 for (const id of ["ADR-agent-contract-key-custody-trust-revocation-rollover", "DECISION-oci-registry-product", "ADR-custom-or-deviating-contract-technology"]) {
   if (!decisions.items.some((item) => item.id === id)) failures.push(`decision backlog missing ${id}`);
+}
+const registryBacklog = decisions.items.find((item) => item.id === "DECISION-oci-registry-product");
+if (registryBacklog?.status !== "accepted-reference-product-production-controls-pending-m7" || !registryBacklog.decisionEvidence) {
+  failures.push("OCI registry product decision is not accepted with evidence");
+} else {
+  const path = repositoryFile(registryBacklog.decisionEvidence, "OCI registry decision evidence");
+  if (path) {
+    const registryDecision = readJson<{
+      decisionId: string;
+      status: string;
+      selectedProduct: string;
+      exactVersion: string;
+      conformanceEvidence: string;
+      rejectedProducts: Array<{ product: string; reason: string }>;
+      productionControlsPendingM7: string[];
+      reviewers: Array<{ decision: string; evidence: string }>;
+    }>(path);
+    if (registryDecision.decisionId !== registryBacklog.id || registryDecision.status !== registryBacklog.status) {
+      failures.push("OCI registry decision does not bind backlog ID/status");
+    }
+    if (registryDecision.selectedProduct !== "project-zot/zot" || registryDecision.exactVersion !== "2.1.20") {
+      failures.push("OCI registry decision does not pin the measured Zot product");
+    }
+    repositoryFile(registryDecision.conformanceEvidence, "OCI registry conformance evidence");
+    if (!registryDecision.rejectedProducts.some((item) => item.product === "distribution/distribution" && item.reason.trim())) {
+      failures.push("OCI registry decision does not record the failed named candidate");
+    }
+    if (registryDecision.productionControlsPendingM7.length < 8) {
+      failures.push("OCI registry decision obscures production controls still gated by M7");
+    }
+    if (!registryDecision.reviewers.some((reviewer) => reviewer.decision === "approved" && reviewer.evidence)) {
+      failures.push("OCI registry decision lacks approval evidence");
+    }
+  }
 }
 if (evidence.manifestLayers.length !== 2 || evidence.retentionClasses.length < 3 || evidence.raci.length < 5 || evidence.workflow.length < 6) {
   failures.push("evidence governance is incomplete");

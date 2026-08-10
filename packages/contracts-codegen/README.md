@@ -31,7 +31,7 @@ bun packages/contracts-codegen/benchmark-m0.ts --validate
 ```
 
 `check-m0.ts` verifies the legacy inventory, 19-family Agent catalog, P0 freeze subset,
-DP-008 candidate records, and pending reviewer gates. The benchmark command validates or
+DP-008 candidate records, and reviewer gates. The benchmark command validates or
 materializes the representative evidence corpus and can invoke an already-installed
 candidate adapter; it never downloads or selects a dependency.
 
@@ -62,32 +62,44 @@ the P0 run/event/artifact/fence/usage/authorization invariants. Its dependency-f
 instance evaluation is bootstrap evidence only; M3/M4 still require DP-008-approved
 native validators and four-language parity.
 
-PLAN-0003 M3 begins with the strict-admission candidate gate:
+PLAN-0003 M3 supplies admission, identity, and security gates:
 
 ```bash
 bun packages/contracts-codegen/check-m3.ts
+bun packages/contracts-codegen/check-m3-security.ts
 ```
 
-It runs a byte-exact governance corpus through the M3-T01 TypeScript reference
-adapter. The adapter rejects duplicate decoded keys, invalid UTF-8/BOM and
-Unicode escapes, invalid or unsafe numbers, negative zero, resource-limit
-violations, and schema-invalid unknown fields before identity calculation. It
-is explicitly unapproved evaluation tooling; it does not select a DP-008
-library or satisfy four-language, canonicalization, signature, or trust gates.
+These commands run byte-exact strict-admission, RFC 8785 canonical-byte,
+component-identity, non-recursive root-BOM identity, DSSE/JWS, trust/revocation,
+and authorization-redemption vectors. Four-language JCS candidates are now
+accepted on the representative DP-008 corpus. The complete 97-case payload
+validation/JCS parity gate also passes. The eight DSSE/JWS selections are now
+accepted and their six-case native primitive matrix has zero divergences.
 
-PLAN-0003 M4 has begun with the unblocked modular-generation foundation:
+PLAN-0003 M4 includes the modular-generation foundation and native validator gates:
 
 ```bash
 bun packages/contracts-codegen/check-m4.ts
+bun packages/contracts-codegen/check-m4-typescript.ts
+bun packages/contracts-codegen/check-m4-conformance.ts
+bun packages/contracts-codegen/check-m4-generated-packages.ts
+bun packages/contracts-codegen/check-m4-consumers.ts
 ```
 
-The retained export generator is now an orchestrator over explicit
-source-validation, fixture-execution, normalized-model, and Go-generation
-stages. Its legacy JSON Schema vocabulary is deliberately closed; unsupported
-keywords and formats fail with their source pointer. Regeneration remains
-byte-identical. This is M4-T01 work only: native Go/TypeScript/Python/Java
-packages, parity aggregation, package freeze, and consumer matrices remain
-blocked by incomplete M3 outputs and unapproved DP-008 exact versions.
+The retained export generator is an orchestrator over explicit source-validation,
+fixture-execution, normalized-model, and Go-generation stages. Its legacy JSON Schema
+vocabulary is closed. Native strict validators exist in Go, TypeScript, Python, and Java
+using accepted exact DP-008 versions. Each native package exposes a 97-case
+conformance-result v1 emitter. `compare-m4-conformance.ts` requires exactly four
+outputs, checks every result against the byte-pinned manifest, and rejects any
+case or canonical-byte divergence. `compare-m4-identity.ts` applies the same
+zero-tolerance boundary to the 12 ComponentIdentityV1 and ContractBomIdentityV1
+vectors, while `compare-m4-signature.ts` does the same for the six fixed DSSE/JWS
+primitive cases. Pinned generators produce versioned Go, TypeScript, Python, and Java
+schema/API packages for all 23 logical contracts and 117 governed wire values. Each trace
+binds the source projections, exact generators, generated tree, and the same 29-component
+candidate BOM. The supported-consumer matrix verifies that all four repository-local
+packages accept generation 1 and reject adjacent generations with `CONTRACT_UNSUPPORTED`.
 
 `--update-lock` additionally rewrites the legacy `contracts/contracts.lock.json` (sha256 of
 the export-worker schemas, descriptions, and fixtures in its explicit scope).
