@@ -1,0 +1,13 @@
+{
+  "caseVersion": 1,
+  "baseSource": "contracts/schemas/meta/source-lint-cases.json#/base",
+  "cases": [
+    {"id":"no-change","mutations":[],"expectedClassification":"no-change"},
+    {"id":"documentation-only","mutations":[{"op":"set","path":"/description","value":"Documentation changed without wire semantics."}],"expectedClassification":"documentation-only"},
+    {"id":"compatible-enum-addition","mutations":[{"op":"set","path":"/properties/value","value":{"enum":["one","two"]}},{"op":"set","path":"/properties/value/enum","value":["one","two","three"]}],"expectedClassification":"compatible-additive","compareFromFirstMutation":true},
+    {"id":"behaviorally-narrowing","mutations":[{"op":"set","path":"/properties/value/maxLength","value":128}],"expectedClassification":"behaviorally-narrowing","requiresConsumerEvidence":true},
+    {"id":"breaking-required-addition","mutations":[{"op":"set","path":"/required","value":["id","value","note"]}],"expectedClassification":"breaking","requiresMajor":true},
+    {"id":"breaking-closed-property-addition","mutations":[{"op":"set","path":"/properties/newField","value":{"type":"string","minLength":0,"maxLength":64}},{"op":"set","path":"/x-anvilkit-omittedSemantics/newField","value":"absence means no new field"},{"op":"set","path":"/maxProperties","value":4}],"expectedClassification":"breaking","requiresMajor":true}
+  ]
+}
+

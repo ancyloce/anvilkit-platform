@@ -1,0 +1,64 @@
+{
+  "$schema": "https://contracts.anvilkit.dev/schemas/meta/anvilkit-2020-12.schema.json",
+  "$id": "https://contracts.anvilkit.dev/schemas/v1/compatibility-report.schema.json",
+  "title": "Deterministic Agent contract compatibility report",
+  "type": "object",
+  "required": ["reportVersion", "previousSource", "candidateSource", "previousDigest", "candidateDigest", "classification", "changes", "findings", "consumerEvidence"],
+  "properties": {
+    "reportVersion": {"type":"integer","minimum":1,"maximum":1},
+    "previousSource": {"type":"string","minLength":1,"maxLength":512},
+    "candidateSource": {"type":"string","minLength":1,"maxLength":512},
+    "previousDigest": {"type":"string","minLength":71,"maxLength":71,"pattern":"^sha256:[0-9a-f]{64}$"},
+    "candidateDigest": {"type":"string","minLength":71,"maxLength":71,"pattern":"^sha256:[0-9a-f]{64}$"},
+    "classification": {"enum":["no-change","documentation-only","compatible-additive","behaviorally-narrowing","breaking"]},
+    "changes": {"type":"array","minItems":0,"maxItems":4096,"items":{"$ref":"#/$defs/change"}},
+    "findings": {"type":"array","minItems":0,"maxItems":4096,"items":{"$ref":"#/$defs/finding"}},
+    "consumerEvidence": {"type":"array","minItems":0,"maxItems":64,"uniqueItems":true,"items":{"type":"string","minLength":1,"maxLength":512}}
+  },
+  "$defs": {
+    "change": {
+      "type":"object",
+      "required":["path","kind","classification","oldValue","newValue"],
+      "properties":{
+        "path":{"type":"string","minLength":1,"maxLength":1024},
+        "kind":{"type":"string","minLength":1,"maxLength":128},
+        "classification":{"enum":["documentation-only","compatible-additive","behaviorally-narrowing","breaking"]},
+        "oldValue":{},
+        "newValue":{}
+      },
+      "minProperties":5,
+      "maxProperties":5,
+      "unevaluatedProperties":false
+    },
+    "finding": {
+      "type":"object",
+      "required":["code","severity","instancePath","schemaPath","message","retryability"],
+      "properties":{
+        "code":{"type":"string","minLength":3,"maxLength":64,"pattern":"^[A-Z][A-Z0-9_-]+$"},
+        "severity":{"enum":["error","warning","info"]},
+        "instancePath":{"type":"string","minLength":0,"maxLength":1024},
+        "schemaPath":{"type":"string","minLength":0,"maxLength":1024},
+        "message":{"type":"string","minLength":1,"maxLength":1024},
+        "retryability":{"enum":["never","operator-action"]}
+      },
+      "minProperties":6,
+      "maxProperties":6,
+      "unevaluatedProperties":false
+    }
+  },
+  "minProperties":9,
+  "maxProperties":9,
+  "unevaluatedProperties": false,
+  "x-anvilkit-contract": {
+    "logicalId": "CompatibilityReportV1",
+    "semanticVersion": "1.0.0",
+    "componentName": "anvilkit.contract.compatibility-report.v1",
+    "owner": "Platform Contracts owner",
+    "stability": "p0-freeze-candidate",
+    "identityFields": ["/reportVersion", "/previousSource", "/candidateSource", "/previousDigest", "/candidateDigest", "/classification", "/changes", "/findings", "/consumerEvidence"],
+    "maximumSerializedBytes": 524288,
+    "compatibilityPolicy": "frozen-major",
+    "descriptions": []
+  }
+}
+
