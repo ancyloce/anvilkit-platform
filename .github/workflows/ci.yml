@@ -82,6 +82,8 @@ jobs:
       - name: Agent contract M4 Java adapter
         working-directory: packages/contracts-java
         run: mvn --batch-mode --no-transfer-progress test
+      - name: Agent contract M4 supported-consumer matrix
+        run: bun packages/contracts-codegen/check-m4-consumers.ts
       - name: Agent contract M4 complete four-language conformance
         run: |
           mkdir -p /tmp/anvilkit-m4-conformance
@@ -127,6 +129,8 @@ jobs:
           if-no-files-found: error
       - name: Agent contract M5 structural BOM candidate
         run: bun run --cwd packages/contracts-bom check-m5
+      - name: Agent contract M6 release-candidate evidence
+        run: bun packages/contracts-codegen/check-m6.ts
       - name: Agent generation-aware freeze
         run: bun packages/contracts-codegen/check-agent-freeze.ts
       - name: No codegen drift (platform)
