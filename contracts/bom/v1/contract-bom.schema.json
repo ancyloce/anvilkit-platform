@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.anvilkit.dev/bom/v1/contract-bom.schema.json",
+  "title": "ContractBomV1 structural candidate",
+  "description": "Closed root Contract BOM shape. Cross-entry sort, duplicate, closure, and cycle rules are enforced by the M5 graph checker. Identity calculation remains gated by M3.",
+  "type": "object",
+  "minProperties": 13,
+  "maxProperties": 13,
+  "required": [
+    "apiVersion",
+    "kind",
+    "name",
+    "version",
+    "digest",
+    "createdAt",
+    "issuer",
+    "compatibility",
+    "components",
+    "generatorSetDigest",
+    "fixtureManifestDigest",
+    "registrySetDigest",
+    "releaseEvidenceDigest"
+  ],
+  "properties": {
+    "apiVersion": {"const": "anvilkit.io/contracts/v1"},
+    "kind": {"const": "ContractBom"},
+    "name": {"type":"string","minLength":1,"maxLength":128,"pattern":"^[a-z0-9][a-z0-9.-]*$"},
+    "version": {"$ref":"#/$defs/semanticVersion"},
+    "digest": {"$ref":"#/$defs/digest"},
+    "createdAt": {"$ref":"#/$defs/timestamp"},
+    "issuer": {"$ref":"#/$defs/issuer"},
+    "compatibility": {"$ref":"#/$defs/compatibility"},
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4096,
+      "items": {"$ref":"#/$defs/component"}
+    },
+    "generatorSetDigest": {"$ref":"#/$defs/digest"},
+    "fixtureManifestDigest": {"$ref":"#/$defs/digest"},
+    "registrySetDigest": {"$ref":"#/$defs/digest"},
+    "releaseEvidenceDigest": {"$ref":"#/$defs/digest"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "minLength": 71,
+      "maxLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "semanticVersion": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 64,
+      "pattern": "^[1-9][0-9]*\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$"
+    },
+    "timestamp": {
+      "type": "string",
+      "minLength": 24,
+      "maxLength": 24,
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "issuer": {
+      "type": "string",
+      "minLength": 16,
+      "maxLength": 256,
+      "pattern": "^urn:anvilkit:issuer:[a-z0-9][a-z0-9:-]*$"
+    },
+    "componentKind": {
+      "enum": [
+        "asyncapi",
+        "declarative-bundle",
+        "fixture-manifest",
+        "generated-binding",
+        "generator-set",
+        "json-schema",
+        "openapi",
+        "registry-set",
+        "release-evidence"
+      ]
+    },
+    "componentName": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 160,
+      "pattern": "^anvilkit\\.[a-z0-9][a-z0-9.-]*\\.v[1-9][0-9]*$"
+    },
+    "dependency": {
+      "type": "object",
+      "minProperties": 4,
+      "maxProperties": 4,
+      "required": ["kind", "name", "version", "digest"],
+      "properties": {
+        "kind": {"$ref":"#/$defs/componentKind"},
+        "name": {"$ref":"#/$defs/componentName"},
+        "version": {"$ref":"#/$defs/semanticVersion"},
+        "digest": {"$ref":"#/$defs/digest"}
+      },
+      "additionalProperties": false
+    },
+    "component": {
+      "type": "object",
+      "minProperties": 9,
+      "maxProperties": 9,
+      "required": [
+        "kind",
+        "name",
+        "version",
+        "mediaType",
+        "digest",
+        "size",
+        "dependencies",
+        "issuer",
+        "provenanceDigest"
+      ],
+      "properties": {
+        "kind": {"$ref":"#/$defs/componentKind"},
+        "name": {"$ref":"#/$defs/componentName"},
+        "version": {"$ref":"#/$defs/semanticVersion"},
+        "mediaType": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160,
+          "pattern": "^[a-z0-9][a-z0-9.+-]*/[a-z0-9][a-z0-9.+-]*$"
+        },
+        "digest": {"$ref":"#/$defs/digest"},
+        "size": {"type":"integer","minimum":1,"maximum":1073741824},
+        "dependencies": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 256,
+          "items": {"$ref":"#/$defs/dependency"}
+        },
+        "issuer": {"$ref":"#/$defs/issuer"},
+        "provenanceDigest": {"$ref":"#/$defs/digest"}
+      },
+      "additionalProperties": false
+    },
+    "compatibility": {
+      "type": "object",
+      "minProperties": 2,
+      "maxProperties": 2,
+      "required": ["minimumConsumerGeneration", "maximumConsumerGeneration"],
+      "properties": {
+        "minimumConsumerGeneration": {"type":"integer","minimum":1,"maximum":2147483647},
+        "maximumConsumerGeneration": {"type":"integer","minimum":1,"maximum":2147483647}
+      },
+      "additionalProperties": false
+    }
+  }
+}

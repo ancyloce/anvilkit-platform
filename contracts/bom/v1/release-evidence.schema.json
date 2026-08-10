@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.anvilkit.dev/bom/v1/release-evidence.schema.json",
+  "title": "ReleaseEvidenceV1",
+  "description": "Pre-publication evidence component. It cannot contain or derive from the enclosing BOM digest.",
+  "type": "object",
+  "minProperties": 5,
+  "maxProperties": 5,
+  "required": ["apiVersion", "kind", "version", "checks", "approvals"],
+  "properties": {
+    "apiVersion": {"const":"anvilkit.io/contracts/v1"},
+    "kind": {"const":"ReleaseEvidence"},
+    "version": {"type":"string","minLength":5,"maxLength":64,"pattern":"^[1-9][0-9]*\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$"},
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type":"object",
+        "minProperties":3,
+        "maxProperties":3,
+        "required":["id","outcome","evidenceDigest"],
+        "properties": {
+          "id":{"type":"string","minLength":1,"maxLength":128,"pattern":"^[a-z0-9][a-z0-9.-]*$"},
+          "outcome":{"enum":["passed","failed","blocked"]},
+          "evidenceDigest":{"type":"string","minLength":71,"maxLength":71,"pattern":"^sha256:[0-9a-f]{64}$"}
+        },
+        "additionalProperties":false
+      }
+    },
+    "approvals": {
+      "type":"array",
+      "minItems":1,
+      "maxItems":32,
+      "items": {
+        "type":"object",
+        "minProperties":3,
+        "maxProperties":3,
+        "required":["role","status","evidenceDigest"],
+        "properties": {
+          "role":{"type":"string","minLength":3,"maxLength":128},
+          "status":{"enum":["pending","approved","rejected"]},
+          "evidenceDigest":{"type":"string","minLength":71,"maxLength":71,"pattern":"^sha256:[0-9a-f]{64}$"}
+        },
+        "additionalProperties":false
+      }
+    }
+  },
+  "additionalProperties": false
+}

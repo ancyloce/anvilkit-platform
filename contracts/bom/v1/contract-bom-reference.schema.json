@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.anvilkit.dev/bom/v1/contract-bom-reference.schema.json",
+  "title": "ContractBomReferenceV1",
+  "description": "Complete immutable retrieval reference. bomDigest is the semantic ContractBomIdentityV1; ociManifestDigest is the distinct OCI retrieval digest namespace.",
+  "type": "object",
+  "minProperties": 4,
+  "maxProperties": 4,
+  "required": ["repository", "bomDigest", "ociManifestDigest", "evidenceManifestDigest"],
+  "properties": {
+    "repository": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 256,
+      "pattern": "^[a-z0-9][a-z0-9.-]*(?::[1-9][0-9]{0,4})?/[a-z0-9][a-z0-9._/-]*$"
+    },
+    "bomDigest": {"$ref":"#/$defs/digest"},
+    "ociManifestDigest": {"$ref":"#/$defs/digest"},
+    "evidenceManifestDigest": {"$ref":"#/$defs/digest"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "minLength": 71,
+      "maxLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}
