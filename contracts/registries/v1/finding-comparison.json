@@ -1,0 +1,11 @@
+{
+  "comparisonVersion": 1,
+  "fields": ["severity", "code", "instancePath", "schemaPath", "message"],
+  "severityOrder": ["error", "warning", "info"],
+  "stringOrder": "ascending unsigned UTF-8 byte order without locale collation",
+  "pathProfile": "RFC 6901 JSON Pointer; root is the empty string; ~ and / are encoded as ~0 and ~1",
+  "duplicatePolicy": "Identical findings are retained because multiplicity is evidence; adapters must not deduplicate unless the fixture expectation does.",
+  "messagePolicy": "Messages are stable English templates with no native-validator text, payload bytes, secrets, timestamps, or environment data.",
+  "adapterRequirement": "Native validator results are mapped to governed codes and paths before sorting and comparison.",
+  "problemDetailsBinding": "ProblemDetailsV1 field errors use this exact ordering and governed retryability values."
+}

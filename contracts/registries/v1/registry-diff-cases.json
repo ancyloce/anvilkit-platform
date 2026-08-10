@@ -1,0 +1,14 @@
+{
+  "caseVersion": 1,
+  "baseRegistry": "artifact-kind",
+  "cases": [
+    {"id":"append-entry","mutations":[{"op":"append-entry","value":{"wireValue":"test-only-kind","meaning":"Synthetic append-only registry self-test entry.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}}],"expectedCodes":[]},
+    {"id":"duplicate-wire","mutations":[{"op":"append-entry","value":{"wireValue":"compiled-context","meaning":"Synthetic duplicate registry self-test entry.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}}],"expectedCodes":["AK-REG-001"]},
+    {"id":"delete-entry","mutations":[{"op":"delete-entry","wireValue":"compiled-context"}],"expectedCodes":["AK-REG-002"]},
+    {"id":"change-meaning","mutations":[{"op":"set-entry","wireValue":"compiled-context","field":"meaning","value":"Changed meaning is forbidden for an existing wire value."}],"expectedCodes":["AK-REG-003"]},
+    {"id":"alias-collision","mutations":[{"op":"set-entry","wireValue":"compiled-context","field":"aliases","value":["target-snapshot"]}],"expectedCodes":["AK-REG-001"]},
+    {"id":"invalid-replacement","mutations":[{"op":"set-entry","wireValue":"compiled-context","field":"replacement","value":"missing-kind"}],"expectedCodes":["AK-REG-005","AK-REG-006"]},
+    {"id":"unapproved-deprecation","mutations":[{"op":"set-entry","wireValue":"compiled-context","field":"status","value":"deprecated"}],"expectedCodes":["AK-REG-005","AK-REG-006"]}
+  ]
+}
+

@@ -1,0 +1,218 @@
+{
+  "registrySetVersion": 1,
+  "status": "candidate",
+  "registries": [
+    {"registryId":"artifact-kind","owner":"Agent Service Metadata owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"compiled-context","meaning":"Immutable compiled context metadata and ordered trust-layer digests.","owner":"Agent Service Context Compiler owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"target-snapshot","meaning":"Immutable Pagix target snapshot used as the base for an agent run.","owner":"Pagix Snapshot owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"agent-plan","meaning":"Validated declarative plan produced for review or constrained execution.","owner":"Platform Plan owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"worker-result","meaning":"Immutable result artifact emitted by a fenced worker attempt.","owner":"Worker Protocol owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"validation-report","meaning":"Immutable report of contract, safety, or artifact validation findings.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"artifact-lifecycle","owner":"Agent Service Metadata owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"pending","meaning":"Artifact bytes exist but required validation and scanning are incomplete.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"scanning","meaning":"Required malware, media-safety, or provenance checks are executing.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"valid","meaning":"Required checks passed and the artifact is eligible for governed review.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"finalized","meaning":"Artifact passed finalization and remains eligible for a governed effect.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"committed","meaning":"Artifact participated in a confirmed authoritative domain effect.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"quarantined","meaning":"Artifact is denied because a required check failed, timed out, or was invalidated.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"expired","meaning":"Artifact exceeded its governed retention or eligibility interval.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"deleted","meaning":"Artifact bytes are unavailable after governed deletion and reference reconciliation.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"retryability","owner":"Platform Contracts owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"never","meaning":"Repeating the same operation without changed authority or input cannot succeed.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"safe-immediate","meaning":"The identical operation may be retried immediately under the same idempotency identity.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"safe-after-backoff","meaning":"The identical operation may be retried after bounded policy-controlled backoff.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"after-input","meaning":"Retry requires newly authorized user input rather than an automatic repeat.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"after-approval","meaning":"Retry requires a new or updated governed approval decision.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"after-rebase","meaning":"Retry requires a new target snapshot or explicit conflict rebase.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"operator-action","meaning":"Retry requires an operator to repair policy, trust, infrastructure, or data state.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"problem-code","owner":"Platform Contracts owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"AK-SRC-001","meaning":"Schema declares an unsupported dialect or meta-schema.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-002","meaning":"Schema omits or invalidates mandatory AnvilKit contract metadata.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-003","meaning":"Schema uses a keyword or vocabulary outside the approved profile.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-004","meaning":"Object schema is not closed and is not an explicit bounded extension map.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-005","meaning":"String schema lacks explicit minimum or maximum length bounds.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-006","meaning":"Array or object collection lacks explicit item or property bounds.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-007","meaning":"Numeric schema lacks explicit finite lower or upper bounds.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-008","meaning":"Nullable schema does not declare the semantic meaning of explicit null.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-009","meaning":"Optional property does not declare the semantic meaning of omission.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-010","meaning":"Schema uses a format outside the portable asserted format allowlist.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-011","meaning":"Timestamp schema does not enforce exact millisecond UTC Z form.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-012","meaning":"Regular expression is outside the documented portable bounded subset.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-013","meaning":"Schema permits executable, package, template, or prohibited network content.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-014","meaning":"Identity-bearing numeric value is not proven exactly interoperable across languages.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SRC-015","meaning":"Decimal or integer string schema does not use its exact portable governed pattern.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REF-001","meaning":"Reference uses a forbidden external or network retrieval scheme.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REF-002","meaning":"Reference contains a mutable version, alias, tag, or selector.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REF-003","meaning":"External logical reference omits its required lowercase SHA-256 digest.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REF-004","meaning":"Resolved reference bytes do not match the digest declared by the reference.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REF-005","meaning":"Reference target is absent from the closed authoring or BOM graph.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REF-006","meaning":"Resolved reference graph exceeds the approved maximum depth.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REF-007","meaning":"Resolved reference graph contains an unapproved cycle.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REF-008","meaning":"Reference attempts a relative path or graph escape outside the closed resolver.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REG-001","meaning":"Registry contains a duplicate ID, wire value, or alias collision.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REG-002","meaning":"Append-only registry or entry was removed from a later candidate.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REG-003","meaning":"Existing registry wire value changed owner or semantic meaning.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REG-004","meaning":"Registry alias is invalid, collides, or does not resolve uniquely.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REG-005","meaning":"Deprecated or revoked registry entry names a missing or invalid replacement.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-REG-006","meaning":"Registry entry was deprecated or revoked without authorization evidence.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-COMPAT-001","meaning":"Requested compatibility label is less severe than deterministic analysis.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-COMPAT-002","meaning":"Breaking semantic change does not advance the contract major version.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-COMPAT-003","meaning":"Behaviorally narrowing change lacks explicit all-consumer evidence.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-FREEZE-001","meaning":"Agent contract source bytes differ from the generation-aware lock.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-FREEZE-002","meaning":"Registry snapshot differs from the generation-aware lock.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-FREEZE-003","meaning":"Validator or generator identity differs from the approved lock identity.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-FREEZE-004","meaning":"Lock update lacks authorized classification and reviewer evidence.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"PARSE_REJECTED","meaning":"Input bytes failed strict JSON admission before schema validation.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"VALIDATION_FAILED","meaning":"Parsed input failed one or more stable schema validation findings.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"CONTRACT_UNSUPPORTED","meaning":"Consumer does not support the pinned contract or BOM version.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"operator-action"},
+      {"wireValue":"CONTRACT_INTEGRITY_FAILED","meaning":"Digest, signature, registry, or closed-graph integrity verification failed.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"operator-action"},
+      {"wireValue":"AK-CAT-001","meaning":"Catalog metadata differs from the authoritative profiled schema source.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-CAT-002","meaning":"A catalog family lacks required API, event, fixture, registry, or planned BOM coverage.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SPEC-001","meaning":"OpenAPI or AsyncAPI source uses the wrong selected version or omits required structural metadata.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SPEC-002","meaning":"API or event source forks a payload schema or uses a mutable or unresolved payload reference.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-SPEC-003","meaning":"API or event source omits required idempotency, ordering, delivery, trace, size, or DLQ semantics.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-FIX-001","meaning":"Fixture manifest path, byte length, digest, schema identity, or sanitization binding is invalid.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-FIX-002","meaning":"Fixture expectation or required category coverage is incomplete or inconsistent.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"},
+      {"wireValue":"AK-INV-001","meaning":"Cross-contract run, event, artifact, fence, usage, authorization, or tenant invariant failed.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null,"retryability":"never"}
+    ]},
+    {"registryId":"run-status","owner":"Agent Service owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"created","meaning":"Idempotent run record exists before preparation begins.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"preparing","meaning":"Run pins permission, entitlement, target, BOM, policy, provider capability, and budget.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"planning","meaning":"Run compiles context and produces a typed constrained plan.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"awaiting_input","meaning":"Run durably waits for a current versioned input response.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"executing","meaning":"Run performs provider, tool, child-run, or worker task execution.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"validating","meaning":"Run performs contract, artifact, and safety validation.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"awaiting_review","meaning":"Run durably waits for review of an eligible artifact.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"awaiting_approval","meaning":"Run durably waits for a versioned governed approval decision.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"committing","meaning":"Governed domain effect has begun and cancellation is best effort.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"awaiting_domain_confirmation","meaning":"Run reconciles the authoritative Pagix domain outcome after commit uncertainty.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"conflict","meaning":"Run records a revision or domain conflict requiring explicit rebase authorization.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"cancelling","meaning":"Cancellation is durable while dispatch, leases, children, and outputs reconcile.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"failed","meaning":"Durable explicit-retry checkpoint carrying stable ProblemDetailsV1.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"completed","meaning":"Terminal success after required artifact or authoritative domain confirmation.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"cancelled","meaning":"Terminal pre-commit cancellation after durable reconciliation.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"refused","meaning":"Terminal policy or safety refusal without an attempted governed effect.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"discarded","meaning":"Terminal user-authorized discard of an eligible reviewed artifact.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"event-type","owner":"Agent Service Events owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"run.created","meaning":"An Agent Run was durably created under an immutable idempotency identity.","owner":"Agent Service Events owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"run.state-changed","meaning":"Authoritative Agent Run state changed at a monotonic per-run sequence.","owner":"Agent Service Events owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"run.input-requested","meaning":"The current run version durably requests bounded user input.","owner":"Agent Service Events owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"run.approval-requested","meaning":"The current run version durably requests a governed approval decision.","owner":"Agent Service Events owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"run.artifact-available","meaning":"An eligible immutable artifact became available for its governed lifecycle stage.","owner":"Agent Service Events owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"run.problem-recorded","meaning":"A stable durable problem was recorded for the run or task.","owner":"Agent Service Events owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"domain","owner":"Platform Contracts owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"platform-agent","meaning":"Platform-owned controlled Agent Run and workflow domain.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"pagix-page","meaning":"Pagix-owned page business state and revision domain.","owner":"Pagix owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"contract-runtime","meaning":"Reviewed declarative bundle compilation and validation domain.","owner":"Contract Runtime owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"operation","owner":"Platform Contracts owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"page-change","meaning":"Produce and optionally apply a governed Pagix page change.","owner":"Pagix owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"artifact-validation","meaning":"Validate immutable artifact bytes and metadata under a pinned BOM.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"image-operation","meaning":"Produce a constrained declarative image operation plan; execution begins after P0.","owner":"Platform Plan owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"component-package","meaning":"Produce a constrained component package specification; execution begins after P0.","owner":"Platform Plan owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"tool-capability","owner":"Platform Tool and Policy Registry owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"provider.invoke","meaning":"Invoke a pinned model provider capability without transferring workflow authority.","owner":"Agent Service Adapter owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"contract.validate","meaning":"Validate bounded declarative input under a pinned schema and BOM.","owner":"Contract Runtime owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"artifact.scan","meaning":"Perform required bounded artifact safety and provenance checks.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"fake.execute","meaning":"Execute the P0 contract-conformance fake-worker capability only.","owner":"Worker Protocol owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"tool-version","owner":"Platform Tool and Policy Registry owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"provider.invoke/v1","meaning":"Version one provider invocation capability contract.","owner":"Agent Service Adapter owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"contract.validate/v1","meaning":"Version one bounded contract validation capability.","owner":"Contract Runtime owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"artifact.scan/v1","meaning":"Version one bounded artifact scan capability.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"fake.execute/v1","meaning":"Version one P0 fake-worker conformance capability.","owner":"Worker Protocol owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"risk-class","owner":"Platform Tool and Policy Registry owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"low","meaning":"Read-only or local deterministic behavior with low governed impact.","owner":"Platform Policy owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"medium","meaning":"Bounded artifact or compute behavior requiring standard policy checks.","owner":"Platform Policy owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"high","meaning":"Behavior may prepare a material domain effect and requires explicit review or approval.","owner":"Platform Policy owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"critical","meaning":"Behavior can cause a sensitive or irreversible domain effect and requires strongest policy controls.","owner":"Platform Policy owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"side-effect-class","owner":"Platform Tool and Policy Registry owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"none","meaning":"Capability is deterministic and produces no external or durable effect.","owner":"Platform Policy owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"read","meaning":"Capability reads governed state without mutating authoritative state.","owner":"Platform Policy owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"artifact-write","meaning":"Capability writes immutable candidate artifact bytes but no business effect.","owner":"Platform Policy owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"domain-effect","meaning":"Capability participates in a separately authorized authoritative domain mutation.","owner":"Platform Policy owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"data-class","owner":"Security and Data Governance","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"public","meaning":"Data is approved for public disclosure under owning-domain policy.","owner":"Data Governance","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"internal","meaning":"Data is limited to authenticated AnvilKit workloads and operators.","owner":"Data Governance","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"confidential","meaning":"Tenant or business-sensitive data requires explicit authorized handling.","owner":"Data Governance","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"restricted","meaning":"Highly sensitive data requires the strictest approved policy and audit controls.","owner":"Data Governance","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"usage-meter","owner":"Pagix Usage Ledger owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"input-tokens","meaning":"Cumulative provider input-token quantity for one physical attempt.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"output-tokens","meaning":"Cumulative provider output-token quantity for one physical attempt.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"worker-duration","meaning":"Cumulative worker execution duration for one physical attempt.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"gpu-duration","meaning":"Cumulative isolated GPU execution duration for one physical attempt.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"provider-cost","meaning":"Cumulative provider-reported cost in the governed monetary unit.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"usage-unit","owner":"Pagix Usage Ledger owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"token","meaning":"One provider-accounted model token under the pinned provider meter.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"millisecond","meaning":"One thousandth of a second of governed measured execution time.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"byte","meaning":"One byte of immutable input, output, transfer, or retained storage.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"count","meaning":"One discrete governed operation or resource occurrence.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"usd-micro","meaning":"One millionth of a United States dollar represented as an integer string.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"identity-purpose","owner":"Security and Platform Contracts","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"action","meaning":"Canonical governed action identity used for approval and authorization binding.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"artifact-metadata","meaning":"Canonical immutable artifact metadata component identity.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"schema","meaning":"Canonical JSON Schema component identity.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"canonical-request","meaning":"Canonical request identity bound to an operation-scoped idempotency key.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"apply-authorization","meaning":"Canonical single-use ApplyAuthorizationV1 payload identity.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"release-evidence","meaning":"Canonical pre-publication or detached release evidence component identity.","owner":"Release owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"contract-bom","meaning":"Reserved purpose for the distinct non-recursive ContractBomIdentityV1 profile.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"digest-algorithm","owner":"Security","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"sha256","meaning":"SHA-256 digest with lowercase sha256 colon 64-hex wire form.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"signature-algorithm","owner":"Security","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"dsse-ed25519-v1","meaning":"Standard DSSE pre-authentication encoding with a single Ed25519 signature.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"jws-eddsa-v1","meaning":"Compact JWS with governed protected headers and Ed25519 EdDSA verification.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"issuer","owner":"Security","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"urn:anvilkit:issuer:contracts-release","meaning":"Approved AnvilKit contract release signing authority logical issuer.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"urn:anvilkit:issuer:agent-service","meaning":"Approved Agent Service runtime authorization issuer logical identity.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"audience","owner":"Security","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"urn:anvilkit:audience:contract-consumers","meaning":"Approved audience for consumers verifying signed contract release artifacts.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"urn:anvilkit:audience:pagix","meaning":"Approved Pagix audience for single-use apply authorizations.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"key-status","owner":"Security","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"active","meaning":"Key is trusted for new signatures and verification during its validity interval.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"overlap","meaning":"Key is trusted during a bounded rollover overlap but is not the sole active key.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"revoked","meaning":"Key is denied according to the signed revocation effective-time policy.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"retired","meaning":"Key no longer signs new material but may verify historical material under policy.","owner":"Security","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]},
+    {"registryId":"logical-component-name","owner":"Platform Contracts owner","compatibilityPolicy":"append-only","entries":[
+      {"wireValue":"anvilkit.contract.schema.agent-definition.v1","meaning":"AgentDefinitionV1 authoritative schema component.","owner":"Platform Definitions owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.agent-run.v1","meaning":"AgentRunV1 authoritative schema component.","owner":"Agent Service owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.tool-definition.v1","meaning":"ToolDefinitionV1 authoritative schema component.","owner":"Platform Tool and Policy Registry owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.agent-task.v1","meaning":"AgentTaskV1 authoritative schema component.","owner":"Agent Service Scheduler owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.worker-lease.v1","meaning":"WorkerLeaseV1 authoritative schema component.","owner":"Agent Service Scheduler owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.agent-artifact.v1","meaning":"AgentArtifactV1 authoritative schema component.","owner":"Agent Service Metadata owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.approval-request.v1","meaning":"ApprovalRequestV1 authoritative schema component.","owner":"Agent Service Workflow owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.provider-continuation.v1","meaning":"ProviderContinuationV1 authoritative schema component.","owner":"Agent Service Adapter owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.compiled-context.v1","meaning":"CompiledContextV1 authoritative schema component.","owner":"Agent Service Context Compiler owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.worker-result.v1","meaning":"WorkerResultV1 authoritative schema component.","owner":"Worker Protocol owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.usage-observation.v1","meaning":"UsageObservationV1 authoritative schema component.","owner":"Pagix Usage Ledger owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.agent-budget.v1","meaning":"AgentBudgetV1 authoritative schema component.","owner":"Pagix Policy and Platform Dispatch owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.agent-event.v1","meaning":"AgentEventV1 authoritative schema component.","owner":"Agent Service Events owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.input-request.v1","meaning":"InputRequestV1 authoritative schema component.","owner":"Agent Service Workflow owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.target-snapshot.v1","meaning":"TargetSnapshotV1 authoritative schema component.","owner":"Pagix Snapshot owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.apply-authorization.v1","meaning":"ApplyAuthorizationV1 authoritative schema component.","owner":"Agent Service Authorization and Pagix Redemption owners","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.problem-details.v1","meaning":"ProblemDetailsV1 authoritative schema component.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.image-operation-plan.v1","meaning":"ImageOperationPlanV1 authoritative shape-only P0 schema component.","owner":"Platform Plan owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.component-package-spec.v1","meaning":"ComponentPackageSpecV1 authoritative shape-only P0 schema component.","owner":"Platform Plan owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.registry-set.v1","meaning":"Governed append-only registry set component.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.schema.shared-primitives.v1","meaning":"SharedPrimitivesV1 authoritative reusable schema component.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null},
+      {"wireValue":"anvilkit.contract.fixture-manifest.v1","meaning":"FixtureManifestV1 byte-exact conformance manifest component.","owner":"Platform Contracts owner","introducedIn":"1.0.0","status":"active","aliases":[],"replacement":null}
+    ]}
+  ]
+}
