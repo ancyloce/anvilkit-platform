@@ -1,0 +1,11 @@
+{
+  "traceId": "0123456789abcdef0123456789abcdef",
+  "runId": "run.synthetic.001",
+  "stage": "validation",
+  "fieldErrors": [],
+  "message": "Synthetic café validation failure 🚀.",
+  "retryability": "never",
+  "code": "VALIDATION_FAILED",
+  "kind": "ProblemDetails",
+  "apiVersion": "anvilkit.io/contracts/v1"
+}

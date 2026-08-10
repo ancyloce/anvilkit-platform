@@ -1,0 +1,7 @@
+{
+  "apiVersion": "anvilkit.io/contracts/v1",
+  "kind": "ProblemDetails",
+  "retryability": "never",
+  "message": "Synthetic validation failure.",
+  "fieldErrors": []
+}

@@ -1,0 +1,25 @@
+{
+  "policyDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "contractBomDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "approvalVersion": 1,
+  "workspaceId": "workspace.synthetic.001",
+  "actorId": "actor.synthetic.001",
+  "baseRevision": "revision.synthetic.001",
+  "target": {
+    "targetType": "page",
+    "targetId": "page.synthetic.001",
+    "workspaceId": "workspace.synthetic.001"
+  },
+  "artifactDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "actionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "runId": "run.synthetic.001",
+  "expiresAt": "2026-08-09T12:05:00.000Z",
+  "notBefore": "2026-08-09T12:00:00.000Z",
+  "issuedAt": "2026-08-09T12:00:00.000Z",
+  "audience": "urn:anvilkit:audience:pagix",
+  "issuer": "urn:anvilkit:issuer:agent-service",
+  "keyId": "urn:anvilkit:key:agent-service:synthetic",
+  "authorizationId": "authorization.synthetic.001",
+  "kind": "ApplyAuthorization",
+  "apiVersion": "anvilkit.io/contracts/v1"
+}

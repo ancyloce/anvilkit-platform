@@ -1,0 +1,14 @@
+{
+  "fenceToken": "synthetic-fence-token-001",
+  "expiresAt": "2026-08-09T12:01:00.000Z",
+  "issuedAt": "2026-08-09T12:00:00.000Z",
+  "owner": "worker.synthetic.001",
+  "leaseEpoch": 3,
+  "attemptNumber": 1,
+  "physicalAttemptId": "attempt.synthetic.001",
+  "executionGeneration": 0,
+  "recoveryEpoch": 7,
+  "taskId": "task.synthetic.001",
+  "kind": "WorkerLease",
+  "apiVersion": "anvilkit.io/contracts/v1"
+}

@@ -1,0 +1,43 @@
+{
+  "apiVersion": "anvilkit.io/contracts/v1",
+  "kind": "AgentDefinition",
+  "promptDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "toolProfile": {
+    "tools": [
+      {
+        "componentName": "anvilkit.contract.schema.problem-details.v1",
+        "version": "1.0.0",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "maximumParallelTools": 2
+  },
+  "outputSchema": {
+    "componentName": "anvilkit.contract.schema.problem-details.v1",
+    "version": "1.0.0",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "modelPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "memoryPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "guardrailPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "turnLimit": 8,
+  "stopConditions": [
+    "completed",
+    "refused"
+  ],
+  "evaluators": [],
+  "definitionId": "definition.synthetic.001",
+  "version": "1.0.0"
+}

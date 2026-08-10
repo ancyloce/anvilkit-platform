@@ -1,0 +1,35 @@
+{
+  "problem": {
+    "apiVersion": "anvilkit.io/contracts/v1",
+    "kind": "ProblemDetails",
+    "code": "VALIDATION_FAILED",
+    "retryability": "never",
+    "message": "Synthetic validation failure.",
+    "fieldErrors": []
+  },
+  "completedAt": "2026-08-09T12:00:00.000Z",
+  "warnings": [],
+  "usageReferences": [
+    "usage.synthetic.001"
+  ],
+  "metrics": {
+    "durationMilliseconds": "100"
+  },
+  "artifacts": [
+    {
+      "artifactId": "artifact.synthetic.001",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mediaType": "application/json",
+      "sizeBytes": 128
+    }
+  ],
+  "buildIdentity": "build.synthetic.001",
+  "capability": "fake.execute",
+  "leaseEpoch": 3,
+  "physicalAttemptId": "attempt.synthetic.001",
+  "executionGeneration": 0,
+  "recoveryEpoch": 7,
+  "taskId": "task.synthetic.001",
+  "kind": "WorkerResult",
+  "apiVersion": "anvilkit.io/contracts/v1"
+}

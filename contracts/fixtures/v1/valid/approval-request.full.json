@@ -1,0 +1,35 @@
+{
+  "decisionVersion": 1,
+  "reviewerPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "resumeState": "awaiting_review",
+  "expiresAt": "2026-08-09T12:05:00.000Z",
+  "allowedDecisions": [
+    "approve",
+    "reject",
+    "request-changes"
+  ],
+  "cost": {
+    "amount": "1000",
+    "currency": "USD"
+  },
+  "effects": [
+    {
+      "effectType": "page-persist",
+      "target": {
+        "targetType": "page",
+        "targetId": "page.synthetic.001",
+        "workspaceId": "workspace.synthetic.001"
+      },
+      "summary": "Persist the reviewed synthetic café page."
+    }
+  ],
+  "actionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "runId": "run.synthetic.001",
+  "requestId": "approval.synthetic.001",
+  "kind": "ApprovalRequest",
+  "apiVersion": "anvilkit.io/contracts/v1"
+}

@@ -1,0 +1,36 @@
+{
+  "apiVersion": "anvilkit.io/contracts/v1",
+  "kind": "AgentBudget",
+  "modelLimits": {
+    "maximumCalls": 10,
+    "maximumConcurrentCalls": 2
+  },
+  "tokenLimits": {
+    "inputTokens": 4096,
+    "outputTokens": 2048,
+    "totalTokens": 6144
+  },
+  "workerLimits": {
+    "maximumAttempts": 4,
+    "maximumDurationMilliseconds": 60000
+  },
+  "gpuLimits": {
+    "maximumGpuMilliseconds": 0
+  },
+  "currencyLimits": {
+    "maximumCost": {
+      "amount": "1000",
+      "currency": "USD"
+    },
+    "reservedCost": {
+      "amount": "500",
+      "currency": "USD"
+    }
+  },
+  "exceedBehavior": "refuse",
+  "policy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+}

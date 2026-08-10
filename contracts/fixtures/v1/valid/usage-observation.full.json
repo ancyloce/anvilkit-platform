@@ -1,0 +1,30 @@
+{
+  "providerEventId": "provider-event.synthetic.001",
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  },
+  "source": {
+    "provider": "fake-provider",
+    "buildIdentity": "build.synthetic.001"
+  },
+  "observedAt": "2026-08-09T12:00:00.000Z",
+  "final": true,
+  "meterSequence": 1,
+  "cost": {
+    "amount": "0",
+    "currency": "USD"
+  },
+  "unit": "millisecond",
+  "quantity": "100",
+  "meter": "worker-duration",
+  "reservationId": "reservation.synthetic.001",
+  "physicalAttemptId": "attempt.synthetic.001",
+  "executionGeneration": 0,
+  "recoveryEpoch": 7,
+  "taskId": "task.synthetic.001",
+  "runId": "run.synthetic.001",
+  "rootRunId": "run.synthetic.001",
+  "observationId": "usage.synthetic.001",
+  "kind": "UsageObservation",
+  "apiVersion": "anvilkit.io/contracts/v1"
+}

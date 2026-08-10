@@ -1,0 +1,9 @@
+{
+  "apiVersion": "anvilkit.io/contracts/v1",
+  "kind": "ProviderContinuation",
+  "encryptedBinding": "U3ludGhldGljQmluZGluZw==",
+  "provider": "provider.synthetic",
+  "expiresAt": "2026-08-09T12:05:00.000Z",
+  "restartPolicy": "restart-stage",
+  "bindingDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}

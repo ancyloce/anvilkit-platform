@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.anvilkit.dev/fixtures/v1/manifest.schema.json",
+  "title": "AnvilKit fixture manifest v1",
+  "type": "object",
+  "required": [
+    "manifestVersion",
+    "status",
+    "description",
+    "cases",
+    "relationships"
+  ],
+  "properties": {
+    "manifestVersion": {
+      "const": 1
+    },
+    "status": {
+      "const": "m2-candidate-unapproved"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "$ref": "#/$defs/relationship"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "required": [
+        "code",
+        "instancePath",
+        "schemaPath"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 96
+        },
+        "instancePath": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "schemaPath": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "additionalProperties": false
+    },
+    "schemaIdentity": {
+      "type": "object",
+      "required": [
+        "logicalId",
+        "path",
+        "logicalUri",
+        "digest"
+      ],
+      "properties": {
+        "logicalId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "logicalUri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "expected": {
+      "type": "object",
+      "required": [
+        "parse",
+        "valid",
+        "findings",
+        "canonicalization",
+        "signature"
+      ],
+      "properties": {
+        "parse": {
+          "enum": [
+            "accepted",
+            "rejected"
+          ]
+        },
+        "valid": {
+          "type": "boolean"
+        },
+        "findings": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "canonicalization": {
+          "enum": [
+            "deferred-m3",
+            "not-applicable"
+          ]
+        },
+        "signature": {
+          "enum": [
+            "not-applicable-m2",
+            "deferred-m3"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "case": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "bytesSha256",
+        "bytesLength",
+        "schema",
+        "category",
+        "tags",
+        "expected",
+        "applicableLanguages",
+        "synthetic"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-z0-9][a-z0-9.-]*$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^contracts/fixtures/v1/(valid|invalid|adversarial)/[A-Za-z0-9._-]+\\.json$"
+        },
+        "bytesSha256": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "bytesLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "schema": {
+          "$ref": "#/$defs/schemaIdentity"
+        },
+        "category": {
+          "enum": [
+            "minimum",
+            "full",
+            "maximum-bound",
+            "invalid",
+            "adversarial"
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        },
+        "applicableLanguages": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "tooling",
+              "go",
+              "typescript",
+              "python",
+              "java"
+            ]
+          }
+        },
+        "synthetic": {
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "relationship": {
+      "type": "object",
+      "required": [
+        "id",
+        "rule",
+        "fixtures",
+        "expected"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "rule": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "fixtures": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "expected": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

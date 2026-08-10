@@ -1,0 +1,43 @@
+{
+  "apiVersion": "anvilkit.io/contracts/v1",
+  "kind": "CompiledContext",
+  "orderedTrustLayers": [
+    {
+      "layerId": "layer.synthetic.001",
+      "position": 0,
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "classification": "internal",
+      "redacted": false,
+      "tokenBudget": 1024
+    }
+  ],
+  "layerDigests": [
+    "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "classifications": [
+    "internal"
+  ],
+  "redaction": {
+    "policy": {
+      "policyId": "policy.synthetic",
+      "version": "v1",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "removedFieldCount": 0,
+    "replacementMarker": "[REDACTED]"
+  },
+  "tokenBudgets": {
+    "total": 1024,
+    "system": 256,
+    "user": 512,
+    "tools": 128,
+    "memory": 128
+  },
+  "policySnapshot": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "compiledAt": "2026-08-09T12:00:00.000Z",
+  "unexpectedField": "must be rejected"
+}
