@@ -12,6 +12,7 @@
     "check-m1": "bun run check-m1.ts",
     "check-m2": "bun run check-m2.ts",
     "check-m3": "bun run check-m3.ts",
+    "check-m4": "bun run check-m4.ts",
     "check-agent-freeze": "bun run check-agent-freeze.ts"
   }
 }

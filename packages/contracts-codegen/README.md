@@ -75,6 +75,20 @@ violations, and schema-invalid unknown fields before identity calculation. It
 is explicitly unapproved evaluation tooling; it does not select a DP-008
 library or satisfy four-language, canonicalization, signature, or trust gates.
 
+PLAN-0003 M4 has begun with the unblocked modular-generation foundation:
+
+```bash
+bun packages/contracts-codegen/check-m4.ts
+```
+
+The retained export generator is now an orchestrator over explicit
+source-validation, fixture-execution, normalized-model, and Go-generation
+stages. Its legacy JSON Schema vocabulary is deliberately closed; unsupported
+keywords and formats fail with their source pointer. Regeneration remains
+byte-identical. This is M4-T01 work only: native Go/TypeScript/Python/Java
+packages, parity aggregation, package freeze, and consumer matrices remain
+blocked by incomplete M3 outputs and unapproved DP-008 exact versions.
+
 `--update-lock` additionally rewrites the legacy `contracts/contracts.lock.json` (sha256 of
 the export-worker schemas, descriptions, and fixtures in its explicit scope).
 `bun packages/contracts-codegen/check-freeze.ts` verifies that lock. The new Agent authority
