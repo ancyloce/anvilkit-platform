@@ -1,0 +1,10 @@
+{
+  "name": "@anvilkit/contracts-bom",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Build-only closed Contract BOM validation and composition tooling.",
+  "type": "module",
+  "scripts": {
+    "check-m5": "bun run check-m5.ts"
+  }
+}
