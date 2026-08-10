@@ -1,0 +1,705 @@
+{
+  "asyncapi": "3.1.0",
+  "info": {
+    "title": "AnvilKit Agent events",
+    "version": "1.0.0",
+    "description": "Candidate Kafka binding; producer and consumer owner acknowledgement is pending.",
+    "x-anvilkit-ownerAcknowledgement": "pending"
+  },
+  "defaultContentType": "application/json",
+  "servers": {
+    "candidateKafka": {
+      "host": "kafka.internal.anvilkit.dev:9092",
+      "protocol": "kafka",
+      "description": "Candidate Agent event transport.",
+      "x-anvilkit-ownerAcknowledgement": "pending"
+    }
+  },
+  "channels": {
+    "runEvents": {
+      "address": "anvilkit.agent.run-events.v1",
+      "messages": {
+        "AgentRun": {
+          "$ref": "#/components/messages/AgentRun"
+        },
+        "AgentEvent": {
+          "$ref": "#/components/messages/AgentEvent"
+        },
+        "ApprovalRequest": {
+          "$ref": "#/components/messages/ApprovalRequest"
+        },
+        "InputRequest": {
+          "$ref": "#/components/messages/InputRequest"
+        },
+        "AgentArtifact": {
+          "$ref": "#/components/messages/AgentArtifact"
+        }
+      },
+      "bindings": {
+        "kafka": {
+          "topicConfiguration": {
+            "cleanupPolicy": [
+              "delete"
+            ]
+          },
+          "bindingVersion": "0.5.0"
+        }
+      },
+      "x-anvilkit-partitionKey": "runId",
+      "x-anvilkit-delivery": "at-least-once"
+    },
+    "workerTasks": {
+      "address": "anvilkit.agent.worker-tasks.v1",
+      "messages": {
+        "AgentTask": {
+          "$ref": "#/components/messages/AgentTask"
+        },
+        "WorkerLease": {
+          "$ref": "#/components/messages/WorkerLease"
+        }
+      },
+      "bindings": {
+        "kafka": {
+          "topicConfiguration": {
+            "cleanupPolicy": [
+              "delete"
+            ]
+          },
+          "bindingVersion": "0.5.0"
+        }
+      },
+      "x-anvilkit-partitionKey": "taskId",
+      "x-anvilkit-delivery": "at-least-once"
+    },
+    "workerResults": {
+      "address": "anvilkit.agent.worker-results.v1",
+      "messages": {
+        "WorkerResult": {
+          "$ref": "#/components/messages/WorkerResult"
+        }
+      },
+      "bindings": {
+        "kafka": {
+          "topicConfiguration": {
+            "cleanupPolicy": [
+              "delete"
+            ]
+          },
+          "bindingVersion": "0.5.0"
+        }
+      },
+      "x-anvilkit-partitionKey": "taskId",
+      "x-anvilkit-delivery": "at-least-once"
+    },
+    "usageObservations": {
+      "address": "anvilkit.agent.usage-observations.v1",
+      "messages": {
+        "UsageObservation": {
+          "$ref": "#/components/messages/UsageObservation"
+        }
+      },
+      "bindings": {
+        "kafka": {
+          "topicConfiguration": {
+            "cleanupPolicy": [
+              "delete"
+            ]
+          },
+          "bindingVersion": "0.5.0"
+        }
+      },
+      "x-anvilkit-partitionKey": "rootRunId",
+      "x-anvilkit-delivery": "at-least-once"
+    },
+    "dlq": {
+      "address": "anvilkit.agent.dlq.v1",
+      "messages": {
+        "ProblemDetails": {
+          "$ref": "#/components/messages/ProblemDetails"
+        }
+      },
+      "bindings": {
+        "kafka": {
+          "topicConfiguration": {
+            "cleanupPolicy": [
+              "delete"
+            ]
+          },
+          "bindingVersion": "0.5.0"
+        }
+      },
+      "x-anvilkit-partitionKey": "runId",
+      "x-anvilkit-delivery": "at-least-once"
+    }
+  },
+  "operations": {
+    "publishRunEvents": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/runEvents"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/runEvents/messages/AgentRun"
+        },
+        {
+          "$ref": "#/channels/runEvents/messages/AgentEvent"
+        },
+        {
+          "$ref": "#/channels/runEvents/messages/ApprovalRequest"
+        },
+        {
+          "$ref": "#/channels/runEvents/messages/InputRequest"
+        },
+        {
+          "$ref": "#/channels/runEvents/messages/AgentArtifact"
+        }
+      ],
+      "description": "Agent Service publishes transactionally ordered run events."
+    },
+    "consumeRunEvents": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/runEvents"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/runEvents/messages/AgentRun"
+        },
+        {
+          "$ref": "#/channels/runEvents/messages/AgentEvent"
+        },
+        {
+          "$ref": "#/channels/runEvents/messages/ApprovalRequest"
+        },
+        {
+          "$ref": "#/channels/runEvents/messages/InputRequest"
+        },
+        {
+          "$ref": "#/channels/runEvents/messages/AgentArtifact"
+        }
+      ],
+      "description": "Consumers deduplicate event IDs and resnapshot on unexplained sequence gaps."
+    },
+    "dispatchWorkerTasks": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/workerTasks"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/workerTasks/messages/AgentTask"
+        },
+        {
+          "$ref": "#/channels/workerTasks/messages/WorkerLease"
+        }
+      ],
+      "description": "Scheduler dispatches a task and distinct fenced lease."
+    },
+    "consumeWorkerTasks": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/workerTasks"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/workerTasks/messages/AgentTask"
+        },
+        {
+          "$ref": "#/channels/workerTasks/messages/WorkerLease"
+        }
+      ],
+      "description": "Workers validate task and lease under the pinned BOM."
+    },
+    "publishWorkerResults": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/workerResults"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/workerResults/messages/WorkerResult"
+        }
+      ],
+      "description": "Workers publish state-changing results with the full fence tuple."
+    },
+    "consumeWorkerResults": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/workerResults"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/workerResults/messages/WorkerResult"
+        }
+      ],
+      "description": "Scheduler accepts state only through a current-fence compare-and-set."
+    },
+    "publishUsage": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/usageObservations"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/usageObservations/messages/UsageObservation"
+        }
+      ],
+      "description": "Every physical attempt emits additive observations."
+    },
+    "consumeUsage": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/usageObservations"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/usageObservations/messages/UsageObservation"
+        }
+      ],
+      "description": "Pagix deduplicates observations independently of result eligibility."
+    },
+    "consumeDlq": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/dlq"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/dlq/messages/ProblemDetails"
+        }
+      ],
+      "description": "Operators receive bounded stable problems carrying stage, run, and trace."
+    }
+  },
+  "components": {
+    "messages": {
+      "AgentRun": {
+        "name": "AgentRunV1",
+        "title": "AgentRunV1 message",
+        "summary": "Bounded AgentRunV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/agent-run.v1@1.0.0?digest=sha256:68949242c9b4557a8b5ff965f76de8f2de49c11523a7cc1e64cfd1b4af824233"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is runId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      },
+      "AgentEvent": {
+        "name": "AgentEventV1",
+        "title": "AgentEventV1 message",
+        "summary": "Bounded AgentEventV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/agent-event.v1@1.0.0?digest=sha256:f19775b8dfdd34cac0318fce8067460988671840987a2b9aaeaa3c85710591ab"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is runId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      },
+      "ApprovalRequest": {
+        "name": "ApprovalRequestV1",
+        "title": "ApprovalRequestV1 message",
+        "summary": "Bounded ApprovalRequestV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/approval-request.v1@1.0.0?digest=sha256:9bbfd3c18ebfabe205bca28a7022035c095c8d4831cddef4834868216919af2c"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is runId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      },
+      "InputRequest": {
+        "name": "InputRequestV1",
+        "title": "InputRequestV1 message",
+        "summary": "Bounded InputRequestV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/input-request.v1@1.0.0?digest=sha256:93dbc2fb16cc3791dca4473ea51c583ebfea96a98747601adeecd7b17708e922"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is runId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      },
+      "AgentArtifact": {
+        "name": "AgentArtifactV1",
+        "title": "AgentArtifactV1 message",
+        "summary": "Bounded AgentArtifactV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/agent-artifact.v1@1.0.0?digest=sha256:a4f1cecb68b04d7693eefaddaa1bec7e82d11180b2f7f2f38fd4c5abed1a42cb"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is runId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      },
+      "AgentTask": {
+        "name": "AgentTaskV1",
+        "title": "AgentTaskV1 message",
+        "summary": "Bounded AgentTaskV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/agent-task.v1@1.0.0?digest=sha256:45832bc15da304e6c282fb87f5eb64cd424cdec51ecde34b665e44db9f7e6b63"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is taskId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      },
+      "WorkerLease": {
+        "name": "WorkerLeaseV1",
+        "title": "WorkerLeaseV1 message",
+        "summary": "Bounded WorkerLeaseV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/worker-lease.v1@1.0.0?digest=sha256:fdf0052070ba25ccd4bbb524acce0908eee354350a8d6a67a35600539e1f1faf"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is taskId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      },
+      "WorkerResult": {
+        "name": "WorkerResultV1",
+        "title": "WorkerResultV1 message",
+        "summary": "Bounded WorkerResultV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/worker-result.v1@1.0.0?digest=sha256:af74e57340b240d669e1fad7fc9259fd7738361030461c4b4b814c12d175ad8c"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is taskId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      },
+      "UsageObservation": {
+        "name": "UsageObservationV1",
+        "title": "UsageObservationV1 message",
+        "summary": "Bounded UsageObservationV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/usage-observation.v1@1.0.0?digest=sha256:929bb6dd41798113a64664f83397e7e2b642ea37133698d03041c4ede397c68a"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is rootRunId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      },
+      "ProblemDetails": {
+        "name": "ProblemDetailsV1",
+        "title": "ProblemDetailsV1 message",
+        "summary": "Bounded ProblemDetailsV1 payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is runId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        },
+        "x-anvilkit-byteStableMessageId": true
+      }
+    }
+  },
+  "x-anvilkit-ordering": {
+    "runEvents": "monotonic sequence per run; unexplained gaps require resnapshot",
+    "duplicates": "same message ID must have byte-identical content",
+    "maximumPayloadBytes": 65536,
+    "largeContent": "AgentArtifactV1 reference"
+  }
+}
