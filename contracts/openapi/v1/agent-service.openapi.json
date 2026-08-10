@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://agent.internal.anvilkit.dev"
+      "url": "https://agent.example.invalid"
     }
   ],
   "tags": [

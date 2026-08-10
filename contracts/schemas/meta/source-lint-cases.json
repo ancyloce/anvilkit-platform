@@ -37,6 +37,8 @@
     {"id":"invalid-description-path","mutations":[{"op":"set","path":"/x-anvilkit-contract/descriptions","value":["https://example.com/openapi.json"]}],"expectedCodes":["AK-SRC-002"]},
     {"id":"unknown-keyword","mutations":[{"op":"set","path":"/properties/value/unknownKeyword","value":true}],"expectedCodes":["AK-SRC-003"]},
     {"id":"unknown-vocabulary","mutations":[{"op":"set","path":"/$vocabulary/https:~1~1example.com~1vocab","value":true}],"expectedCodes":["AK-SRC-003"]},
+    {"id":"dynamic-reference","mutations":[{"op":"set","path":"/properties/value/$dynamicRef","value":"#value"}],"expectedCodes":["AK-SRC-003"]},
+    {"id":"nested-resource-id","mutations":[{"op":"set","path":"/properties/value/$id","value":"nested-resource"}],"expectedCodes":["AK-SRC-003"]},
     {"id":"open-object","mutations":[{"op":"delete","path":"/unevaluatedProperties"}],"expectedCodes":["AK-SRC-004"]},
     {"id":"unbounded-object","mutations":[{"op":"delete","path":"/maxProperties"}],"expectedCodes":["AK-SRC-006"]},
     {"id":"unbounded-string","mutations":[{"op":"delete","path":"/properties/value/maxLength"}],"expectedCodes":["AK-SRC-005"]},

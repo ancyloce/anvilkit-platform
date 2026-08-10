@@ -51,6 +51,7 @@
       "AK-REF-006",
       "AK-REF-007",
       "AK-REF-008",
+      "AK-REF-009",
       "AK-REG-001",
       "AK-REG-002",
       "AK-REG-003",
@@ -208,8 +209,11 @@
       "anvilkit.contract.schema.apply-authorization.v1",
       "anvilkit.contract.schema.problem-details.v1",
       "anvilkit.contract.schema.image-operation-plan.v1",
-      "anvilkit.contract.schema.component-package-spec.v1",
-      "anvilkit.contract.registry-set.v1",
+    "anvilkit.contract.schema.component-package-spec.v1",
+    "anvilkit.contract.schema.contract-revocation-snapshot.v1",
+    "anvilkit.contract.schema.contract-signature-statement.v1",
+    "anvilkit.contract.schema.contract-trust-root.v1",
+    "anvilkit.contract.registry-set.v1",
       "anvilkit.contract.schema.shared-primitives.v1",
       "anvilkit.contract.fixture-manifest.v1"
     ]

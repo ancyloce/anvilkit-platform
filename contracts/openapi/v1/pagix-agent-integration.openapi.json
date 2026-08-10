@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://pagix.internal.anvilkit.dev"
+      "url": "https://pagix.example.invalid"
     }
   ],
   "security": [

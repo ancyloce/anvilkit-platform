@@ -1,6 +1,6 @@
 {
   "lockVersion": 1,
-  "status": "candidate-unapproved",
+  "status": "approved",
   "sourceRoots": [
     "contracts/schemas/meta",
     "contracts/registries/v1",
@@ -110,7 +110,7 @@
     },
     {
       "path": "contracts/compatibility/v1/compatibility-cases.json",
-      "sha256": "08a416a606c67b56d7d31d96ba691c668e89a6400f85a4843e236c1c8e3bd352",
+      "sha256": "e18e9784c5fdc5bcb277761f3a37bb3e6fe339bf9cb4fa6cf94f72c9f88b82fb",
       "classification": "initial-baseline",
       "compatibilityEvidence": null
     },
@@ -380,7 +380,7 @@
     },
     {
       "path": "contracts/fixtures/v1/manifest.json",
-      "sha256": "b6493615b975c058af85be20c47dc40cd18929a41c94607352ad92734b04efc0",
+      "sha256": "017a8a3a975a4740293a9ac2cabc4ba878f8c60feaf0fc37d63a1af7521fd005",
       "classification": "initial-baseline",
       "compatibilityEvidence": null
     },
@@ -614,7 +614,7 @@
     },
     {
       "path": "contracts/fixtures/v1/valid/registry-values.full.json",
-      "sha256": "6a5efa7c1d3ccb3f65e1c65a4133cfbd96fdbb8938c0cb245821c206c1b9da53",
+      "sha256": "9b73760cb7ba2edbae7b700d03be6e230edb46bac499de8097486c55ba3d616c",
       "classification": "initial-baseline",
       "compatibilityEvidence": null
     },
@@ -716,13 +716,13 @@
     },
     {
       "path": "contracts/openapi/v1/agent-service.openapi.json",
-      "sha256": "a2eec1e6e115f252866d2dfe7334e371a96188cea0b3bcdb86b707f577e2812d",
+      "sha256": "140de862da24742d4b3cdcec4872f62be2ac0efb4010a71812aa65fd1a471514",
       "classification": "initial-baseline",
       "compatibilityEvidence": null
     },
     {
       "path": "contracts/openapi/v1/pagix-agent-integration.openapi.json",
-      "sha256": "675a08060cc8df644e73b73a9c297ff794e6f6aec3462eb265b1accf8da5fc74",
+      "sha256": "947409ac4ce349bcbbabd4dd1374b30564e1fbae01df06546d6fcb67868c0734",
       "classification": "initial-baseline",
       "compatibilityEvidence": null
     },
@@ -740,7 +740,7 @@
     },
     {
       "path": "contracts/registries/v1/registry-set.json",
-      "sha256": "51247de2909ea8d4f47f28243baeca32a37a8732a3a2c94d30c2cabd67a9c932",
+      "sha256": "8ea9b26cc3385ee0cf75afad28342854a550b78c0d0bd55a04596c5c942176af",
       "classification": "initial-baseline",
       "compatibilityEvidence": null
     },
@@ -758,7 +758,7 @@
     },
     {
       "path": "contracts/schemas/meta/source-lint-cases.json",
-      "sha256": "5a69f986d999ba8542ef5f0846cd57b922419cb6074399cd987d004104e9f0f3",
+      "sha256": "7980f9115a0b52505242917c8f736fc46b7f34421cf4925e7d6dd134803216f6",
       "classification": "initial-baseline",
       "compatibilityEvidence": null
     },
@@ -819,6 +819,24 @@
     {
       "path": "contracts/schemas/v1/component-package-spec.schema.json",
       "sha256": "0692c18651185915c2dd509a26fc18c0fe550285db07f7aa5b4d63234c66aa2b",
+      "classification": "initial-baseline",
+      "compatibilityEvidence": null
+    },
+    {
+      "path": "contracts/schemas/v1/contract-revocation-snapshot.schema.json",
+      "sha256": "3f1513e42d97b2f5175cfd5ab1f380719d5233e27095de32caf96c771f5ef410",
+      "classification": "initial-baseline",
+      "compatibilityEvidence": null
+    },
+    {
+      "path": "contracts/schemas/v1/contract-signature-statement.schema.json",
+      "sha256": "01c9337789f939ad964979bb6d26324113b82ac09868ffed4d1be31dad10c049",
+      "classification": "initial-baseline",
+      "compatibilityEvidence": null
+    },
+    {
+      "path": "contracts/schemas/v1/contract-trust-root.schema.json",
+      "sha256": "d4c4ddc353fdf286540f4b03f61bceb1898bcf645b11230a0a8ea73ce5018667",
       "classification": "initial-baseline",
       "compatibilityEvidence": null
     },
@@ -885,8 +903,8 @@
   ],
   "registrySnapshot": {
     "path": "contracts/registries/v1/registry-set.json",
-    "sourceSha256": "51247de2909ea8d4f47f28243baeca32a37a8732a3a2c94d30c2cabd67a9c932",
-    "semanticSha256": "a7281bb909839cb06886c955e0abdd81653ae1f8b0931b8204056c5301d1dbd9"
+    "sourceSha256": "8ea9b26cc3385ee0cf75afad28342854a550b78c0d0bd55a04596c5c942176af",
+    "semanticSha256": "8ab48ce6563744ef2c7cc8c392e5de98747f55ec9fd6d849c5beccd56f54082a"
   },
   "tools": [
     {
@@ -898,19 +916,31 @@
     {
       "identity": "anvilkit-m5-conformance-check-v1",
       "path": "packages/contracts-bom/check-m5.ts",
-      "sourceSha256": "4fc2732872d413370ba21a40dda6c4c980fcbf37db23c7ac7e36a9bf9ec62f7c",
+      "sourceSha256": "bab7ce69315e3d8ad8e4f4ba7b41eb32559eed34f8f920ec78a350588961df13",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m5-bom-runtime-v1",
+      "path": "packages/contracts-bom/bom-runtime.ts",
+      "sourceSha256": "11ba858e1f1f93461ca41db935017be950c3a1012967714781ecd515a12e0246",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m5-runtime-conformance-v1",
+      "path": "packages/contracts-bom/check-m5-runtime.ts",
+      "sourceSha256": "05bd0419ee9d1c40e0e669c2fe623f8a8fbfedcc6894faaa7ba8171f14dada16",
       "status": "source-tool"
     },
     {
       "identity": "anvilkit-source-profile-linter-v1",
       "path": "packages/contracts-codegen/m1-lib.ts",
-      "sourceSha256": "40776d424458fe9c8416075b0f5be8e92dd05d2b8a2828342880af102c7fd556",
+      "sourceSha256": "6fb9cf1856ea935d9470457859e9ebe426caa07406526cfd49f960f57e00fdca",
       "status": "source-tool"
     },
     {
       "identity": "anvilkit-m1-conformance-check-v1",
       "path": "packages/contracts-codegen/check-m1.ts",
-      "sourceSha256": "f3e0731f01fbe4bc3aa2061684c5540ff9a4f8bc7f5d7a6702805c4586d303a6",
+      "sourceSha256": "84bdf82dc09005474fc303a05a66b74271d6480150423fe804eed8ca83c5bb40",
       "status": "source-tool"
     },
     {
@@ -922,7 +952,7 @@
     {
       "identity": "anvilkit-agent-freeze-check-v1",
       "path": "packages/contracts-codegen/check-agent-freeze.ts",
-      "sourceSha256": "48336bc1eaa347920936469321263aafc776074fba8b0fd201c953e7ea099517",
+      "sourceSha256": "c70403a49259288720f6809c1969237d69dab9003e9aab43a04af348a72baf73",
       "status": "source-tool"
     },
     {
@@ -934,79 +964,467 @@
     {
       "identity": "anvilkit-registry-diff-v1",
       "path": "packages/contracts-codegen/registry-diff.ts",
-      "sourceSha256": "a933d5f58ea4ad5515894eaace22398745d582e5e0709fb2ba54b0e58454218d",
+      "sourceSha256": "ec6b445d8f9bc3e0e73302878966923941948c1f51ddcad0b94ff49fab4cc875",
       "status": "source-tool"
     },
     {
       "identity": "anvilkit-m2-conformance-check-v1",
       "path": "packages/contracts-codegen/check-m2.ts",
-      "sourceSha256": "749be493d1b4d81115cc75b2407a5e323f17c77bbaad5c6e9540aea2e6f70e6c",
+      "sourceSha256": "7931f57ceb94cb6a2dc181898928ec3c9b46e3bf57a5c9fffa91340c3f791fdd",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-security-profile-v1",
+      "path": "packages/contracts-codegen/security-profile.ts",
+      "sourceSha256": "58e7a0365455fd8102db62a9c847e72a1c4f611a60ffa843997c89c4c28727cd",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m3-security-conformance-v1",
+      "path": "packages/contracts-codegen/check-m3-security.ts",
+      "sourceSha256": "5b92537bbb8fc3485dba21a06c128d2a9f5e77915637a706161b7cd1154efaa2",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-strict-json-admission-v1",
+      "path": "packages/contracts-codegen/strict-json.ts",
+      "sourceSha256": "b17d58c0d87839bb37b91f70f1eb86dc016ca88cb9aed16d390e428de2351c1f",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-canonical-identity-v1",
+      "path": "packages/contracts-codegen/identity.ts",
+      "sourceSha256": "2c0fec734e3b0c9f87246259c81193b0b051cc8144bf716768f33936457dfecb",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m3-admission-identity-conformance-v1",
+      "path": "packages/contracts-codegen/check-m3.ts",
+      "sourceSha256": "51a13022d5e7207767ab4e83e2f98fbcbbb465f6f5cc22711d697e05c8ce7742",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-foundation-conformance-v1",
+      "path": "packages/contracts-codegen/check-m4.ts",
+      "sourceSha256": "86893d18d38b7564d71ebf66a7b3511c3486f4263b7041323b21ee62d258e3cd",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-typescript-native-validator-v1",
+      "path": "packages/contracts-codegen/native-validator.ts",
+      "sourceSha256": "5a9666f74ab3743ad03220db571a9c2ca558fe7178a144cf2715f51828cd00b6",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-typescript-native-validator-check-v1",
+      "path": "packages/contracts-codegen/check-m4-typescript.ts",
+      "sourceSha256": "06ece4ffc68d01edcb7ba1729ea8317b5220fd29e6244e8ac79b1c90253d3620",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-typescript-dp008-adapter-v1",
+      "path": "packages/contracts-codegen/dp008-typescript-adapter.ts",
+      "sourceSha256": "34b68912bdfe1ef02caea5e74039c91f77b0255ec230e4a274a04fc66cddc9c8",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-typescript-generation-check-v1",
+      "path": "packages/contracts-codegen/check-m4-typescript-generation.ts",
+      "sourceSha256": "88d0672c7aa9ab37be0acd14a7f6521ec70ebdb9bdefda9a225f85d9e62c200c",
+      "status": "source-tool"
+    },
+    {
+      "identity": "typescript-openapi-generator-openapi-typescript-7.13.0",
+      "path": "packages/contracts-codegen/dp008-typescript-openapi-generator-adapter.ts",
+      "sourceSha256": "508e3b84653cb5518c774c0956b918f29874cc0db808c90b491e6629d266f003",
+      "status": "source-tool",
+      "dependencyLock": "bun.lock",
+      "evidence": "contracts/governance/m0/dp008/evidence/typescript-openapi-generator.json"
+    },
+    {
+      "identity": "typescript-schema-generator-json-schema-to-typescript-15.0.4",
+      "path": "packages/contracts-codegen/dp008-typescript-schema-generator-adapter.ts",
+      "sourceSha256": "f4b1ae402f5ba32ca5f38ae37c4920b13d99a932d09403cb9eeb3cd5209b309e",
+      "status": "source-tool",
+      "dependencyLock": "bun.lock",
+      "evidence": "contracts/governance/m0/dp008/evidence/typescript-json-schema-generator.json"
+    },
+    {
+      "identity": "anvilkit-selected-specification-lint-v1",
+      "path": "packages/contracts-codegen/check-specs.ts",
+      "sourceSha256": "a88d519a5eb369d4459814f3fd2b9332ae4771e62375e270fea46e5d9023483a",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-immutable-specification-projection-v1",
+      "path": "packages/contracts-codegen/spec-normalization.ts",
+      "sourceSha256": "8e4f0b8d3ac55e999f7eab5d94cfdc40ae7df2b5bacc3152c9ee9102a5879d18",
       "status": "source-tool"
     },
     {
       "identity": "agent-contract-generator-set",
-      "path": null,
-      "sourceSha256": null,
-      "status": "not-applicable-m1"
+      "path": "contracts/governance/m4/generator-set.json",
+      "sourceSha256": "d01bb5bfb3ab4437411245a0960e432bcb2cc44478582699e5c27933c92db861",
+      "status": "source-tool"
     },
     {
-      "identity": "go-runtime-validator",
-      "path": null,
-      "sourceSha256": null,
-      "status": "tbd-dp008"
+      "identity": "anvilkit-m4-generator-lock-v1",
+      "path": "packages/contracts-codegen/m4-generators.lock.json",
+      "sourceSha256": "7bfc6f57ab52af885d0f2f774d7c79807b4c5ecbe9c457b59f0bf1eec9a2d6fa",
+      "status": "source-tool"
     },
     {
-      "identity": "typescript-runtime-validator",
-      "path": null,
-      "sourceSha256": null,
-      "status": "tbd-dp008"
+      "identity": "anvilkit-m4-generator-bootstrap-v1",
+      "path": "packages/contracts-codegen/prepare-m4-generators.sh",
+      "sourceSha256": "7cd1bf88c9509dd1eaf2f0b11dc6f8630f67455a615f992287486df8b5dbfee7",
+      "status": "source-tool"
     },
     {
-      "identity": "python-runtime-validator",
-      "path": null,
-      "sourceSha256": null,
-      "status": "tbd-dp008"
+      "identity": "anvilkit-m4-package-generation-v1",
+      "path": "packages/contracts-codegen/generate-m4-packages.ts",
+      "sourceSha256": "e9d52b242739b856ef2f527de583b1f55a193492ec1e5ce0c7c65d30d214417b",
+      "status": "source-tool"
     },
     {
-      "identity": "java-runtime-validator",
-      "path": null,
-      "sourceSha256": null,
-      "status": "tbd-dp008"
+      "identity": "anvilkit-m4-candidate-bom-composition-v1",
+      "path": "packages/contracts-codegen/compose-m4-release-bom.ts",
+      "sourceSha256": "4181f113e96262df62d8a9f0972a58b1d56acba07360947a94a06444b1388122",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-generated-package-check-v1",
+      "path": "packages/contracts-codegen/check-m4-generated-packages.ts",
+      "sourceSha256": "51a9acdaba7b3f7a6e3884296220df65b27e3f0b1a1597aa235d2ef847fd4d10",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-consumer-matrix-check-v1",
+      "path": "packages/contracts-codegen/check-m4-consumers.ts",
+      "sourceSha256": "95d38f555cddd6e542ac965546c4dee4df0f005a5876ba80b000a9b5b93d0d84",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-consumer-report-v1",
+      "path": "contracts/governance/m4/consumer-compatibility.json",
+      "sourceSha256": "87691f348785219c6648ce4fc4dac96358c2991ecf7ec4e7cf8b193394f69462",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-go-bom-compatibility-v1",
+      "path": "packages/contracts-go/compatibility/compatibility.go",
+      "sourceSha256": "a85473e76f03109744b5e3db48e9f2d9bb1b00978d194a74318ce0e22b2bde1f",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-typescript-bom-compatibility-v1",
+      "path": "packages/contracts-typescript/src/compatibility.ts",
+      "sourceSha256": "a594d52d954010ac91470bbd6aab7458b94ffd423096e634070a63029ea75aec",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-python-bom-compatibility-v1",
+      "path": "packages/contracts-python/anvilkit_contracts/compatibility.py",
+      "sourceSha256": "f2df8619651ffaba52437f4d3b1b9c36ec4a3117fa708a2640a1964903aa276b",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-java-bom-compatibility-v1",
+      "path": "packages/contracts-java/src/main/java/dev/anvilkit/contracts/ContractCompatibility.java",
+      "sourceSha256": "f1f22b4aa366ec370e67d2bf98c5310d66034ec6f0837bcd7d58bf7263b6a81a",
+      "status": "source-tool"
+    },
+    {
+      "identity": "go-runtime-validator-jsonschema-v6.0.3",
+      "path": "packages/contracts-go/validator/validator.go",
+      "sourceSha256": "feed297593ec8945e2e87ee0cf2e379ccba76e93673551e76a3116a587d5d27d",
+      "status": "source-tool",
+      "dependencyLock": "packages/contracts-go/go.sum",
+      "evidence": "contracts/governance/m0/dp008/evidence/go-json-schema-validator.json"
+    },
+    {
+      "identity": "typescript-runtime-validator-ajv-8.20.0",
+      "path": "packages/contracts-codegen/native-validator.ts",
+      "sourceSha256": "5a9666f74ab3743ad03220db571a9c2ca558fe7178a144cf2715f51828cd00b6",
+      "status": "source-tool",
+      "dependencyLock": "bun.lock",
+      "evidence": "contracts/governance/m0/dp008/evidence/typescript-json-schema-validator.json"
+    },
+    {
+      "identity": "python-runtime-validator-jsonschema-4.26.0",
+      "path": "packages/contracts-python/anvilkit_contracts/validator.py",
+      "sourceSha256": "268322fdda21009666ec1c8b5108a770d232ac691335cc04af52da0ab75df0d3",
+      "status": "source-tool",
+      "dependencyLock": "packages/contracts-python/requirements.lock",
+      "evidence": "contracts/governance/m0/dp008/evidence/python-json-schema-validator.json"
+    },
+    {
+      "identity": "java-runtime-validator-networknt-3.0.6",
+      "path": "packages/contracts-java/src/main/java/dev/anvilkit/contracts/ContractValidator.java",
+      "sourceSha256": "8099f356e2fcab31813d19f9c3ae8faeafa62c14439ab1e0a3ba69b4eae3c3bb",
+      "status": "source-tool",
+      "dependencyLock": "packages/contracts-java/pom.xml",
+      "evidence": "contracts/governance/m0/dp008/evidence/java-json-schema-validator.json"
+    },
+    {
+      "identity": "go-jcs-canonicalizer-json-canon-v0.3.4",
+      "path": "packages/contracts-go/canonicalizer/jcs.go",
+      "sourceSha256": "c26fae48d4462a5fdc94788e81ecfa44210485e54189aa3d551c82828555e098",
+      "status": "source-tool",
+      "dependencyLock": "packages/contracts-go/go.sum",
+      "evidence": "contracts/governance/m0/dp008/evidence/go-jcs-canonicalizer.json"
+    },
+    {
+      "identity": "typescript-jcs-canonicalizer-canonicalize-3.0.0",
+      "path": "packages/contracts-codegen/dp008-typescript-jcs-adapter.ts",
+      "sourceSha256": "45c73c1a5f3c44e7a884160262154a8bfcc7abdaf5429f36f4be880af9609a00",
+      "status": "source-tool",
+      "dependencyLock": "bun.lock",
+      "evidence": "contracts/governance/m0/dp008/evidence/typescript-jcs-canonicalizer.json"
+    },
+    {
+      "identity": "python-jcs-canonicalizer-rfc8785-0.1.4",
+      "path": "packages/contracts-python/anvilkit_contracts/canonicalizer.py",
+      "sourceSha256": "88e5e2f356e741636f46f468c1d56b8768dd05afcf3bd602805553c57e458c47",
+      "status": "source-tool",
+      "dependencyLock": "packages/contracts-python/requirements.lock",
+      "evidence": "contracts/governance/m0/dp008/evidence/python-jcs-canonicalizer.json"
+    },
+    {
+      "identity": "java-jcs-canonicalizer-erdtman-1.1",
+      "path": "packages/contracts-java/src/main/java/dev/anvilkit/contracts/JcsCanonicalizer.java",
+      "sourceSha256": "caea6a875871f4cb9501a796d6ecae5e0015810e9938ae4cdf1f3111e22f19bf",
+      "status": "source-tool",
+      "dependencyLock": "packages/contracts-java/pom.xml",
+      "evidence": "contracts/governance/m0/dp008/evidence/java-jcs-canonicalizer.json"
+    },
+    {
+      "identity": "anvilkit-m4-conformance-result-schema-v1",
+      "path": "contracts/evidence/v1/conformance-result.schema.json",
+      "sourceSha256": "b09ce80bc451764e857b5007a501a06815c251fa1069bdfff061fafdc319340d",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-typescript-conformance-runner-v1",
+      "path": "packages/contracts-codegen/m4-conformance-runner.ts",
+      "sourceSha256": "9a3bfab0b5f52e8bb2dad3a3de66aab17bbce401271f4c7389b2195a8810dc17",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-typescript-conformance-cli-v1",
+      "path": "packages/contracts-codegen/emit-m4-typescript-conformance.ts",
+      "sourceSha256": "a454dd9411b4f9482044e677b760a599bf099102c9cd18453dc25851c60b304d",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-conformance-comparator-v1",
+      "path": "packages/contracts-codegen/compare-m4-conformance.ts",
+      "sourceSha256": "097f1b0d6d725f1e62df12113d118905cb5a7e8f0b85660b2121e5119e33ca78",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-go-conformance-runner-v1",
+      "path": "packages/contracts-go/conformance/result.go",
+      "sourceSha256": "ea95247d591e1904a8cb86ff894a05fa985e68bf4433b9dbfe07d37f09b9a16e",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-go-conformance-cli-v1",
+      "path": "packages/contracts-go/cmd/m4-conformance/main.go",
+      "sourceSha256": "7c496461115929f7936ed70d22df23918cfbfff53467ececc3b70c173965cec7",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-python-conformance-runner-v1",
+      "path": "packages/contracts-python/anvilkit_contracts/conformance.py",
+      "sourceSha256": "e1dfc7c4ac03092369d6c301c0526e86e3c0154d4b0c7b1f10e9f8b858f0e6bd",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-java-conformance-runner-v1",
+      "path": "packages/contracts-java/src/main/java/dev/anvilkit/contracts/M4Conformance.java",
+      "sourceSha256": "ecd3d0d7c94ae8bf214570087cb023f4c61bac81d9acbb8c662889c922edf723",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-typescript-native-identity-v1",
+      "path": "packages/contracts-codegen/native-identity.ts",
+      "sourceSha256": "ee9be4296491b85ae8739d35905d9c2bf9600bb7b12932d75410df49c8ec6cbd",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-typescript-identity-runner-v1",
+      "path": "packages/contracts-codegen/m4-identity-runner.ts",
+      "sourceSha256": "61591cb64139da5755e1dcc6374a45398efc7bc67942a1666654c94880a034be",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-typescript-identity-cli-v1",
+      "path": "packages/contracts-codegen/emit-m4-typescript-identity.ts",
+      "sourceSha256": "e60d188580d287f2c5ebf313f4abb4b50b91f2bac4fe39c22e6c058195799603",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-identity-comparator-v1",
+      "path": "packages/contracts-codegen/compare-m4-identity.ts",
+      "sourceSha256": "f9d43829c1f58f62c71fc0f5a910cd937ce32c350be0857ae64cd16da3042a16",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-go-native-identity-v1",
+      "path": "packages/contracts-go/identity/identity.go",
+      "sourceSha256": "33368db2d9c9b3d393e04c25c624feb3c53061154087042b7687954a9a2db0aa",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-go-identity-runner-v1",
+      "path": "packages/contracts-go/conformance/identity.go",
+      "sourceSha256": "5fb8cf8ff61c2b7b7dde90f2ebce8c88d7e0ee4edaaba1b8959f644248721fbf",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-go-identity-cli-v1",
+      "path": "packages/contracts-go/cmd/m4-identity/main.go",
+      "sourceSha256": "b034e75965043d874857b386fd80ea0cd941a0a69a5842a4c12de201100b1727",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-python-native-identity-v1",
+      "path": "packages/contracts-python/anvilkit_contracts/identity.py",
+      "sourceSha256": "168ba46036634caec4987012192df7c6984e6b27cb914f7df23f58bc15ad2682",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-python-identity-runner-v1",
+      "path": "packages/contracts-python/anvilkit_contracts/identity_conformance.py",
+      "sourceSha256": "50638a6dc7bcc420bdbe8838241ae375ba12b56f095687aa61474873640f5676",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-java-native-identity-v1",
+      "path": "packages/contracts-java/src/main/java/dev/anvilkit/contracts/ContractIdentity.java",
+      "sourceSha256": "c4218146890a9b7f75e953728eecabe33981dadb147b1558843687ea7b831b5e",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-java-identity-runner-v1",
+      "path": "packages/contracts-java/src/main/java/dev/anvilkit/contracts/IdentityConformance.java",
+      "sourceSha256": "026c73f746d83468b2749e86a4d42a6830873a79006939a03d1df43da67dc11b",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-conformance-check-v1",
+      "path": "packages/contracts-codegen/check-m4-conformance.ts",
+      "sourceSha256": "c2b35cd6f71aaddc1fbc7b959054430840662360c63ead97733de0e305fe5d76",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-typescript-native-signature-v1",
+      "path": "packages/contracts-codegen/native-signature.ts",
+      "sourceSha256": "2f987df882438e4c6910614a3651c3803edb1bf3f1639bc48c10fbf1767d47c2",
+      "status": "source-tool",
+      "dependencyLock": "bun.lock",
+      "evidence": "contracts/governance/m0/dp008/evidence/typescript-dsse-ed25519.json"
+    },
+    {
+      "identity": "anvilkit-m4-typescript-signature-runner-v1",
+      "path": "packages/contracts-codegen/emit-m4-typescript-signature.ts",
+      "sourceSha256": "78d9703043b0942e58b32c6177332a44c3ae024ed8e25bfdd1237d0f8a214aa1",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-signature-comparator-v1",
+      "path": "packages/contracts-codegen/compare-m4-signature.ts",
+      "sourceSha256": "29e27294019eb7141f5c185e1a567c0a44cb6a18e54a8cf89ba5c0f4505ba64d",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-dp008-signature-benchmark-v1",
+      "path": "packages/contracts-codegen/benchmark-m3-signatures.ts",
+      "sourceSha256": "872c83baf28050b3b84c8c514b501fa49c8ec62e2bfaa3fd305e47809faf438a",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-go-native-signature-v1",
+      "path": "packages/contracts-go/signature/ed25519.go",
+      "sourceSha256": "866414aa7414b852396365fa6e14d871e627abcef3dd0886ef88ae46a1023c33",
+      "status": "source-tool",
+      "dependencyLock": "packages/contracts-go/go.mod",
+      "evidence": "contracts/governance/m0/dp008/evidence/go-dsse-ed25519.json"
+    },
+    {
+      "identity": "anvilkit-m4-go-signature-runner-v1",
+      "path": "packages/contracts-go/conformance/signature.go",
+      "sourceSha256": "0e02199e42a64634546b6d59276b6a60f0da12e23f12db781abae42b602edf76",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-m4-go-signature-cli-v1",
+      "path": "packages/contracts-go/cmd/m4-signature/main.go",
+      "sourceSha256": "a6623532b9712b58259c3d4651ffd82abcb7e29cec35146733459581bc1ae2a9",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-python-native-signature-v1",
+      "path": "packages/contracts-python/anvilkit_contracts/signature.py",
+      "sourceSha256": "2783bef8d39e68dc287ef229565787dde3c74858c8800afedf5e35f298bdaaaa",
+      "status": "source-tool",
+      "dependencyLock": "packages/contracts-python/requirements.lock",
+      "evidence": "contracts/governance/m0/dp008/evidence/python-dsse-ed25519.json"
+    },
+    {
+      "identity": "anvilkit-m4-python-signature-runner-v1",
+      "path": "packages/contracts-python/anvilkit_contracts/signature_conformance.py",
+      "sourceSha256": "ef4c3cb619fa59c75ef4782763a16cd9f050e6a7bfafb38c515fc185c15385c2",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-java-native-signature-v1",
+      "path": "packages/contracts-java/src/main/java/dev/anvilkit/contracts/ContractSignature.java",
+      "sourceSha256": "77797baa4f1ba80cec2001e12aa24b16e683db293c4a95c18e058898a26bef73",
+      "status": "source-tool",
+      "dependencyLock": "packages/contracts-java/pom.xml",
+      "evidence": "contracts/governance/m0/dp008/evidence/java-dsse-ed25519.json"
+    },
+    {
+      "identity": "anvilkit-m4-java-signature-runner-v1",
+      "path": "packages/contracts-java/src/main/java/dev/anvilkit/contracts/SignatureConformance.java",
+      "sourceSha256": "70be237750199c3b8269d71bd99f68bf11e6f8fb6a641ce038d83f02b998f4b6",
+      "status": "source-tool"
     }
   ],
   "authorization": {
-    "status": "candidate-unapproved",
-    "evidence": null,
+    "status": "approved",
+    "evidence": "contracts/governance/m0/approvals/repository-sponsor-authorization-2026-08-09.json",
     "reviewers": [
       {
         "role": "Platform Contracts owner",
-        "decision": "pending",
-        "evidence": null
+        "decision": "approved",
+        "evidence": "contracts/governance/m0/approvals/repository-sponsor-authorization-2026-08-09.json"
       },
       {
         "role": "Security",
-        "decision": "pending",
-        "evidence": null
+        "decision": "approved",
+        "evidence": "contracts/governance/m0/approvals/repository-sponsor-authorization-2026-08-09.json"
       },
       {
         "role": "Go owner",
-        "decision": "pending",
-        "evidence": null
+        "decision": "approved",
+        "evidence": "contracts/governance/m0/approvals/repository-sponsor-authorization-2026-08-09.json"
       },
       {
         "role": "TypeScript owner",
-        "decision": "pending",
-        "evidence": null
+        "decision": "approved",
+        "evidence": "contracts/governance/m0/approvals/repository-sponsor-authorization-2026-08-09.json"
       },
       {
         "role": "Python owner",
-        "decision": "pending",
-        "evidence": null
+        "decision": "approved",
+        "evidence": "contracts/governance/m0/approvals/repository-sponsor-authorization-2026-08-09.json"
       },
       {
         "role": "Java owner",
-        "decision": "pending",
-        "evidence": null
+        "decision": "approved",
+        "evidence": "contracts/governance/m0/approvals/repository-sponsor-authorization-2026-08-09.json"
       }
     ]
   },

@@ -2817,13 +2817,13 @@
     {
       "id": "valid-registry-values.full",
       "path": "contracts/fixtures/v1/valid/registry-values.full.json",
-      "bytesSha256": "sha256:6a5efa7c1d3ccb3f65e1c65a4133cfbd96fdbb8938c0cb245821c206c1b9da53",
-      "bytesLength": 5057,
+      "bytesSha256": "sha256:9b73760cb7ba2edbae7b700d03be6e230edb46bac499de8097486c55ba3d616c",
+      "bytesLength": 5256,
       "schema": {
         "logicalId": "RegistrySetValuesV1",
         "path": "contracts/registries/v1/registry-set.json",
-        "logicalUri": "anvilkit://registry/registry-set.v1@1.0.0?digest=sha256:51247de2909ea8d4f47f28243baeca32a37a8732a3a2c94d30c2cabd67a9c932",
-        "digest": "sha256:51247de2909ea8d4f47f28243baeca32a37a8732a3a2c94d30c2cabd67a9c932"
+        "logicalUri": "anvilkit://registry/registry-set.v1@1.0.0?digest=sha256:8ea9b26cc3385ee0cf75afad28342854a550b78c0d0bd55a04596c5c942176af",
+        "digest": "sha256:8ea9b26cc3385ee0cf75afad28342854a550b78c0d0bd55a04596c5c942176af"
       },
       "category": "full",
       "tags": [
