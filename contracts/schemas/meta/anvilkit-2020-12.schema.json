@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.anvilkit.dev/schemas/meta/anvilkit-2020-12.schema.json",
+  "$vocabulary": {
+    "https://json-schema.org/draft/2020-12/vocab/core": true,
+    "https://json-schema.org/draft/2020-12/vocab/applicator": true,
+    "https://json-schema.org/draft/2020-12/vocab/validation": true,
+    "https://json-schema.org/draft/2020-12/vocab/unevaluated": true,
+    "https://json-schema.org/draft/2020-12/vocab/format-annotation": true,
+    "https://json-schema.org/draft/2020-12/vocab/format-assertion": true,
+    "https://json-schema.org/draft/2020-12/vocab/meta-data": true,
+    "https://json-schema.org/draft/2020-12/vocab/content": true
+  },
+  "title": "AnvilKit JSON Schema Draft 2020-12 source profile",
+  "description": "Meta-schema overlay for immutable, bounded, owned AnvilKit contract source. The deterministic source linter enforces the cross-keyword rules that JSON Schema cannot express alone.",
+  "type": "object",
+  "required": ["$schema", "$id", "type", "x-anvilkit-contract"],
+  "properties": {
+    "$schema": {
+      "const": "https://contracts.anvilkit.dev/schemas/meta/anvilkit-2020-12.schema.json"
+    },
+    "$id": {
+      "type": "string",
+      "pattern": "^https://contracts\\.anvilkit\\.dev/schemas/v[1-9][0-9]*/[a-z0-9][a-z0-9-]*\\.schema\\.json$"
+    },
+    "x-anvilkit-contract": {
+      "$ref": "#/$defs/contractMetadata"
+    }
+  },
+  "$defs": {
+    "contractMetadata": {
+      "type": "object",
+      "required": ["logicalId", "semanticVersion", "componentName", "owner", "stability", "identityFields", "maximumSerializedBytes", "compatibilityPolicy", "descriptions"],
+      "properties": {
+        "logicalId": {"type":"string","minLength":3,"maxLength":128,"pattern":"^[A-Z][A-Za-z0-9]+V[1-9][0-9]*$"},
+        "semanticVersion": {"type":"string","minLength":5,"maxLength":32,"pattern":"^[1-9][0-9]*\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$"},
+        "componentName": {"type":"string","minLength":8,"maxLength":160,"pattern":"^anvilkit\\.[a-z0-9][a-z0-9.-]*\\.v[1-9][0-9]*$"},
+        "owner": {"type":"string","minLength":3,"maxLength":128},
+        "stability": {"enum":["experimental","p0-freeze-candidate","stable","deprecated"]},
+        "identityFields": {"type":"array","minItems":1,"maxItems":128,"uniqueItems":true,"items":{"type":"string","minLength":1,"maxLength":256,"pattern":"^/.+$"}},
+        "maximumSerializedBytes": {"type":"integer","minimum":64,"maximum":1048576},
+        "compatibilityPolicy": {"enum":["frozen-major","compatible-additive","registry-append-only"]},
+        "descriptions": {"type":"array","minItems":0,"maxItems":8,"uniqueItems":true,"items":{"type":"string","minLength":1,"maxLength":256,"pattern":"^contracts/(openapi|asyncapi)/v[1-9][0-9]*/[a-z0-9.-]+\\.(json|yaml)$"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}
