@@ -6,6 +6,12 @@
   "type": "module",
   "scripts": {
     "generate": "bun run generate.ts",
-    "check-freeze": "bun run check-freeze.ts"
+    "check-freeze": "bun run check-freeze.ts",
+    "check-m0": "bun run check-m0.ts",
+    "benchmark-m0": "bun run benchmark-m0.ts --validate",
+    "check-m1": "bun run check-m1.ts",
+    "check-m2": "bun run check-m2.ts",
+    "check-m3": "bun run check-m3.ts",
+    "check-agent-freeze": "bun run check-agent-freeze.ts"
   }
 }

@@ -790,7 +790,13 @@ function computeLock(): { [k: string]: string } {
   const lock: { [k: string]: string } = {};
   for (const f of files) {
     const rel = relative(REPO_ROOT, f);
-    if (rel === "contracts/contracts.lock.json" || rel === "contracts/README.md") continue;
+    const belongsToLegacyExportFreeze =
+      rel.startsWith("contracts/artifact/") ||
+      rel.startsWith("contracts/events/") ||
+      rel === "contracts/openapi/v1/asset-service.internal.json" ||
+      rel === "contracts/openapi/v1/deployment-service.internal.json" ||
+      rel.startsWith("contracts/openapi/v1/fixtures/");
+    if (!belongsToLegacyExportFreeze) continue;
     lock[rel] = createHash("sha256").update(readFileSync(f)).digest("hex");
   }
   return lock;

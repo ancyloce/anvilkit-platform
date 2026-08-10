@@ -39,12 +39,22 @@ const lock = JSON.parse(readFileSync(LOCK_PATH, "utf8")) as {
   files: Record<string, string>;
 };
 
+function belongsToLegacyExportFreeze(rel: string): boolean {
+  return (
+    rel.startsWith("contracts/artifact/") ||
+    rel.startsWith("contracts/events/") ||
+    rel === "contracts/openapi/v1/asset-service.internal.json" ||
+    rel === "contracts/openapi/v1/deployment-service.internal.json" ||
+    rel.startsWith("contracts/openapi/v1/fixtures/")
+  );
+}
+
 const actual: Record<string, string> = {};
 const files: string[] = [];
 walk(CONTRACTS_DIR, files);
 for (const f of files) {
   const rel = relative(REPO_ROOT, f);
-  if (rel === "contracts/contracts.lock.json" || rel === "contracts/README.md") continue;
+  if (!belongsToLegacyExportFreeze(rel)) continue;
   actual[rel] = createHash("sha256").update(readFileSync(f)).digest("hex");
 }
 
