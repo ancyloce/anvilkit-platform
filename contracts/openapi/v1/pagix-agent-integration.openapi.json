@@ -1,0 +1,886 @@
+{
+  "openapi": "3.1.2",
+  "info": {
+    "title": "Pagix Agent Integration API",
+    "version": "1.0.0",
+    "description": "Candidate internal Pagix integration contract for Agent workflows and governed effects."
+  },
+  "servers": [
+    {
+      "url": "https://pagix.internal.anvilkit.dev"
+    }
+  ],
+  "security": [
+    {
+      "workloadIdentity": []
+    }
+  ],
+  "paths": {
+    "/v1/internal/agent/context-snapshots": {
+      "post": {
+        "operationId": "createTargetSnapshot",
+        "summary": "Return an authorized immutable target snapshot.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/shared-primitives.v1@1.0.0?digest=sha256:de45a3a2412afca14c4386afe8fd750621366e1ec826928e336639936f814592#/$defs/BoundedStringMap"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded semantic outcome.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/target-snapshot.v1@1.0.0?digest=sha256:89d75fa6d287eea5b21208bfcaae4a8e639debf2e4a7dfad322805ec13ed41c2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/v1/internal/agent/entitlements/check": {
+      "post": {
+        "operationId": "checkAgentEntitlement",
+        "summary": "Check current permission and entitlement.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/shared-primitives.v1@1.0.0?digest=sha256:de45a3a2412afca14c4386afe8fd750621366e1ec826928e336639936f814592#/$defs/BoundedStringMap"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded semantic outcome.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/v1/internal/agent/usage/reservations": {
+      "post": {
+        "operationId": "reserveAgentUsage",
+        "summary": "Reserve the pinned upper budget before dispatch.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/agent-budget.v1@1.0.0?digest=sha256:ae8e0049aa37366c6f59a5e40d354cc361388e8f1403783ea6442c7bdd0b3715"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded semantic outcome.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/agent-budget.v1@1.0.0?digest=sha256:ae8e0049aa37366c6f59a5e40d354cc361388e8f1403783ea6442c7bdd0b3715"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/v1/internal/agent/usage/observations": {
+      "post": {
+        "operationId": "observeAgentUsage",
+        "summary": "Append usage from every physical attempt.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/usage-observation.v1@1.0.0?digest=sha256:929bb6dd41798113a64664f83397e7e2b642ea37133698d03041c4ede397c68a"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded semantic outcome.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/usage-observation.v1@1.0.0?digest=sha256:929bb6dd41798113a64664f83397e7e2b642ea37133698d03041c4ede397c68a"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/v1/internal/agent/usage/reconciliation": {
+      "post": {
+        "operationId": "reconcileAgentUsage",
+        "summary": "Reconcile or release an authorized reservation.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/agent-budget.v1@1.0.0?digest=sha256:ae8e0049aa37366c6f59a5e40d354cc361388e8f1403783ea6442c7bdd0b3715"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded semantic outcome.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/agent-budget.v1@1.0.0?digest=sha256:ae8e0049aa37366c6f59a5e40d354cc361388e8f1403783ea6442c7bdd0b3715"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/v1/internal/agent/assets/reservations": {
+      "post": {
+        "operationId": "reserveAgentAsset",
+        "summary": "Reserve bounded artifact storage.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/agent-artifact.v1@1.0.0?digest=sha256:a4f1cecb68b04d7693eefaddaa1bec7e82d11180b2f7f2f38fd4c5abed1a42cb"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded semantic outcome.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/agent-artifact.v1@1.0.0?digest=sha256:a4f1cecb68b04d7693eefaddaa1bec7e82d11180b2f7f2f38fd4c5abed1a42cb"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/v1/internal/agent/assets/finalization": {
+      "post": {
+        "operationId": "finalizeAgentAsset",
+        "summary": "Finalize a validated immutable artifact.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/agent-artifact.v1@1.0.0?digest=sha256:a4f1cecb68b04d7693eefaddaa1bec7e82d11180b2f7f2f38fd4c5abed1a42cb"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded semantic outcome.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/agent-artifact.v1@1.0.0?digest=sha256:a4f1cecb68b04d7693eefaddaa1bec7e82d11180b2f7f2f38fd4c5abed1a42cb"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/v1/internal/agent/domain/page-persistence": {
+      "post": {
+        "operationId": "persistAuthorizedPage",
+        "summary": "Atomically redeem authorization, persist the effect, idempotency record, and outbox event.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/apply-authorization.v1@1.0.0?digest=sha256:67ce757f4792deccb1fc6c442611bfed2fff76aa1cac39ad1aa5ff70eddf97a3"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded semantic outcome.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/target-snapshot.v1@1.0.0?digest=sha256:89d75fa6d287eea5b21208bfcaae4a8e639debf2e4a7dfad322805ec13ed41c2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "description": "Authenticated workspace actor.",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://auth.anvilkit.dev/oauth/token",
+            "scopes": {
+              "agent:read": "Read Agent state.",
+              "agent:write": "Create and control Agent runs."
+            }
+          }
+        }
+      },
+      "workloadIdentity": {
+        "type": "mutualTLS",
+        "description": "Authenticated service workload identity."
+      }
+    },
+    "parameters": {
+      "WorkspaceId": {
+        "name": "workspaceId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "RunId": {
+        "name": "runId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "RequestId": {
+        "name": "requestId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "ArtifactId": {
+        "name": "artifactId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "RequestDigest": {
+        "name": "X-AnvilKit-Request-Digest",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "Traceparent": {
+        "name": "traceparent",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+        }
+      }
+    },
+    "schemas": {
+      "UsageObservationV1": {
+        "$ref": "anvilkit://schema/usage-observation.v1@1.0.0?digest=sha256:929bb6dd41798113a64664f83397e7e2b642ea37133698d03041c4ede397c68a"
+      },
+      "AgentBudgetV1": {
+        "$ref": "anvilkit://schema/agent-budget.v1@1.0.0?digest=sha256:ae8e0049aa37366c6f59a5e40d354cc361388e8f1403783ea6442c7bdd0b3715"
+      },
+      "TargetSnapshotV1": {
+        "$ref": "anvilkit://schema/target-snapshot.v1@1.0.0?digest=sha256:89d75fa6d287eea5b21208bfcaae4a8e639debf2e4a7dfad322805ec13ed41c2"
+      },
+      "ApplyAuthorizationV1": {
+        "$ref": "anvilkit://schema/apply-authorization.v1@1.0.0?digest=sha256:67ce757f4792deccb1fc6c442611bfed2fff76aa1cac39ad1aa5ff70eddf97a3"
+      },
+      "AgentArtifactV1": {
+        "$ref": "anvilkit://schema/agent-artifact.v1@1.0.0?digest=sha256:a4f1cecb68b04d7693eefaddaa1bec7e82d11180b2f7f2f38fd4c5abed1a42cb"
+      },
+      "ProblemDetailsV1": {
+        "$ref": "anvilkit://schema/problem-details.v1@1.0.0?digest=sha256:6cfe1db66717fb64fd1ec18920ec64b16c191c2ba6a4009350ba4a19163b7647"
+      },
+      "BoundedRequest": {
+        "$ref": "anvilkit://schema/shared-primitives.v1@1.0.0?digest=sha256:de45a3a2412afca14c4386afe8fd750621366e1ec826928e336639936f814592#/$defs/BoundedStringMap"
+      }
+    }
+  }
+}
