@@ -1,4 +1,4 @@
-# Platform CI (EW-REPO-003/004, EW-CONTRACT-004/005 + M2 additions; ADR-008:
+# Platform CI (EW-REPO-003/004, EW-CONTRACT-004/005 + M3 additions; ADR-008:
 # GitHub Actions). Stages per PLAN-0001 §10. The worker repo (submodule)
 # carries its own CI; this pipeline owns the contracts (validation, codegen
 # drift, freeze), the mocks module, the monorepo-wide dependency audit, the
@@ -23,13 +23,112 @@ jobs:
         with:
           submodules: recursive
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - name: Install pinned Bun workspace
+        run: bun install --frozen-lockfile
       - uses: actions/setup-go@v5
         with:
-          go-version-file: services/export-worker/go.mod
+          go-version-file: packages/contracts-go/go.mod
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
       - name: Validate fixtures + regenerate Go bindings
         run: bun packages/contracts-codegen/generate.ts
       - name: Contract freeze intact (ADR-001, AC-029)
         run: bun packages/contracts-codegen/check-freeze.ts
+      - name: Agent contract M0 governance baseline
+        run: bun packages/contracts-codegen/check-m0.ts
+      - name: DP-008 benchmark method and corpus
+        run: bun packages/contracts-codegen/benchmark-m0.ts --validate
+      - name: Agent contract M1 source profile and registries
+        run: bun packages/contracts-codegen/check-m1.ts
+      - name: Agent contract M2 catalog, descriptions, and fixture corpus
+        run: bun packages/contracts-codegen/check-m2.ts
+      - name: OpenAPI and AsyncAPI selected-tool lint
+        run: bun packages/contracts-codegen/check-specs.ts
+      - name: Agent contract M3 strict JSON admission candidate
+        run: bun packages/contracts-codegen/check-m3.ts
+      - name: Agent contract M3 signature, authorization, and trust profiles
+        run: bun packages/contracts-codegen/check-m3-security.ts
+      - name: Agent contract M4 modular generation foundation
+        run: bun packages/contracts-codegen/check-m4.ts
+      - name: Agent contract M4 TypeScript adapter
+        run: bun packages/contracts-codegen/check-m4-typescript.ts
+      - name: Agent contract M4 TypeScript deterministic generation
+        run: bun packages/contracts-codegen/check-m4-typescript-generation.ts
+      - name: Agent contract M4 staged generated package boundaries
+        run: bun packages/contracts-codegen/check-m4-generated-packages.ts
+      - name: Install pinned M4 generators
+        run: bash packages/contracts-codegen/prepare-m4-generators.sh "$GITHUB_ENV"
+      - name: Regenerate all M4 packages from pinned tools
+        run: bun packages/contracts-codegen/generate-m4-packages.ts
+      - name: Agent contract M4 TypeScript package
+        run: bun run --cwd packages/contracts-typescript check
+      - name: Agent contract M4 conformance result and representative JCS parity
+        run: bun packages/contracts-codegen/check-m4-conformance.ts
+      - name: Agent contract M4 Go adapter
+        working-directory: packages/contracts-go
+        run: go test -race -count=1 ./...
+      - name: Agent contract M4 Python adapter
+        working-directory: packages/contracts-python
+        run: |
+          python -m pip install --require-hashes -r requirements.lock
+          PYTHONPATH=. python -m unittest discover -s tests -v
+      - name: Agent contract M4 Java adapter
+        working-directory: packages/contracts-java
+        run: mvn --batch-mode --no-transfer-progress test
+      - name: Agent contract M4 complete four-language conformance
+        run: |
+          mkdir -p /tmp/anvilkit-m4-conformance
+          bun packages/contracts-codegen/emit-m4-typescript-conformance.ts --repository-root . > /tmp/anvilkit-m4-conformance/typescript.json
+          (cd packages/contracts-go && GOCACHE=/tmp/anvilkit-m4-go-cache go run ./cmd/m4-conformance --repository-root ../.. > /tmp/anvilkit-m4-conformance/go.json)
+          (cd packages/contracts-python && PYTHONPATH=. python -m anvilkit_contracts.conformance --repository-root ../.. > /tmp/anvilkit-m4-conformance/python.json)
+          (cd packages/contracts-java && mvn --quiet --batch-mode --no-transfer-progress -DskipTests compile org.apache.maven.plugins:maven-dependency-plugin:3.7.0:build-classpath -Dmdep.outputFile=/tmp/anvilkit-m4-conformance/java-classpath)
+          (cd packages/contracts-java && java -cp "target/classes:$(</tmp/anvilkit-m4-conformance/java-classpath)" dev.anvilkit.contracts.M4Conformance --repository-root ../.. > /tmp/anvilkit-m4-conformance/java.json)
+          bun packages/contracts-codegen/compare-m4-conformance.ts --repository-root . --result /tmp/anvilkit-m4-conformance/go.json --result /tmp/anvilkit-m4-conformance/typescript.json --result /tmp/anvilkit-m4-conformance/python.json --result /tmp/anvilkit-m4-conformance/java.json > /tmp/anvilkit-m4-conformance/summary.json
+          diff -u contracts/governance/m4/conformance-summary.json /tmp/anvilkit-m4-conformance/summary.json
+          bun packages/contracts-codegen/emit-m4-typescript-identity.ts --repository-root . > /tmp/anvilkit-m4-conformance/typescript-identity.json
+          (cd packages/contracts-go && GOCACHE=/tmp/anvilkit-m4-go-cache go run ./cmd/m4-identity --repository-root ../.. > /tmp/anvilkit-m4-conformance/go-identity.json)
+          (cd packages/contracts-python && PYTHONPATH=. python -m anvilkit_contracts.identity_conformance --repository-root ../.. > /tmp/anvilkit-m4-conformance/python-identity.json)
+          (cd packages/contracts-java && java -cp "target/classes:$(</tmp/anvilkit-m4-conformance/java-classpath)" dev.anvilkit.contracts.IdentityConformance --repository-root ../.. > /tmp/anvilkit-m4-conformance/java-identity.json)
+          bun packages/contracts-codegen/compare-m4-identity.ts --repository-root . --result /tmp/anvilkit-m4-conformance/go-identity.json --result /tmp/anvilkit-m4-conformance/typescript-identity.json --result /tmp/anvilkit-m4-conformance/python-identity.json --result /tmp/anvilkit-m4-conformance/java-identity.json > /tmp/anvilkit-m4-conformance/identity-summary.json
+          diff -u contracts/governance/m4/identity-conformance-summary.json /tmp/anvilkit-m4-conformance/identity-summary.json
+          bun packages/contracts-codegen/emit-m4-typescript-signature.ts --repository-root . > /tmp/anvilkit-m4-conformance/typescript-signature.json
+          (cd packages/contracts-go && GOCACHE=/tmp/anvilkit-m4-go-cache go run ./cmd/m4-signature --repository-root ../.. > /tmp/anvilkit-m4-conformance/go-signature.json)
+          (cd packages/contracts-python && PYTHONPATH=. python -m anvilkit_contracts.signature_conformance --repository-root ../.. > /tmp/anvilkit-m4-conformance/python-signature.json)
+          (cd packages/contracts-java && java -cp "target/classes:$(</tmp/anvilkit-m4-conformance/java-classpath)" dev.anvilkit.contracts.SignatureConformance --repository-root ../.. > /tmp/anvilkit-m4-conformance/java-signature.json)
+          bun packages/contracts-codegen/compare-m4-signature.ts --repository-root . --result /tmp/anvilkit-m4-conformance/go-signature.json --result /tmp/anvilkit-m4-conformance/typescript-signature.json --result /tmp/anvilkit-m4-conformance/python-signature.json --result /tmp/anvilkit-m4-conformance/java-signature.json > /tmp/anvilkit-m4-conformance/signature-summary.json
+          diff -u contracts/governance/m4/signature-conformance-summary.json /tmp/anvilkit-m4-conformance/signature-summary.json
+      - name: Retain M4 native conformance result sets
+        uses: actions/upload-artifact@v4
+        with:
+          name: m4-native-conformance-results
+          path: |
+            /tmp/anvilkit-m4-conformance/go.json
+            /tmp/anvilkit-m4-conformance/typescript.json
+            /tmp/anvilkit-m4-conformance/python.json
+            /tmp/anvilkit-m4-conformance/java.json
+            /tmp/anvilkit-m4-conformance/summary.json
+            /tmp/anvilkit-m4-conformance/go-identity.json
+            /tmp/anvilkit-m4-conformance/typescript-identity.json
+            /tmp/anvilkit-m4-conformance/python-identity.json
+            /tmp/anvilkit-m4-conformance/java-identity.json
+            /tmp/anvilkit-m4-conformance/identity-summary.json
+            /tmp/anvilkit-m4-conformance/go-signature.json
+            /tmp/anvilkit-m4-conformance/typescript-signature.json
+            /tmp/anvilkit-m4-conformance/python-signature.json
+            /tmp/anvilkit-m4-conformance/java-signature.json
+            /tmp/anvilkit-m4-conformance/signature-summary.json
+          if-no-files-found: error
+      - name: Agent contract M5 structural BOM candidate
+        run: bun run --cwd packages/contracts-bom check-m5
+      - name: Agent generation-aware freeze
+        run: bun packages/contracts-codegen/check-agent-freeze.ts
       - name: No codegen drift (platform)
         run: git diff --exit-code
       - name: No codegen drift (worker submodule)
@@ -89,7 +188,7 @@ jobs:
       - name: go vet
         working-directory: mocks
         run: go vet ./...
-      - name: Conformance tests (driven through generated clients)
+      - name: Conformance and M6 fake-provider candidate tests
         working-directory: mocks
         run: go test -race -count=1 ./...
       - name: Build
@@ -135,6 +234,10 @@ jobs:
         with:
           submodules: recursive
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - name: Install pinned Bun workspace
+        run: bun install --frozen-lockfile
       - uses: actions/setup-go@v5
         with:
           go-version-file: services/export-worker/go.mod
