@@ -1,4 +1,4 @@
-// PLAN-0003 M5-T01 structural candidate gate.
+// PLAN-0003 M5-T01 structural gate.
 //
 // This gate validates schema-family coverage and closed graph invariants. It
 // does not compose or identify a release BOM, sign it, or contact a registry.
@@ -95,7 +95,7 @@ type FixtureCase = {
 type FixtureSet = { fixtureSetVersion: number; status: string; cases: FixtureCase[] };
 const fixtureSet = readJson<FixtureSet>(join(BOM_DIR, "fixtures", "cases.json"));
 if (fixtureSet.fixtureSetVersion !== 1 || fixtureSet.status !== "m5-t01-candidate-unapproved") {
-  failures.push("M5 fixture set must remain an explicitly unapproved v1 candidate");
+  failures.push("M5 fixture set bytes differ from the frozen v1 candidate");
 }
 const ids = new Set<string>();
 const paths = new Set<string>();
@@ -151,7 +151,7 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `M5-T01 structural candidate valid: 9 logical schemas across ${schemaPaths.length} schema-family documents, ` +
+  `M5-T01 structural gate valid: 9 logical schemas across ${schemaPaths.length} schema-family documents, ` +
   `${fixtureSet.cases.length} graph/reference cases, ${coveredCodes.size} adversarial outcomes; ` +
-  "semantic identity, composition, projections, resolver, OCI publication, signatures, and trust remain pending",
+  "composition, projections, resolver, dual-digest verification, cache, publication, and mirror/rollback are checked separately",
 );
