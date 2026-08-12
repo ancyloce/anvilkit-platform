@@ -14,6 +14,8 @@ own generated client, keeping mock and worker pinned to the same frozen contract
 | `deploymentmock` / `cmd/deployment-service-mock` | `contracts/openapi/v1/deployment-service.internal.json` | Record GET, CAS PATCH with 409 `STATUS_CONFLICT`, artifact POST with the **BD-004 interim semantics** (ADR-004: idempotent accept of an identical pointer re-POST; `409 ARTIFACT_CONFLICT` for a different pointer) |
 | `assetmock` / `cmd/asset-service-mock` | `contracts/openapi/v1/asset-service.internal.json` | Deterministic `resolve-batch` resolver |
 | `renderoriginmock` / `cmd/render-origin-mock` | render-origin runtime HTTP contract (PRD 0010 §8.3) | Version-pinned seeded pages covering every harvest form + the PLAN-0001 §11 negative pages; stand-in until BD-007/ADR-007 confirms the real anvilkit-studio origin |
+| `fakeprovider` | PLAN-0003 M6-T01 test harness | In-process deterministic provider-output scenarios and pinned 1,000-case evaluation only; no server, production command, tool execution, or provider fallback |
+| `releasecandidate` | PLAN-0003 M6-T08/T09 test harness | Seven contract-bound trace participants and the combined Phase 0 failure/recovery matrix; no external service implementation |
 
 Auth (ADR-002): every `/internal/*` route requires `Authorization: Bearer <token>` against
 the configured token set — **multiple tokens accepted** to model the dual-token rotation
@@ -41,3 +43,8 @@ Or via `infra/docker-compose.yml`, which builds both from `mocks/Dockerfile` and
 
 Boundary note (CLAUDE.md): these are mocks of external services — the services themselves
 are never implemented in this repo and never get directories under `services/`.
+
+The M6 provider, worker, and release-candidate harnesses are exercised by the
+normal race-enabled mocks test suite. Their retained reports are eligible for
+the M6 contract gate while remaining synthetic, test-only, and explicitly
+ineligible as production provider or service evidence.
