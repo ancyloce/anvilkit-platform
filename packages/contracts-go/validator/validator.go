@@ -1,6 +1,6 @@
-// Package validator provides the pinned Go PLAN-0003 M4 adapter. It performs
-// strict byte admission before Draft 2020-12 validation and never resolves a
-// network reference.
+// Package validator provides the pinned Go contract adapter. It performs strict
+// byte admission before Draft 2020-12 validation and never resolves a network
+// reference.
 package validator
 
 import (
@@ -24,6 +24,12 @@ import (
 
 const maximumSafeInteger = 9007199254740991
 
+const (
+	maximumFindingCount = 100
+	maximumSchemaBytes  = 1_048_576
+	maximumSchemaCount  = 128
+)
+
 type Finding struct{ Code, InstancePath, SchemaPath string }
 
 type Adapter struct{ schemas map[string]*jsonschema.Schema }
@@ -35,9 +41,17 @@ func logicalURI(name, version string, bytes []byte) string {
 
 func New(repositoryRoot string) (*Adapter, error) {
 	directory := filepath.Join(repositoryRoot, "contracts", "schemas", "v1")
+	schemaRoot, err := os.OpenRoot(directory)
+	if err != nil {
+		return nil, fmt.Errorf("open schema root: %w", err)
+	}
+	defer schemaRoot.Close()
 	entries, err := os.ReadDir(directory)
 	if err != nil {
 		return nil, fmt.Errorf("read schema directory: %w", err)
+	}
+	if len(entries) > maximumSchemaCount {
+		return nil, fmt.Errorf("schema directory exceeds %d entries", maximumSchemaCount)
 	}
 	compiler := jsonschema.NewCompiler()
 	compiler.AssertFormat()
@@ -51,14 +65,27 @@ func New(repositoryRoot string) (*Adapter, error) {
 		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".schema.json") {
 			continue
 		}
-		path := filepath.Join(directory, entry.Name())
-		raw, err := os.ReadFile(path)
-		if err != nil {
-			return nil, err
+		if entry.Type()&os.ModeSymlink != 0 {
+			return nil, fmt.Errorf("schema %s must not be a symbolic link", entry.Name())
 		}
-		var value map[string]any
-		if err := json.Unmarshal(raw, &value); err != nil {
+		info, err := entry.Info()
+		if err != nil {
+			return nil, fmt.Errorf("inspect %s: %w", entry.Name(), err)
+		}
+		if !info.Mode().IsRegular() || info.Size() > maximumSchemaBytes {
+			return nil, fmt.Errorf("schema %s is not a regular bounded file", entry.Name())
+		}
+		raw, err := schemaRoot.ReadFile(entry.Name())
+		if err != nil {
+			return nil, fmt.Errorf("read %s: %w", entry.Name(), err)
+		}
+		admitted, err := Admit(raw)
+		if err != nil {
 			return nil, fmt.Errorf("parse %s: %w", entry.Name(), err)
+		}
+		value, ok := admitted.(map[string]any)
+		if !ok {
+			return nil, fmt.Errorf("parse %s: schema root must be an object", entry.Name())
 		}
 		metadata, ok := value["x-anvilkit-contract"].(map[string]any)
 		if !ok {
@@ -111,8 +138,10 @@ func (a *Adapter) Validate(schemaURI string, raw []byte) []Finding {
 		if !errors.As(err, &validation) {
 			return []Finding{{Code: "VALIDATION_FAILED", InstancePath: "/", SchemaPath: "/"}}
 		}
-		var findings []Finding
-		flatten(validation, &findings)
+		findings := make([]Finding, 0, maximumFindingCount)
+		if flatten(validation, &findings, maximumFindingCount-1) {
+			findings = append(findings, Finding{Code: "VALIDATION_FAILED", InstancePath: "/", SchemaPath: "/profile/findingLimit"})
+		}
 		sort.Slice(findings, func(i, j int) bool {
 			if findings[i].Code != findings[j].Code {
 				return findings[i].Code < findings[j].Code
@@ -137,18 +166,24 @@ func pointer(parts []string) string {
 	}
 	return "/" + strings.Join(escaped, "/")
 }
-func flatten(err *jsonschema.ValidationError, findings *[]Finding) {
+func flatten(err *jsonschema.ValidationError, findings *[]Finding, limit int) bool {
+	if len(*findings) >= limit {
+		return true
+	}
 	if len(err.Causes) > 0 {
 		for _, cause := range err.Causes {
-			flatten(cause, findings)
+			if flatten(cause, findings, limit) {
+				return true
+			}
 		}
-		return
+		return false
 	}
 	schemaPath := err.SchemaURL
 	if keywordPath := err.ErrorKind.KeywordPath(); len(keywordPath) > 0 {
 		schemaPath = strings.TrimSuffix(schemaPath, "#") + "#" + pointer(keywordPath)
 	}
 	*findings = append(*findings, Finding{Code: "VALIDATION_FAILED", InstancePath: pointer(err.InstanceLocation), SchemaPath: schemaPath})
+	return false
 }
 
 func Admit(raw []byte) (any, error) {

@@ -383,7 +383,7 @@ func NewClient(server string, opts ...ClientOption) (*Client, error) {
 	}
 	// create httpClient, if not already present
 	if client.Client == nil {
-		client.Client = &http.Client{}
+		client.Client = &http.Client{Timeout: defaultRequestTimeout}
 	}
 	return &client, nil
 }
@@ -2289,7 +2289,7 @@ func (c *ClientWithResponses) ReserveAgentUsageWithResponse(ctx context.Context,
 
 // ParseFinalizeAgentAssetResponse parses an HTTP response from a FinalizeAgentAssetWithResponse call
 func ParseFinalizeAgentAssetResponse(rsp *http.Response) (*FinalizeAgentAssetResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
+	bodyBytes, err := readBoundedResponseBody(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
@@ -2303,28 +2303,28 @@ func ParseFinalizeAgentAssetResponse(rsp *http.Response) (*FinalizeAgentAssetRes
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest AgentArtifactV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
@@ -2356,7 +2356,7 @@ func ParseFinalizeAgentAssetResponse(rsp *http.Response) (*FinalizeAgentAssetRes
 
 // ParseReserveAgentAssetResponse parses an HTTP response from a ReserveAgentAssetWithResponse call
 func ParseReserveAgentAssetResponse(rsp *http.Response) (*ReserveAgentAssetResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
+	bodyBytes, err := readBoundedResponseBody(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
@@ -2370,28 +2370,28 @@ func ParseReserveAgentAssetResponse(rsp *http.Response) (*ReserveAgentAssetRespo
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest AgentArtifactV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
@@ -2423,7 +2423,7 @@ func ParseReserveAgentAssetResponse(rsp *http.Response) (*ReserveAgentAssetRespo
 
 // ParseCreateTargetSnapshotResponse parses an HTTP response from a CreateTargetSnapshotWithResponse call
 func ParseCreateTargetSnapshotResponse(rsp *http.Response) (*CreateTargetSnapshotResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
+	bodyBytes, err := readBoundedResponseBody(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
@@ -2437,28 +2437,28 @@ func ParseCreateTargetSnapshotResponse(rsp *http.Response) (*CreateTargetSnapsho
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest TargetSnapshotV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
@@ -2490,7 +2490,7 @@ func ParseCreateTargetSnapshotResponse(rsp *http.Response) (*CreateTargetSnapsho
 
 // ParsePersistAuthorizedPageResponse parses an HTTP response from a PersistAuthorizedPageWithResponse call
 func ParsePersistAuthorizedPageResponse(rsp *http.Response) (*PersistAuthorizedPageResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
+	bodyBytes, err := readBoundedResponseBody(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
@@ -2504,28 +2504,28 @@ func ParsePersistAuthorizedPageResponse(rsp *http.Response) (*PersistAuthorizedP
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest TargetSnapshotV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
@@ -2557,7 +2557,7 @@ func ParsePersistAuthorizedPageResponse(rsp *http.Response) (*PersistAuthorizedP
 
 // ParseCheckAgentEntitlementResponse parses an HTTP response from a CheckAgentEntitlementWithResponse call
 func ParseCheckAgentEntitlementResponse(rsp *http.Response) (*CheckAgentEntitlementResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
+	bodyBytes, err := readBoundedResponseBody(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
@@ -2571,28 +2571,28 @@ func ParseCheckAgentEntitlementResponse(rsp *http.Response) (*CheckAgentEntitlem
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
@@ -2624,7 +2624,7 @@ func ParseCheckAgentEntitlementResponse(rsp *http.Response) (*CheckAgentEntitlem
 
 // ParseObserveAgentUsageResponse parses an HTTP response from a ObserveAgentUsageWithResponse call
 func ParseObserveAgentUsageResponse(rsp *http.Response) (*ObserveAgentUsageResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
+	bodyBytes, err := readBoundedResponseBody(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
@@ -2638,28 +2638,28 @@ func ParseObserveAgentUsageResponse(rsp *http.Response) (*ObserveAgentUsageRespo
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest UsageObservationV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
@@ -2691,7 +2691,7 @@ func ParseObserveAgentUsageResponse(rsp *http.Response) (*ObserveAgentUsageRespo
 
 // ParseReconcileAgentUsageResponse parses an HTTP response from a ReconcileAgentUsageWithResponse call
 func ParseReconcileAgentUsageResponse(rsp *http.Response) (*ReconcileAgentUsageResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
+	bodyBytes, err := readBoundedResponseBody(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
@@ -2705,28 +2705,28 @@ func ParseReconcileAgentUsageResponse(rsp *http.Response) (*ReconcileAgentUsageR
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest AgentBudgetV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
@@ -2758,7 +2758,7 @@ func ParseReconcileAgentUsageResponse(rsp *http.Response) (*ReconcileAgentUsageR
 
 // ParseReserveAgentUsageResponse parses an HTTP response from a ReserveAgentUsageWithResponse call
 func ParseReserveAgentUsageResponse(rsp *http.Response) (*ReserveAgentUsageResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
+	bodyBytes, err := readBoundedResponseBody(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
@@ -2772,28 +2772,28 @@ func ParseReserveAgentUsageResponse(rsp *http.Response) (*ReserveAgentUsageRespo
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest AgentBudgetV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON400 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest ProblemDetailsV1
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+		if err := decodeStrictResponseJSON(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.ApplicationproblemJSON422 = &dest
@@ -2821,4 +2821,94 @@ func ParseReserveAgentUsageResponse(rsp *http.Response) (*ReserveAgentUsageRespo
 	}
 
 	return response, nil
+}
+
+const (
+	defaultRequestTimeout    = 30 * time.Second
+	maximumResponseBodyBytes = int64(8 * 1024 * 1024)
+)
+
+func readBoundedResponseBody(body io.Reader) ([]byte, error) {
+	raw, err := io.ReadAll(io.LimitReader(body, maximumResponseBodyBytes+1))
+	if err != nil {
+		return nil, err
+	}
+	if int64(len(raw)) > maximumResponseBodyBytes {
+		return nil, fmt.Errorf("response body exceeds %d bytes", maximumResponseBodyBytes)
+	}
+	return raw, nil
+}
+
+func decodeStrictResponseJSON(raw []byte, target any) error {
+	if bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		return fmt.Errorf("response JSON must not be null")
+	}
+	if err := rejectDuplicateJSONNames(raw); err != nil {
+		return err
+	}
+	decoder := json.NewDecoder(bytes.NewReader(raw))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(target); err != nil {
+		return err
+	}
+	if err := decoder.Decode(&struct{}{}); err != io.EOF {
+		return fmt.Errorf("response contains a trailing JSON value")
+	}
+	return nil
+}
+
+func rejectDuplicateJSONNames(raw []byte) error {
+	decoder := json.NewDecoder(bytes.NewReader(raw))
+	if err := scanJSONValue(decoder, 0); err != nil {
+		return err
+	}
+	if _, err := decoder.Token(); err != io.EOF {
+		return fmt.Errorf("response contains a trailing JSON value")
+	}
+	return nil
+}
+
+func scanJSONValue(decoder *json.Decoder, depth int) error {
+	if depth > 64 {
+		return fmt.Errorf("response JSON exceeds the nesting limit")
+	}
+	token, err := decoder.Token()
+	if err != nil {
+		return err
+	}
+	delimiter, ok := token.(json.Delim)
+	if !ok {
+		return nil
+	}
+	switch delimiter {
+	case '{':
+		seen := map[string]struct{}{}
+		for decoder.More() {
+			nameToken, err := decoder.Token()
+			if err != nil {
+				return err
+			}
+			name, ok := nameToken.(string)
+			if !ok {
+				return fmt.Errorf("response JSON object name is invalid")
+			}
+			if _, duplicate := seen[name]; duplicate {
+				return fmt.Errorf("response JSON contains duplicate field %q", name)
+			}
+			seen[name] = struct{}{}
+			if err := scanJSONValue(decoder, depth+1); err != nil {
+				return err
+			}
+		}
+	case '[':
+		for decoder.More() {
+			if err := scanJSONValue(decoder, depth+1); err != nil {
+				return err
+			}
+		}
+	default:
+		return fmt.Errorf("response JSON delimiter is invalid")
+	}
+	_, err = decoder.Token()
+	return err
 }

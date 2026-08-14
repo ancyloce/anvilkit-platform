@@ -2,9 +2,12 @@
 
 package schema
 
+import "bytes"
 import "encoding/json"
 import "fmt"
+import "io"
 import "reflect"
+import "strings"
 import "regexp"
 import "time"
 import "unicode/utf8"
@@ -66,6 +69,9 @@ var enumValues_AgentArtifactV1Kind = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentArtifactV1Kind) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -108,6 +114,9 @@ var enumValues_AgentArtifactV1Lifecycle = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentArtifactV1Lifecycle) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -145,6 +154,9 @@ type AgentArtifactV1Producer struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentArtifactV1Producer) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -207,6 +219,9 @@ type AgentArtifactV1Reference struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentArtifactV1Reference) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -296,6 +311,9 @@ var enumValues_AgentArtifactV1ValidationChecksElemResult = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentArtifactV1ValidationChecksElemResult) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -316,6 +334,9 @@ func (j *AgentArtifactV1ValidationChecksElemResult) UnmarshalJSON(value []byte) 
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentArtifactV1ValidationChecksElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -349,6 +370,9 @@ func (j *AgentArtifactV1ValidationChecksElem) UnmarshalJSON(value []byte) error 
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentArtifactV1Validation) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -376,6 +400,9 @@ func (j *AgentArtifactV1Validation) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentArtifactV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -471,6 +498,9 @@ type AgentBudgetV1CurrencyLimits struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentBudgetV1CurrencyLimits) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -504,6 +534,9 @@ var enumValues_AgentBudgetV1ExceedBehavior = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentBudgetV1ExceedBehavior) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -530,6 +563,9 @@ type AgentBudgetV1GpuLimits struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentBudgetV1GpuLimits) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -563,6 +599,9 @@ type AgentBudgetV1ModelLimits struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentBudgetV1ModelLimits) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -607,6 +646,9 @@ type AgentBudgetV1TokenLimits struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentBudgetV1TokenLimits) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -658,6 +700,9 @@ type AgentBudgetV1WorkerLimits struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentBudgetV1WorkerLimits) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -691,6 +736,9 @@ func (j *AgentBudgetV1WorkerLimits) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentBudgetV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -793,6 +841,9 @@ var enumValues_AgentDefinitionV1Domain = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentDefinitionV1Domain) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -831,6 +882,9 @@ var enumValues_AgentDefinitionV1StopConditionsElem = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentDefinitionV1StopConditionsElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -860,6 +914,9 @@ type AgentDefinitionV1ToolProfile struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentDefinitionV1ToolProfile) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -890,6 +947,9 @@ func (j *AgentDefinitionV1ToolProfile) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentDefinitionV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -1029,6 +1089,9 @@ var enumValues_AgentEventV1EventType = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentEventV1EventType) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1049,6 +1112,9 @@ func (j *AgentEventV1EventType) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentEventV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -1173,6 +1239,9 @@ var enumValues_AgentRunV1Domain = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentRunV1Domain) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1207,6 +1276,9 @@ var enumValues_AgentRunV1Operation = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentRunV1Operation) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1267,6 +1339,9 @@ var enumValues_AgentRunV1Status = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentRunV1Status) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1287,6 +1362,9 @@ func (j *AgentRunV1Status) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentRunV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -1435,6 +1513,9 @@ var enumValues_AgentTaskV1CapabilityVersion = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentTaskV1CapabilityVersion) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1462,6 +1543,9 @@ var enumValues_AgentTaskV1Capability = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentTaskV1Capability) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1504,6 +1588,9 @@ var enumValues_AgentTaskV1ResourcesResourceClass = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentTaskV1ResourcesResourceClass) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1524,6 +1611,9 @@ func (j *AgentTaskV1ResourcesResourceClass) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentTaskV1Resources) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -1551,6 +1641,9 @@ func (j *AgentTaskV1Resources) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *AgentTaskV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -1683,6 +1776,9 @@ type ApplyAuthorizationV1 struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ApplyAuthorizationV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -1821,6 +1917,9 @@ var enumValues_ApprovalRequestV1AllowedDecisionsElem = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ApprovalRequestV1AllowedDecisionsElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1868,6 +1967,9 @@ var enumValues_ApprovalRequestV1EffectsElemEffectType = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ApprovalRequestV1EffectsElemEffectType) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1888,6 +1990,9 @@ func (j *ApprovalRequestV1EffectsElemEffectType) UnmarshalJSON(value []byte) err
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ApprovalRequestV1EffectsElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -1958,6 +2063,9 @@ var enumValues_ApprovalRequestV1ResumeState = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ApprovalRequestV1ResumeState) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -1978,6 +2086,9 @@ func (j *ApprovalRequestV1ResumeState) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ApprovalRequestV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2091,6 +2202,9 @@ var enumValues_CompiledContextV1ClassificationsElem = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *CompiledContextV1ClassificationsElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -2145,6 +2259,9 @@ var enumValues_CompiledContextV1OrderedTrustLayersElemClassification = []interfa
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *CompiledContextV1OrderedTrustLayersElemClassification) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -2165,6 +2282,9 @@ func (j *CompiledContextV1OrderedTrustLayersElemClassification) UnmarshalJSON(va
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *CompiledContextV1OrderedTrustLayersElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2221,6 +2341,9 @@ type CompiledContextV1Redaction struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *CompiledContextV1Redaction) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2274,6 +2397,9 @@ type CompiledContextV1TokenBudgets struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *CompiledContextV1TokenBudgets) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2334,6 +2460,9 @@ func (j *CompiledContextV1TokenBudgets) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *CompiledContextV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2433,6 +2562,9 @@ type ComponentPackageSpecV1OutputsElem struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ComponentPackageSpecV1OutputsElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2497,6 +2629,9 @@ var enumValues_ComponentPackageSpecV1PackageIntentComponentType = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ComponentPackageSpecV1PackageIntentComponentType) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -2517,6 +2652,9 @@ func (j *ComponentPackageSpecV1PackageIntentComponentType) UnmarshalJSON(value [
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ComponentPackageSpecV1PackageIntent) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2559,6 +2697,9 @@ func (j *ComponentPackageSpecV1PackageIntent) UnmarshalJSON(value []byte) error 
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ComponentPackageSpecV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2645,6 +2786,9 @@ type ContractRevocationSnapshotV1RevokedKeysElem struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ContractRevocationSnapshotV1RevokedKeysElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2684,6 +2828,9 @@ func (j *ContractRevocationSnapshotV1RevokedKeysElem) UnmarshalJSON(value []byte
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ContractRevocationSnapshotV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2780,6 +2927,9 @@ type ContractSignatureStatementV1Subject struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ContractSignatureStatementV1Subject) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2840,6 +2990,9 @@ func (j *ContractSignatureStatementV1Subject) UnmarshalJSON(value []byte) error 
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ContractSignatureStatementV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -2968,6 +3121,9 @@ var enumValues_ContractTrustRootV1KeysElemAlgorithmsElem = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ContractTrustRootV1KeysElemAlgorithmsElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -2999,6 +3155,9 @@ type ContractTrustRootV1KeysElemPublicKeyJwk struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ContractTrustRootV1KeysElemPublicKeyJwk) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3046,6 +3205,9 @@ var enumValues_ContractTrustRootV1KeysElemStatus = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ContractTrustRootV1KeysElemStatus) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -3066,6 +3228,9 @@ func (j *ContractTrustRootV1KeysElemStatus) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ContractTrustRootV1KeysElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3135,6 +3300,9 @@ func (j *ContractTrustRootV1KeysElem) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ContractTrustRootV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3318,6 +3486,9 @@ var enumValues_ImageOperationPlanV1OperationsElemOperationType = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ImageOperationPlanV1OperationsElemOperationType) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -3338,6 +3509,9 @@ func (j *ImageOperationPlanV1OperationsElemOperationType) UnmarshalJSON(value []
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ImageOperationPlanV1OperationsElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3373,6 +3547,9 @@ type ImageOperationPlanV1OutputsElem struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ImageOperationPlanV1OutputsElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3421,6 +3598,9 @@ func (j *ImageOperationPlanV1OutputsElem) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ImageOperationPlanV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3545,6 +3725,9 @@ var enumValues_InputRequestV1ResumeState = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *InputRequestV1ResumeState) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -3565,6 +3748,9 @@ func (j *InputRequestV1ResumeState) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *InputRequestV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3663,6 +3849,9 @@ type ProblemDetailsV1FieldErrorsElem struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ProblemDetailsV1FieldErrorsElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3743,6 +3932,9 @@ var enumValues_ProblemDetailsV1Retryability = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ProblemDetailsV1Retryability) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -3763,6 +3955,9 @@ func (j *ProblemDetailsV1Retryability) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ProblemDetailsV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3872,6 +4067,9 @@ var enumValues_ProviderContinuationV1RestartPolicy = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ProviderContinuationV1RestartPolicy) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -3892,6 +4090,9 @@ func (j *ProviderContinuationV1RestartPolicy) UnmarshalJSON(value []byte) error 
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ProviderContinuationV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -3957,6 +4158,9 @@ type SharedPrimitivesV1ArtifactReference struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1ArtifactReference) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4016,6 +4220,9 @@ type SharedPrimitivesV1ContractBomReferenceV1 struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1ContractBomReferenceV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4060,6 +4267,9 @@ type SharedPrimitivesV1Cost struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1Cost) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4092,6 +4302,9 @@ type SharedPrimitivesV1Cursor string
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1Cursor) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	type Plain SharedPrimitivesV1Cursor
 	var plain Plain
 	if err := json.Unmarshal(value, &plain); err != nil {
@@ -4114,6 +4327,9 @@ type SharedPrimitivesV1DecimalString string
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1DecimalString) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	type Plain SharedPrimitivesV1DecimalString
 	var plain Plain
 	if err := json.Unmarshal(value, &plain); err != nil {
@@ -4227,6 +4443,9 @@ type SharedPrimitivesV1DefinitionSet struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1DefinitionSet) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4334,6 +4553,9 @@ type SharedPrimitivesV1Digest string
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1Digest) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	type Plain SharedPrimitivesV1Digest
 	var plain Plain
 	if err := json.Unmarshal(value, &plain); err != nil {
@@ -4366,6 +4588,9 @@ type SharedPrimitivesV1Idempotency struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1Idempotency) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4410,6 +4635,9 @@ type SharedPrimitivesV1IntegerString string
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1IntegerString) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	type Plain SharedPrimitivesV1IntegerString
 	var plain Plain
 	if err := json.Unmarshal(value, &plain); err != nil {
@@ -4432,6 +4660,9 @@ type SharedPrimitivesV1OpaqueId string
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1OpaqueId) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	type Plain SharedPrimitivesV1OpaqueId
 	var plain Plain
 	if err := json.Unmarshal(value, &plain); err != nil {
@@ -4463,6 +4694,9 @@ type SharedPrimitivesV1PageInfo struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1PageInfo) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4501,6 +4735,9 @@ type SharedPrimitivesV1PolicyReference struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1PolicyReference) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4551,6 +4788,9 @@ type SharedPrimitivesV1ResourceLimits struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1ResourceLimits) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4622,6 +4862,9 @@ type SharedPrimitivesV1SchemaReference struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1SchemaReference) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4675,6 +4918,9 @@ type SharedPrimitivesV1TargetReference struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1TargetReference) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4724,6 +4970,9 @@ type SharedPrimitivesV1TraceAndScope struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1TraceAndScope) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4759,6 +5008,9 @@ type SharedPrimitivesV1TraceContext struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1TraceContext) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4797,6 +5049,9 @@ func (j *SharedPrimitivesV1TraceContext) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *SharedPrimitivesV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4842,6 +5097,9 @@ type TargetSnapshotV1 struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *TargetSnapshotV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -4937,6 +5195,9 @@ var enumValues_ToolDefinitionV1AcceptedDataClassesElem = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ToolDefinitionV1AcceptedDataClassesElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -4978,6 +5239,9 @@ var enumValues_ToolDefinitionV1CapabilityVersion = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ToolDefinitionV1CapabilityVersion) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -5005,6 +5269,9 @@ var enumValues_ToolDefinitionV1Capability = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ToolDefinitionV1Capability) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -5048,6 +5315,9 @@ var enumValues_ToolDefinitionV1RetryPolicyRetryabilityElem = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ToolDefinitionV1RetryPolicyRetryabilityElem) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -5068,6 +5338,9 @@ func (j *ToolDefinitionV1RetryPolicyRetryabilityElem) UnmarshalJSON(value []byte
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ToolDefinitionV1RetryPolicy) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -5121,6 +5394,9 @@ var enumValues_ToolDefinitionV1RiskClass = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ToolDefinitionV1RiskClass) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -5155,6 +5431,9 @@ var enumValues_ToolDefinitionV1SideEffectClass = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ToolDefinitionV1SideEffectClass) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -5180,6 +5459,9 @@ type ToolDefinitionV1TimeoutPolicy struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ToolDefinitionV1TimeoutPolicy) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -5204,6 +5486,9 @@ func (j *ToolDefinitionV1TimeoutPolicy) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *ToolDefinitionV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -5343,6 +5628,9 @@ var enumValues_UsageObservationV1Meter = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *UsageObservationV1Meter) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -5371,6 +5659,9 @@ type UsageObservationV1Source struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *UsageObservationV1Source) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -5408,6 +5699,9 @@ var enumValues_UsageObservationV1Unit = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *UsageObservationV1Unit) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -5428,6 +5722,9 @@ func (j *UsageObservationV1Unit) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *UsageObservationV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -5557,6 +5854,9 @@ type WorkerLeaseV1 struct {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *WorkerLeaseV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -5703,6 +6003,9 @@ var enumValues_WorkerResultV1Capability = []interface{}{
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *WorkerResultV1Capability) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var v string
 	if err := json.Unmarshal(value, &v); err != nil {
 		return err
@@ -5723,6 +6026,9 @@ func (j *WorkerResultV1Capability) UnmarshalJSON(value []byte) error {
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *WorkerResultV1) UnmarshalJSON(value []byte) error {
+	if err := rejectUnknownJSONFields(value, reflect.TypeOf(*j)); err != nil {
+		return err
+	}
 	var raw map[string]interface{}
 	if err := json.Unmarshal(value, &raw); err != nil {
 		return err
@@ -5802,5 +6108,112 @@ func (j *WorkerResultV1) UnmarshalJSON(value []byte) error {
 		return fmt.Errorf("field %s length: must be <= %d", "warnings", 32)
 	}
 	*j = WorkerResultV1(plain)
+	return nil
+}
+
+func rejectUnknownJSONFields(value []byte, target reflect.Type) error {
+	if target.Kind() != reflect.Struct {
+		return nil
+	}
+	if err := rejectDuplicateJSONNames(value); err != nil {
+		return err
+	}
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(value, &raw); err != nil {
+		return err
+	}
+	if raw == nil {
+		return fmt.Errorf("%s must be a JSON object", target.Name())
+	}
+	allowed := make(map[string]struct{}, target.NumField())
+	for index := 0; index < target.NumField(); index++ {
+		tag := target.Field(index).Tag.Get("json")
+		name := strings.SplitN(tag, ",", 2)[0]
+		if name != "" && name != "-" {
+			allowed[name] = struct{}{}
+		}
+	}
+	for name := range raw {
+		if _, ok := allowed[name]; !ok {
+			return fmt.Errorf("unknown field %q for %s", name, target.Name())
+		}
+	}
+	return nil
+}
+
+func rejectDuplicateJSONNames(raw []byte) error {
+	decoder := json.NewDecoder(bytes.NewReader(raw))
+	if err := scanJSONValue(decoder, 0); err != nil {
+		return err
+	}
+	if _, err := decoder.Token(); err != io.EOF {
+		return fmt.Errorf("schema value contains a trailing JSON value")
+	}
+	return nil
+}
+
+func scanJSONValue(decoder *json.Decoder, depth int) error {
+	if depth > 64 {
+		return fmt.Errorf("schema JSON exceeds the nesting limit")
+	}
+	token, err := decoder.Token()
+	if err != nil {
+		return err
+	}
+	delimiter, ok := token.(json.Delim)
+	if !ok {
+		return nil
+	}
+	switch delimiter {
+	case '{':
+		seen := map[string]struct{}{}
+		for decoder.More() {
+			nameToken, err := decoder.Token()
+			if err != nil {
+				return err
+			}
+			name, ok := nameToken.(string)
+			if !ok {
+				return fmt.Errorf("schema JSON object name is invalid")
+			}
+			if _, duplicate := seen[name]; duplicate {
+				return fmt.Errorf("schema JSON contains duplicate field %q", name)
+			}
+			seen[name] = struct{}{}
+			if err := scanJSONValue(decoder, depth+1); err != nil {
+				return err
+			}
+		}
+	case '[':
+		for decoder.More() {
+			if err := scanJSONValue(decoder, depth+1); err != nil {
+				return err
+			}
+		}
+	default:
+		return fmt.Errorf("schema JSON delimiter is invalid")
+	}
+	_, err = decoder.Token()
+	return err
+}
+
+// UnmarshalJSON enforces the bounds declared by BoundedStringMap.
+func (j *SharedPrimitivesV1BoundedStringMap) UnmarshalJSON(value []byte) error {
+	var plain map[string]string
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	if plain == nil {
+		return fmt.Errorf("bounded string map must be a JSON object")
+	}
+	if len(plain) > 32 {
+		return fmt.Errorf("bounded string map must contain at most 32 properties")
+	}
+	for key, item := range plain {
+		if utf8.RuneCountInString(item) > 1024 {
+			return fmt.Errorf("bounded string map value %q exceeds 1024 characters", key)
+		}
+	}
+	*j = plain
 	return nil
 }

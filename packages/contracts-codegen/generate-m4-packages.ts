@@ -20,6 +20,7 @@ import {
   normalizeOpenApiForGeneration,
   type JsonObject,
 } from "./spec-normalization.ts";
+import { hardenGeneratedGo } from "./go-generated-hardening.ts";
 
 const ROOT = join(import.meta.dir, "..", "..");
 const LOCK = JSON.parse(readFileSync(join(import.meta.dir, "m4-generators.lock.json"), "utf8"));
@@ -119,6 +120,7 @@ async function generateGo(): Promise<void> {
     const packageName = name === "agent-service" ? "agentclient" : "pagixclient";
     run(process.env.OAPI_CODEGEN ?? "oapi-codegen", ["-generate", "types,client", "-package", packageName, projectedOpenApi.get(name)!], join(output, packageName, "client.gen.go"));
   }
+  hardenGeneratedGo(output);
   write(join(output, "trace.json"), trace("go", output, ["goOpenApi", "goJsonSchema"]));
 }
 

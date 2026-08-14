@@ -125,15 +125,15 @@
   "rootBomIdentity": "sha256:2b0f5a1f42bcf399d640deb60df4597f9ed18d8fe22d52b7f5d4a5638fdc2018",
   "rootBomState": "composed-candidate-unpublished",
   "output": {
-    "bytes": 478386,
+    "bytes": 495976,
     "files": 3,
-    "sha256": "3b4617bb7223986528c0b828da45ffa1d0cc76b274cb454d4ad86f595a871acd",
+    "sha256": "475fc8d2c70862f791f4b60ae0b75ee02f3a6d71aaafc057f82f6b7ef381e9a4",
     "directories": [
       {
         "directory": "generated",
-        "bytes": 478386,
+        "bytes": 495976,
         "files": 3,
-        "sha256": "7cf556f18be22b1e1827b4c647739658a8e8e3444c65dd8aae783f917751c749"
+        "sha256": "baef694466f19140753f97249677f21e451514ddb4c6b871ef2f3134c31bba01"
       }
     ]
   }
