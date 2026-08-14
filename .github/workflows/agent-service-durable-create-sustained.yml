@@ -1,0 +1,50 @@
+name: agent-service-durable-create-sustained
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  create-latency:
+    name: Sustained durable-create proof
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: agent-service-ci
+          POSTGRES_DB: agent_service_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d agent_service_ci"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: services/agent-service/go.mod
+      - name: Run approved 15-minute 20/s durable-create proof
+        working-directory: services/agent-service
+        env:
+          POSTGRES_TEST_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
+          DURABLE_CREATE_LOAD_TEST: "1"
+          DURABLE_CREATE_LOAD_DURATION: 15m
+          DURABLE_CREATE_EVIDENCE_PATH: .evidence/durable-create/create-sustained.json
+        run: go test -race -count=1 -timeout=20m -v ./internal/persistence
+      - name: Record committed service identity
+        working-directory: services/agent-service
+        run: |
+          printf '{"serviceSha":"%s","platformSha":"%s","goVersion":"%s","postgres":"17"}\n' "$(git rev-parse HEAD)" "${GITHUB_SHA}" "$(go env GOVERSION)" > .evidence/durable-create/environment.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agent-service-durable-create-sustained-${{ github.sha }}
+          path: services/agent-service/.evidence/durable-create
+          if-no-files-found: error

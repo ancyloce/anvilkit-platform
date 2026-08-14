@@ -43,6 +43,8 @@ jobs:
         run: bun packages/contracts-codegen/check-freeze.ts
       - name: Agent contract M0 governance baseline
         run: bun packages/contracts-codegen/check-m0.ts
+      - name: Agent Service M0 gate register and review guard
+        run: bun packages/contracts-codegen/check-agent-service-m0.ts
       - name: DP-008 benchmark method and corpus
         run: bun packages/contracts-codegen/benchmark-m0.ts --validate
       - name: Agent contract M1 source profile and registries
@@ -133,10 +135,80 @@ jobs:
         run: bun packages/contracts-codegen/check-m6.ts
       - name: Agent generation-aware freeze
         run: bun packages/contracts-codegen/check-agent-freeze.ts
+      - name: Agent Service pinned client and schema drift
+        working-directory: services/agent-service
+        run: bash scripts/check-contract-drift.sh
       - name: No codegen drift (platform)
         run: git diff --exit-code
       - name: No codegen drift (worker submodule)
         run: git -C services/export-worker diff --exit-code
+      - name: No contract intake drift (agent-service submodule)
+        run: git -C services/agent-service diff --exit-code
+
+  agent-service:
+    name: Agent Service (boundary, vet, race, integration, build)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: agent-service-ci
+          POSTGRES_DB: agent_service_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d agent_service_ci"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: services/agent-service/go.mod
+      - uses: golangci/golangci-lint-action@v8
+        with:
+          working-directory: services/agent-service
+      - name: Format, vet, boundaries, contract drift, race tests, and build
+        working-directory: services/agent-service
+        run: make ci
+      - name: Postgres persistence, concurrency, replay, and create-latency proofs
+        working-directory: services/agent-service
+        env:
+          POSTGRES_TEST_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
+          DURABLE_CREATE_LOAD_TEST: "1"
+          DURABLE_CREATE_LOAD_DURATION: 25s
+          DURABLE_CREATE_EVIDENCE_PATH: .evidence/durable-create/create-floor.json
+        run: go test -race -count=1 -v ./internal/persistence ./internal/journal/postgres
+      - name: DBOS durable-step, wait, cancel, and two-executor proofs
+        working-directory: services/agent-service
+        env:
+          DBOS_TEST_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
+        run: go test -race -count=1 ./internal/workflow/dbos
+      - name: DBOS subprocess SIGKILL, recovery, and pinned-load proof
+        working-directory: services/agent-service
+        env:
+          DBOS_SYSTEM_DATABASE_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
+          DBOS_JOURNAL_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
+        run: bash scripts/dbos-proof.sh
+      - name: Retain committed-SHA evidence manifests
+        working-directory: services/agent-service
+        run: |
+          mkdir -p .evidence/runtime .evidence/durable-create
+          printf '{"schemaVersion":1,"serviceSha":"%s","postgres":"17","goVersion":"%s","race":true,"lint":true,"boundaryCheck":true,"contractDrift":true,"workflowFailover":true}\n' "$(git rev-parse HEAD)" "$(go env GOVERSION)" > .evidence/runtime/ci-manifest.json
+          printf '{"schemaVersion":1,"serviceSha":"%s","platformSha":"%s","postgres":"17","goVersion":"%s","classification":"minimum-traffic-floor-precheck"}\n' "$(git rev-parse HEAD)" "${GITHUB_SHA}" "$(go env GOVERSION)" > .evidence/durable-create/environment.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agent-service-runtime-evidence-${{ github.sha }}
+          path: services/agent-service/.evidence/runtime/ci-manifest.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agent-service-durable-create-floor-evidence-${{ github.sha }}
+          path: services/agent-service/.evidence/durable-create
+          if-no-files-found: error
 
   worker:
     name: Worker (lint, vet, unit + integration, build)
@@ -247,6 +319,10 @@ jobs:
           go-version-file: services/export-worker/go.mod
       - name: Platform + worker dependency audit
         run: bun scripts/dependency-audit.ts
+      - name: Agent Service M8 pre-entry evidence and release-claim audit
+        run: bun scripts/agent-service-m8-audit.ts
+      - name: Agent Service M8 approved regression budgets
+        run: bun scripts/agent-service-m8-budget.ts
       - name: govulncheck (worker)
         working-directory: services/export-worker
         run: |
