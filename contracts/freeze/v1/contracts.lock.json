@@ -1082,7 +1082,13 @@
     {
       "identity": "anvilkit-m4-package-generation-v1",
       "path": "packages/contracts-codegen/generate-m4-packages.ts",
-      "sourceSha256": "e9d52b242739b856ef2f527de583b1f55a193492ec1e5ce0c7c65d30d214417b",
+      "sourceSha256": "798ed06ba3faab3d0512373d147ffb5afcd7500bdec8516213a72287ea386146",
+      "status": "source-tool"
+    },
+    {
+      "identity": "anvilkit-go-generated-security-hardening-v1",
+      "path": "packages/contracts-codegen/go-generated-hardening.ts",
+      "sourceSha256": "90cbf94979e778dfa7e1ffbf8e0d35f3c5a77b2f1be4a341bfdf159313418d41",
       "status": "source-tool"
     },
     {
@@ -1136,7 +1142,7 @@
     {
       "identity": "go-runtime-validator-jsonschema-v6.0.3",
       "path": "packages/contracts-go/validator/validator.go",
-      "sourceSha256": "feed297593ec8945e2e87ee0cf2e379ccba76e93673551e76a3116a587d5d27d",
+      "sourceSha256": "48a7ab5a83dcbdf15de1e4f39fc03f6bd18bada13b871d8b77e39b1ad355146c",
       "status": "source-tool",
       "dependencyLock": "packages/contracts-go/go.sum",
       "evidence": "contracts/governance/m0/dp008/evidence/go-json-schema-validator.json"
