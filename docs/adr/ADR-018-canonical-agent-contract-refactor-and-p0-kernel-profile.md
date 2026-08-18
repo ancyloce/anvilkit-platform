@@ -2,7 +2,7 @@
 
 | Item | Decision |
 | --- | --- |
-| Status | Proposed |
+| Status | Accepted |
 | Date | 2026-08-18 |
 | Scope | P0-Kernel |
 | Related ADR | ADR-016 |
@@ -148,7 +148,6 @@ This ADR may become Accepted only when:
 
 ## References
 
-- `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-v1.9.1-0816.md`
-- `docs/adr/016-contract-identity-signing-trust-and-clock-semantics.md`
-- `docs/adr/017-contract-compatibility-engine-and-major-version-policy.md`
-- `contracts/freeze/v1/contracts.lock.json`
+- `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-0808.md`
+- `docs/adr/ADR-016-agent-contract-signing-trust-and-revocation.md`
+- `docs/adr/ADR-017-agent-contract-compatibility-engine.md` (superseded)

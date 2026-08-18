@@ -2,7 +2,7 @@
 
 | Item | Decision |
 | --- | --- |
-| Status | Proposed |
+| Status | Accepted |
 | Date | 2026-08-18 |
 | Scope | P0-Kernel |
 | Current dependency | `github.com/dbos-inc/dbos-transact-golang v0.20.0` |
@@ -116,4 +116,4 @@ DBOS is the only durable execution engine. A custom PostgreSQL journal must not 
 - [DBOS Go v1.1.0 release](https://github.com/dbos-inc/dbos-transact-golang/releases/tag/v1.1.0)
 - [DBOS Go v1.0.0 breaking changes](https://github.com/dbos-inc/dbos-transact-golang/releases/tag/v1.0.0)
 - `services/agent-service/go.mod`
-- `docs/design/0005-agent-service-detailed-design.md`
+- `docs/design/0005-agent-service-development-design-0808.md`

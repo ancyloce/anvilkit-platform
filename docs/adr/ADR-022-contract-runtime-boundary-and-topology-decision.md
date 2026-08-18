@@ -2,7 +2,7 @@
 
 | Item | Decision |
 | --- | --- |
-| Status | Proposed |
+| Status | Accepted |
 | Date | 2026-08-18 |
 | Scope | P0-Kernel boundary and P0-Integration topology evidence |
 | Related ADR | ADR-018 |
@@ -142,6 +142,6 @@ The following do not block P0-Kernel and are selected from evidence or deploymen
 
 ## References
 
-- `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-v1.9.1-0816.md`
+- `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-0808.md`
 - ADR-018: Canonical Agent Contract Refactor and P0-Kernel Profile
 - Root `AGENTS.md` and `CLAUDE.md` production-language and repository-boundary rules

@@ -2,7 +2,7 @@
 
 | Item | Decision |
 | --- | --- |
-| Status | Proposed |
+| Status | Accepted |
 | Date | 2026-08-18 |
 | Scope | P0-Kernel |
 | Related ADR | ADR-018 |
@@ -134,6 +134,6 @@ The implementation must remove the obsolete event definitions, generated types, 
 
 ## References
 
-- `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-v1.9.1-0816.md`
-- `contracts/registries/agent-event-types.json`
+- `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-0808.md`
+- `contracts/schemas/v1/agent-event.schema.json` (legacy draft targeted for direct replacement)
 - ADR-018: Canonical Agent Contract Refactor and P0-Kernel Profile

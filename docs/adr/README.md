@@ -2,6 +2,12 @@
 
 ADR IDs follow the backlog in `docs/plans/0001-export-worker-implementation-roadmap-0701-1707.md` §13. Statuses here are the live Phase 0 decision-gate tracker (PLAN-0001 §4); AC-020 requires every BD documented and either resolved or explicitly To Be Confirmed with an owner — re-check this table at every milestone review.
 
+## Agent platform governance precedence
+
+For the controlled Agent platform, accepted ADR-016 and ADR-018 through ADR-022 have the highest architecture-governance priority. ADR-018 supersedes ADR-017. Those accepted ADRs take precedence over design 0001; design 0001 takes precedence over reconciled implementation designs 0002 through 0010; plans, runbooks, status and acceptance reports, and prior machine-readable governance evidence remain lower. A lower-authority artifact cannot restore first-party release generations, compatibility paths, migrations, or fallbacks rejected by the accepted ADRs. Existing Agent completion evidence is historical until regenerated against the canonical profile.
+
+This precedence is scoped to the Agent platform. ADR-001 remains the governing decision for the already-frozen export-worker outbound contracts until a separate decision changes that boundary.
+
 ## Phase 0 blocking decisions (BD-001..BD-009)
 
 | BD | ADR | Decision | Status (2026-07-01) | Gate it clears |
@@ -22,12 +28,12 @@ ADR IDs follow the backlog in `docs/plans/0001-export-worker-implementation-road
 | --- | --- | --- |
 | [ADR-015](ADR-015-service-naming-alignment.md) | Service naming: `anvilkit-render-worker` → `anvilkit-export-worker` on every surface | **Accepted** |
 | [ADR-016](ADR-016-agent-contract-signing-trust-and-revocation.md) | Agent contract signing, trust, revocation, and rollover profile | **Accepted design** — production integration evidence remains M7-T01 |
-| [ADR-017](ADR-017-agent-contract-compatibility-engine.md) | Repository-owned four-class Agent contract compatibility engine | **Accepted** |
-| [ADR-018](ADR-018-canonical-agent-contract-refactor-and-p0-kernel-profile.md) | Canonical greenfield Agent Contract refactor and P0-kernel profile | Proposed — supersedes ADR-017 if accepted |
-| [ADR-019](ADR-019-dbos-go-pin-and-agentrunworkflow-runtime-boundary.md) | DBOS Go dependency pin and `AgentRunWorkflow` runtime boundary | Proposed |
-| [ADR-020](ADR-020-public-agent-events-and-internal-evidence.md) | Separate stable public Agent Events from detailed internal Evidence | Proposed |
-| [ADR-021](ADR-021-agent-api-command-envelopes-and-concurrency.md) | Intent-only command envelopes, authorization carrier, and concurrency rules | Proposed |
-| [ADR-022](ADR-022-contract-runtime-boundary-and-topology-decision.md) | Contract Runtime security boundary and evidence-driven topology decision | Proposed |
+| [ADR-017](ADR-017-agent-contract-compatibility-engine.md) | Repository-owned four-class Agent contract compatibility engine | **Superseded by ADR-018** |
+| [ADR-018](ADR-018-canonical-agent-contract-refactor-and-p0-kernel-profile.md) | Canonical greenfield Agent Contract refactor and P0-kernel profile | **Accepted** |
+| [ADR-019](ADR-019-dbos-go-pin-and-agentrunworkflow-runtime-boundary.md) | DBOS Go dependency pin and `AgentRunWorkflow` runtime boundary | **Accepted** |
+| [ADR-020](ADR-020-public-agent-events-and-internal-evidence.md) | Separate stable public Agent Events from detailed internal Evidence | **Accepted** |
+| [ADR-021](ADR-021-agent-api-command-envelopes-and-concurrency.md) | Intent-only command envelopes, authorization carrier, and concurrency rules | **Accepted** |
+| [ADR-022](ADR-022-contract-runtime-boundary-and-topology-decision.md) | Contract Runtime security boundary and evidence-driven topology decision | **Accepted** — topology selection remains evidence-driven at P0-Integration |
 | [ADR-010](ADR-010-demo-guard-mechanism.md) | Demo guard: `ENVIRONMENT`-driven strictness + hostname/loopback denylist; also gates `WORKER_DRY_RUN` | **Accepted** — implemented + T-demo-guard (M2) |
 | [ADR-011](ADR-011-queue-retention-and-replay.md) | Queue retention floors (24 h/72 h/7 d) + manual DLQ replay procedure | Proposed — ops sign-off pending (AC-031; before broad rollout) |
 | [ADR-012](ADR-012-kubernetes-sizing-and-scaling.md) | K8s sizing: 2 replicas, §18 starting resources; manual scaling MVP, HPA evaluated after staging profiling | **Accepted as proposed defaults** — staging validation pending |

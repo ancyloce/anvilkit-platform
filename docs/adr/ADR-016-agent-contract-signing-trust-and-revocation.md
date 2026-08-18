@@ -14,7 +14,7 @@ Contract BOM releases need an auditable, fail-closed trust model. The repository
 
 ## Decision
 
-- Release statements use standard single-signature DSSE with Ed25519 and a canonical `ContractSignatureStatementV1` payload. Apply authorizations use compact JWS EdDSA with only `alg`, `kid`, and `typ` protected headers.
+- Release statements use standard single-signature DSSE with Ed25519 and a canonical `ContractSignatureStatement` payload. Apply authorizations use compact JWS EdDSA with only `alg`, `kid`, and `typ` protected headers.
 - Production private keys are non-exportable and live in an approved KMS/HSM or isolated signing service. Workload identity, least privilege, audited use, and dual control apply to release signing.
 - Trust roots and revocation snapshots are signed, content-addressed, distributed independently of payload-selected metadata, and cached only within their declared freshness bounds.
 - A key is usable only when issuer, audience, algorithm, purpose, validity interval, status, and signed key ID all match the pinned policy. Unknown, stale, revoked, or ambiguous state fails closed.

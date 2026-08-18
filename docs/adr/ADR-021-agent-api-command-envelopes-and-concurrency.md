@@ -2,7 +2,7 @@
 
 | Item | Decision |
 | --- | --- |
-| Status | Proposed |
+| Status | Accepted |
 | Date | 2026-08-18 |
 | Scope | P0-Kernel and P0-Integration |
 | Related ADRs | ADR-016, ADR-018, ADR-020 |
@@ -176,4 +176,4 @@ The refactor must delete endpoints and generated models that accept complete Age
 - ADR-016: Contract identity, signing, trust, and clock semantics
 - ADR-018: Canonical Agent Contract Refactor and P0-Kernel Profile
 - ADR-020: Public Agent Events and Internal Evidence
-- `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-v1.9.1-0816.md`
+- `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-0808.md`
