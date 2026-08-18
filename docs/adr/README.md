@@ -39,6 +39,7 @@ This precedence is scoped to the Agent platform. ADR-001 remains the governing d
 | [ADR-012](ADR-012-kubernetes-sizing-and-scaling.md) | K8s sizing: 2 replicas, §18 starting resources; manual scaling MVP, HPA evaluated after staging profiling | **Accepted as proposed defaults** — staging validation pending |
 | [ADR-014](ADR-014-load-testing-driver.md) | Load driver: custom Go driver (`mocks/cmd/load-driver`) over k6 | **Accepted** — implemented + exercised (see docs/acceptance/load-test-report.md) |
 | [ADR-013](ADR-013-rate-limiting-and-guardrails.md) | Broad-rollout guardrail: basic per-site in-flight cap (delay-not-fail, reuses the pending semantics); global-only rejected | Proposed — Product confirmation + implementation pending (**broad-rollout gate**) |
+| [ADR-023](ADR-023-local-only-documentation-and-freeze-anchoring.md) | Local-only documentation policy: only `docs/adr/` is Git-tracked; other governance documents are local-only and anchored by SHA-256 freeze manifests | **Accepted** |
 
 ## Preserved hard gates (source conditional baseline — PLAN-0001 §4)
 
