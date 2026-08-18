@@ -1,6 +1,6 @@
 [submodule "services/export-worker"]
 	path = services/export-worker
-	url = https://github.com/ancyloce/anvilkit-export-worker
+	url = https://github.com/ancyloce/anvilkit-export-worker.git
 [submodule "services/agent-service"]
 	path = services/agent-service
 	url = https://github.com/ancyloce/anvilkit-agent-service.git
