@@ -2,16 +2,17 @@
 
 ## Project Structure & Module Organization
 
-This is a Go-first backend monorepo. Production code lives in `services/export-worker/` (a pinned Git submodule); its entry point is `cmd/export-worker`, business packages are under `internal/`, and generated bindings are under `contracts/`. Repository-level integration schemas and fixtures live in `contracts/`. `mocks/` is a separate Go module for contract-conformant service doubles. Bun tooling lives in `packages/contracts-codegen/`, local Docker/Kubernetes/observability assets in `infra/`, automation in `scripts/`, and architecture, plans, and runbooks in `docs/`. Treat `docs/prd/` as read-only authority.
+This is a Go-first backend monorepo. Platform-owned production code lives in the pinned `services/agent-service/` and `services/export-worker/` Git submodules. Each service keeps its entry point and business packages in its own checkout. Repository-level contracts, schemas, registries, profiles, and fixtures live in `contracts/`; generated service bindings are changed only through the owning generator flow. `mocks/` is a separate Go module for contract-conformant service doubles. Bun tooling lives in `packages/contracts-codegen/`, local Docker/Kubernetes/observability assets in `infra/`, automation in `scripts/`, and architecture, plans, and runbooks in `docs/`. Treat `docs/prd/` as read-only product authority; accepted ADRs govern the architectural means used to satisfy those requirements.
 
 ## Build, Test, and Development Commands
 
-- `git submodule update --init --recursive` initializes the worker checkout.
+- `git submodule update --init --recursive` initializes both service checkouts.
 - `bun install` installs the pinned Bun workspace dependencies.
+- `make -C services/agent-service all` checks formatting, vet, boundaries, contract drift, race tests, and the Agent Service build.
 - `make -C services/export-worker all` vets, race-tests, and builds the worker.
 - `(cd mocks && go test -race -count=1 ./...)` runs mock conformance tests.
 - `bun packages/contracts-codegen/generate.ts` validates fixtures and regenerates Go bindings.
-- `bun packages/contracts-codegen/check-freeze.ts` verifies frozen contract hashes.
+- `bun packages/contracts-codegen/check-freeze.ts` verifies the currently governed lock manifests, including legacy export contracts until their separate governance changes.
 - `bun scripts/dependency-audit.ts` enforces language and dependency boundaries.
 - `docker compose -f infra/docker-compose.yml up -d --build` starts Redis, MinIO, mocks, and the worker; `./scripts/acceptance.sh` exercises the running stack.
 
@@ -25,7 +26,9 @@ Use Go's `testing` package and name files `*_test.go`; integration suites use `*
 
 ## Contracts, Security & Boundaries
 
-Never edit `services/export-worker/contracts/` directly; change `contracts/` and regenerate. Frozen `v1` changes require an intentional `--update-lock`; breaking changes require a new version. Do not add frontend dependencies, cross-repository source imports, external service implementations, databases, or secrets. New submodules require team confirmation.
+Never edit generated service bindings directly; change the repository-owned contract source and regenerate. Agent contracts follow ADR-018: one canonical non-versioned first-party contract set, atomic pre-release refactors, no release-generation suffixes or compatibility adapters, and a reviewed lock/Profile update in the same change. Legacy export-worker contracts governed by ADR-001 remain frozen under their existing rules until a separate ADR changes that scope. Do not add frontend dependencies, cross-repository source imports, non-Platform external service implementations, databases, or secrets. New submodules require team confirmation.
+
+Accepted governance authority is ADR-016 and ADR-018 through ADR-022, followed by `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-0808.md`. ADR-017 is superseded. Reconciled designs `0002` through `0010` are lower-order implementation authority within their assigned boundaries and cannot override an ADR or design 0001. Plans, runbooks, acceptance reports, and prior machine-readable governance evidence remain subordinate. Existing Agent evidence remains historical until regenerated against the canonical profile.
 
 ## Commit & Pull Request Guidelines
 
