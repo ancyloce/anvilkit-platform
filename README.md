@@ -202,7 +202,7 @@ anvilkit-platform/
 ├── mocks/        # External-service doubles and deterministic test harnesses
 ├── infra/        # Local Compose stack, fixtures, retention, and replay support
 ├── scripts/      # Repository-level CI gates and automation scripts
-├── docs/         # Versioned architecture decision records
+├── docs/         # Architecture, PRDs, plans, acceptance evidence, and runbooks
 ├── .github/      # GitHub Actions workflows
 ├── bun.lock      # Bun lockfile
 ├── package.json  # Workspace package manifest
@@ -220,10 +220,10 @@ anvilkit-platform/
 | `mocks/`     | Go module for external-service doubles and deterministic test harnesses |
 | `infra/`     | Local Compose stack, fixtures, retention, and replay support |
 | `scripts/`   | Repository-level CI gates and automation scripts             |
-| `docs/`      | Versioned architecture decision records                      |
+| `docs/`      | Architecture, PRDs, plans, acceptance evidence, and runbooks  |
 | `.github/`   | GitHub Actions workflows                                     |
 
-The Bun workspace reserves the `apps/*` pattern, but this repository currently has no versioned platform application.
+Local documentation backups, review captures, generated diffs, and mock payloads are excluded from version control. The Bun workspace reserves the `apps/*` pattern, but this repository currently has no versioned platform application.
 
 ## Services as Git Submodules
 
