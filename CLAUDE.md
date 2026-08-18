@@ -6,22 +6,24 @@ Guidance for Claude Code (claude.ai/code) when working in this repository.
 
 - **Git is read-only for Claude. Automatic commits are disabled.** Never stage, commit, amend, rebase, merge, reset, clean, tag, push, switch branches, or open PRs on your own initiative — finishing a task is never a reason to commit. Details in Git Rules.
 - **Never edit** `docs/prd/` (AC-019) or generated code (`services/export-worker/contracts/`) — edit the contract source and regenerate.
-- **Never break the contract freeze silently** — re-locks happen only via `generate.ts --update-lock` so the diff is reviewed; breaking changes need a new version directory.
+- **Never change contract governance silently.** Agent contracts follow ADR-018: one canonical non-versioned first-party set, atomic pre-release refactors, no release-generation suffixes or compatibility adapters, and a reviewed lock/Profile update in the same change. Legacy export-worker contracts governed by ADR-001 retain their existing freeze until separately superseded.
 - **Never add** React, Next.js, Puck, `@anvilkit/*` frontend packages, cross-repo imports of `anvilkit-studio`, or any dep that bumps the Go directive past 1.26 (downgrade the dep instead). CI enforces this via the dependency audits.
 - **Never weaken** tests, lints, gates, auth, or validation to get green. Never log or commit secrets.
-- New git submodules require team confirmation first. External services are contracts + mocks only — never implemented here, never given directories under `services/`.
+- New git submodules require team confirmation first. `agent-service` and `export-worker` are the approved Platform-owned service submodules. Pagix, Studio, and other externally owned services remain contracts + mocks only and are never implemented under `services/`.
 
 ## Project Overview
 
-- `anvilkit-platform` is the **backend platform monorepo** for AnvilKit, deliberately separate from `anvilkit-studio` (the frontend/editor monorepo). The two integrate **only** through the versioned contracts in `contracts/` — never source imports, in either direction.
+- `anvilkit-platform` is the **backend platform monorepo** for AnvilKit, deliberately separate from `anvilkit-studio` and `pagix-cloud`. Repositories integrate only through repository-owned canonical contracts, generated clients, immutable artifacts, and authenticated APIs/events — never source imports.
 - The repo is **Go-first** (PRD 0009): production services are Go. Node/TypeScript (Bun) is confined to tooling and contract generation — never production services.
+- PRDs are read-only product authority. Accepted ADRs govern the architectural means used to satisfy them; an obsolete implementation mechanism in a PRD does not override an accepted ADR unless the product outcome itself would change.
+- Architecture authority is Accepted ADR-016 and ADR-018 through ADR-022, then `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-0808.md`. ADR-017 is superseded. Reconciled designs `0002` through `0010` are lower-order implementation authority within their assigned boundaries. Plans, runbooks, acceptance reports, and prior machine-readable governance evidence remain subordinate. Existing Agent evidence is historical until regenerated against the canonical profile.
 
 ## Repository Structure
 
 ```
-contracts/       FROZEN v1 contracts + contracts.lock.json (events/v1, openapi/v1, artifact/v1,
-                 each with valid + invalid fixture corpora)
-packages/contracts-codegen/  Bun/TS codegen: validates fixtures, generates Go bindings, enforces freeze
+contracts/       Canonical Agent contracts/Profile/lock plus separately governed legacy export contracts
+packages/contracts-codegen/  Bun/TS codegen: validates fixtures, generates bindings, enforces governed locks
+services/agent-service/      Platform Agent Service (pinned Git submodule)
 services/export-worker/      the worker (git submodule → github.com/ancyloce/anvilkit-export-worker)
 mocks/           standalone Go module: contract-conformant mocks (cmd/deployment-service-mock,
                  cmd/asset-service-mock, cmd/render-origin-mock) + the ADR-014 load driver
@@ -52,7 +54,7 @@ The compose stack's render-origin is a **contract stand-in** (`mocks/renderorigi
 - Don't hard-code "static": PRD 0008 defers `react_ssr`/`html_export` modes and the product direction includes deploy-to-server targets. Pipeline stages are pluggable strategies (mirroring the queue-driver and `Exporter` seams); new modes land as new drivers, not rewrites. Keep contract schemas and manifest semantics mode-neutral — `renderMode` and `targetId` already exist; extend those. A deploy-to-server mode revisits the `cdn-service` boundary and needs its own PRD first (PRD 0009).
 - Events are validated against the embedded schemas inbound **and before emission**; `deployment.artifact.ready` carries **no `routes[]`** (ADR-001/AC-029 — route data lives in `artifact-manifest.json`).
 - Persistence is Redis + object storage only — no SQL, no migrations. Redis key/stream/envelope shapes are contractual (ADR-003/ADR-011; runbooks depend on them) — treat changes to them as contract changes.
-- Mocks in `mocks/` stay contract-conformant; a contract version change updates mocks and their conformance tests together.
+- Mocks in `mocks/` stay contract-conformant; a canonical contract change updates every affected mock and conformance test atomically.
 
 ### Reliability invariants
 
@@ -79,17 +81,18 @@ The compose stack's render-origin is a **contract stand-in** (`mocks/renderorigi
 
 ## Modules, Packages, Dependencies
 
-- Bun 1.3.11 (pinned via `devEngines`) + Turborepo manage the JS/TS workspaces (`apps/*`, `services/*`, `packages/*`); Go builds with the standard toolchain per module directory (`services/export-worker`, `mocks`) — there is no `go.work`.
+- Bun 1.3.11 (pinned via `devEngines`) + Turborepo manage the JS/TS tooling workspaces; Go builds with the standard toolchain per module directory (`services/agent-service`, `services/export-worker`, `mocks`) — there is no `go.work`.
 - `mocks/go.mod` imports the worker's generated bindings via a local `replace` directive — keep it intact.
 - New worker packages go under `internal/` — except the generated `contracts/` package, which is **public on purpose** (mocks and future Go consumers import it; never move it to `internal/`).
 - Shared cross-service code goes under `packages/`, and only once a second consumer actually exists — otherwise keep code local to the service.
 - Dependencies: clear reason required; prefer stdlib; scope to the module that needs them; run `go mod tidy` only in the affected module; keep `bun.lock` consistent with `package.json`. Check every new Go dep against the 1.26 directive rule (Hard Rules). Don't remove a dep unless confirmed unused across the workspace/module.
-- Changing anything under `contracts/` or the generated bindings means checking **all** importers: the worker, `mocks/`, and the fixture corpora.
+- Changing anything under `contracts/` or generated bindings means checking **all** importers: Agent Service, the worker, mocks, tooling consumers, and fixture corpora.
 
 ## Contracts and Codegen
 
-- `contracts/` is the cross-repo contract of record: JSON Schema events (`events/v1`), OpenAPI internal APIs (`openapi/v1`), the artifact manifest (`artifact/v1`). **v1 is frozen** (`contracts.lock.json`, ADR-001; CI enforces via `check-freeze.ts`); evolution is additive-only within a version.
-- Generated Go bindings live at `services/export-worker/contracts/` and are committed; platform CI regenerates and fails on drift. To change them: edit the contract source, rerun `bun packages/contracts-codegen/generate.ts`.
+- Agent contracts use one canonical non-versioned first-party tree and a machine-readable P0-Kernel Profile under ADR-018. Before the first external release, changes are coordinated atomic refactors; obsolete generated code, fixtures, and compatibility paths are removed rather than retained.
+- Legacy export-worker event/OpenAPI/artifact contracts remain under their existing ADR-001 freeze until a separate decision changes them. Do not accidentally apply the Agent-contract refactor to an unrelated released export integration.
+- Generated Go bindings are committed and checked for drift. To change them, edit the owning contract source, regenerate, and run every affected consumer check.
 
 ## Configuration, Secrets, Observability
 
@@ -118,6 +121,7 @@ bun packages/contracts-codegen/generate.ts      # validate contracts + regenerat
 bun packages/contracts-codegen/check-freeze.ts  # verify the contract freeze (ADR-001)
 bun ./scripts/dependency-audit.ts               # boundary/dependency gate (AC-002/AC-018)
 
+make -C services/agent-service all              # Agent Service: format + vet + boundaries + contracts + race tests + build
 make -C services/export-worker all              # worker: vet + test + build
 make -C services/export-worker lint             # golangci-lint (must be installed locally)
 (cd mocks && go test -race ./...)               # mock conformance suite
@@ -134,8 +138,8 @@ docker compose -f infra/docker-compose.yml up -d --build   # full local stack (i
 ## Working Rules
 
 - Before editing, read the relevant files and the governing PRD/ADR sections; follow existing patterns. Minimal, focused diffs — one logical concern per change; no renames, large rewrites, or formatting-only sweeps unless requested. Never fabricate commands, architecture, or requirements.
-- **Definition of done**: run the relevant checks from this file (codegen + freeze for contract work, `make -C services/export-worker all` for worker work, mocks tests for mock work, dependency audit for dep changes) and confirm they pass green **before** reporting complete. If a check can't run, say why instead of skipping silently.
-- Worker changes happen in the submodule's own repo history; the platform repo pins the SHA. Never move the pinned SHA as a side effect — pointer bumps are the user's deliberate action.
+- **Definition of done**: run the relevant checks from this file (contract generation/governed-lock checks for contract work, `make -C services/agent-service all` for Agent Service, `make -C services/export-worker all` for worker work, mocks tests for mock work, dependency audit for dependency changes) and confirm they pass before reporting complete. If a check cannot run, say why instead of skipping silently.
+- Service changes happen in each submodule's own repo history; the Platform repository pins the SHA. Never move a pinned SHA as a side effect — pointer bumps are the user's deliberate action.
 - Update the live status docs (`docs/adr/README.md`, acceptance report, plan §4/§13) in the same change that alters the state they track; update READMEs/runbooks when behavior they document changes; new architectural decisions get a new ADR.
 - Shell: portable only (interactive shell is zsh — no bash-only constructs); scope `find`/`grep` to the repo, never filesystem-wide.
 - Line endings: this environment is WSL and git may rewrite line endings — check diffs for CRLF pollution, especially in contracts and generated bindings where it surfaces as codegen drift.
@@ -146,7 +150,7 @@ docker compose -f infra/docker-compose.yml up -d --build   # full local stack (i
 
 - Never run state-changing git/gh commands: `git add`/staging, `git commit` (including `--amend`), `git rebase`, `git merge`, `git cherry-pick`, `git reset`, `git clean`, `git checkout`/`switch` (branch changes), `git tag`, `git push`, `gh pr create`. The only exception is an explicit user request in the current conversation naming the action — and even then, never force-push and never push to main.
 - Read-only inspection is always fine: `git status`, `git diff`, `git log`, `git show`, `git branch`, `git submodule status`.
-- Never commit inside `services/export-worker` or move its pinned SHA; the submodule's history belongs to the service repo.
+- Never commit inside `services/agent-service` or `services/export-worker`, and never move their pinned SHAs; each submodule's history belongs to its service repository.
 - After making changes: leave everything unstaged, summarize the modified files, the root cause/reasoning, and the checks you ran — then stop.
 
 ## Skill routing
