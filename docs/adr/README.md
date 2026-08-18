@@ -1,0 +1,44 @@
+# Architecture Decision Records
+
+ADR IDs follow the backlog in `docs/plans/0001-export-worker-implementation-roadmap-0701-1707.md` §13. Statuses here are the live Phase 0 decision-gate tracker (PLAN-0001 §4); AC-020 requires every BD documented and either resolved or explicitly To Be Confirmed with an owner — re-check this table at every milestone review.
+
+## Phase 0 blocking decisions (BD-001..BD-009)
+
+| BD | ADR | Decision | Status (2026-07-01) | Gate it clears |
+| --- | --- | --- | --- | --- |
+| BD-008 | [ADR-008](ADR-008-cicd-platform-and-deployment-target.md) | CI/CD: GitHub Actions + GHCR; target: Kubernetes (cluster/provider deferred to first deploy) | **Accepted** (assumption-based; DevOps confirm at M1 review) | **Phase 1 start — unblocked** |
+| BD-001 | [ADR-001](ADR-001-outbound-event-schemas.md) | Minimum outbound schemas; omit `routes[]` from `deployment.artifact.ready` | **Accepted** — schemas frozen at v1 (contracts.lock.json); `cdn-service` sign-off pending at M1 review | **Phase 1 exit — satisfied** |
+| BD-002 | [ADR-002](ADR-002-internal-service-authentication-contract.md) | Bearer `INTERNAL_SERVICE_TOKEN`; dual-token rotation; per-service 401/403 codes | **Accepted as ADR-backed default** | Phase 2 start — unblocked |
+| BD-003 | [ADR-003](ADR-003-redis-retry-and-dlq-mechanics.md) | Five-mechanism model; Hash + ZSET delayed retry; `retryEnvelopeId` idempotency; write-then-ack | **Accepted as ADR-backed default** | Phase 2 start — unblocked |
+| BD-004 | [ADR-004](ADR-004-repeated-artifact-submission-semantics.md) | Identical pointer re-POST semantics; interim assumption: idempotent accept | To Be Confirmed (owner: `deployment-service` owner; mock owner interim) | Phase 3 exit |
+| BD-005 | [ADR-005](ADR-005-outbox-vs-duplicate-ready-events.md) | CAS-then-emit, no outbox; duplicate-tolerant consumers keyed by `deploymentId` | Default accepted for worker build; full resolution gates `cdn-service` tests (AC-034) | Before `cdn-service` integration tests |
+| BD-006 | [ADR-006](ADR-006-secret-management-and-token-rotation.md) | K8s Secrets + GitHub Actions secrets; dual-token rotation drill | Proposed — confirm before first deployed environment | Phase 2 first deployed environment |
+| BD-007 | [ADR-007](ADR-007-local-render-origin-integration-mode.md) | Compose service for render-origin; published image pinned by tag; seeding contract | Proposed — confirm with studio owners; the local loop runs a contract stand-in mock until then, the real origin joins at M5 E2E | Phase 3 (render fetch) |
+| BD-009 | [ADR-009](ADR-009-preview-snapshot-contract.md) | Immutable preview snapshots (upstream capability) | **Blocked (external)** — tracked; preview E2E acceptance deferred (AC-030) | Preview E2E acceptance only |
+
+## Other decisions
+
+| ADR | Decision | Status |
+| --- | --- | --- |
+| [ADR-015](ADR-015-service-naming-alignment.md) | Service naming: `anvilkit-render-worker` → `anvilkit-export-worker` on every surface | **Accepted** |
+| [ADR-016](ADR-016-agent-contract-signing-trust-and-revocation.md) | Agent contract signing, trust, revocation, and rollover profile | **Accepted design** — production integration evidence remains M7-T01 |
+| [ADR-017](ADR-017-agent-contract-compatibility-engine.md) | Repository-owned four-class Agent contract compatibility engine | **Accepted** |
+| [ADR-018](ADR-018-canonical-agent-contract-refactor-and-p0-kernel-profile.md) | Canonical greenfield Agent Contract refactor and P0-kernel profile | Proposed — supersedes ADR-017 if accepted |
+| [ADR-019](ADR-019-dbos-go-pin-and-agentrunworkflow-runtime-boundary.md) | DBOS Go dependency pin and `AgentRunWorkflow` runtime boundary | Proposed |
+| [ADR-020](ADR-020-public-agent-events-and-internal-evidence.md) | Separate stable public Agent Events from detailed internal Evidence | Proposed |
+| [ADR-021](ADR-021-agent-api-command-envelopes-and-concurrency.md) | Intent-only command envelopes, authorization carrier, and concurrency rules | Proposed |
+| [ADR-022](ADR-022-contract-runtime-boundary-and-topology-decision.md) | Contract Runtime security boundary and evidence-driven topology decision | Proposed |
+| [ADR-010](ADR-010-demo-guard-mechanism.md) | Demo guard: `ENVIRONMENT`-driven strictness + hostname/loopback denylist; also gates `WORKER_DRY_RUN` | **Accepted** — implemented + T-demo-guard (M2) |
+| [ADR-011](ADR-011-queue-retention-and-replay.md) | Queue retention floors (24 h/72 h/7 d) + manual DLQ replay procedure | Proposed — ops sign-off pending (AC-031; before broad rollout) |
+| [ADR-012](ADR-012-kubernetes-sizing-and-scaling.md) | K8s sizing: 2 replicas, §18 starting resources; manual scaling MVP, HPA evaluated after staging profiling | **Accepted as proposed defaults** — staging validation pending |
+| [ADR-014](ADR-014-load-testing-driver.md) | Load driver: custom Go driver (`mocks/cmd/load-driver`) over k6 | **Accepted** — implemented + exercised (see docs/acceptance/load-test-report.md) |
+| [ADR-013](ADR-013-rate-limiting-and-guardrails.md) | Broad-rollout guardrail: basic per-site in-flight cap (delay-not-fail, reuses the pending semantics); global-only rejected | Proposed — Product confirmation + implementation pending (**broad-rollout gate**) |
+
+## Preserved hard gates (source conditional baseline — PLAN-0001 §4)
+
+1. Phase 1 starts only after BD-008 — **satisfied** (ADR-008).
+2. Contracts must not exit Phase 1 until BD-001 is resolved (incl. `routes[]`) — **satisfied** (ADR-001 Accepted, schemas frozen; `cdn-service` sign-off pending at M1 review).
+3. Phase 2 runtime work starts only with BD-002 and BD-003 resolved or ADR-backed — **satisfied** (ADR-002, ADR-003).
+4. `cdn-service` integration tests start only after BD-005 fully resolved (AC-034).
+5. Preview E2E acceptance remains blocked by BD-009 (AC-030).
+6. Broad rollout additionally requires the FR-023 guardrail revisit (OQ-4/ADR-013) and the manual artifact cleanup runbook (AC-032).
