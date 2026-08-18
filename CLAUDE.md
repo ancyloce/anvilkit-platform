@@ -31,6 +31,7 @@ infra/           docker-compose.yml, fixtures, scripts (publish-event/seed-fixtu
                  Prometheus alerts/, k8s/, otel-collector.yaml
 scripts/         dependency-audit.ts (boundary gate) · acceptance.sh (full T-* suite)
 docs/            prd/ (read-only authority) · plans/ · adr/ · runbooks/ · acceptance/
+                 (ADR-023: only adr/ is Git-tracked; everything else under docs/ is local-only)
 .github/         workflows: ci.yml · acceptance.yml · deploy.yml
 ```
 
