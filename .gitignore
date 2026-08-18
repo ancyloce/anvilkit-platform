@@ -69,10 +69,17 @@ go.work.sum
 # .vscode/
 
 # Docs
-docs/
+/docs/
+!/docs/
+/docs/*
+!/docs/adr/
 
 # Governance
 contracts/governance/
 
 # Mock data
-mocks/
+/mocks/
+!/mocks/
+/mocks/*
+!/mocks/fakeworker/
+!/mocks/fakeworker/**

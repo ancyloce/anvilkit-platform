@@ -1,9 +1,10 @@
 # AnvilKit Platform Mocks
 
-Contract-conformant, in-memory mocks of the **external** services the export worker consumes
-(FR-022, EW-LOCAL-002/003). The real `deployment-service` and `asset-service` do not exist
-yet — these mocks are the integration surface until they do, and they must be revalidated
-against the real services before production cutover (R-08).
+This module contains contract-conformant in-memory doubles for the **external** services the
+export worker consumes (FR-022, EW-LOCAL-002/003), plus deterministic Agent Contract test
+harnesses that cannot be promoted into production. The real `deployment-service` and
+`asset-service` do not exist yet — their mocks are the integration surface until they do,
+and they must be revalidated against the real services before production cutover (R-08).
 
 They are Go (the source document's Recommended Approach) so they exercise the worker's
 **generated contract bindings** — the conformance tests drive each mock through the worker's
@@ -15,6 +16,8 @@ own generated client, keeping mock and worker pinned to the same frozen contract
 | `assetmock` / `cmd/asset-service-mock` | `contracts/openapi/v1/asset-service.internal.json` | Deterministic `resolve-batch` resolver |
 | `renderoriginmock` / `cmd/render-origin-mock` | render-origin runtime HTTP contract (PRD 0010 §8.3) | Version-pinned seeded pages covering every harvest form + the PLAN-0001 §11 negative pages; stand-in until BD-007/ADR-007 confirms the real anvilkit-studio origin |
 | `fakeprovider` | PLAN-0003 M6-T01 test harness | In-process deterministic provider-output scenarios and pinned 1,000-case evaluation only; no server, production command, tool execution, or provider fallback |
+| `fakeworker` | PLAN-0003 M6 test harness | In-process fencing, usage, artifact lifecycle, idempotency, event sequencing, and trace scenarios; test infrastructure only with no production command |
+| `fakepagix` | PLAN-0004 M5-T02 / PRD 0013 stage-2a test harness | Authorized snapshots and entitlements, reservation/usage/reconciliation fences, expected-revision CAS, byte-sensitive operation idempotency, atomic authorization redemption with effect, and authoritative outbox events; in-process only with no database or production command |
 | `releasecandidate` | PLAN-0003 M6-T08/T09 test harness | Seven contract-bound trace participants and the combined Phase 0 failure/recovery matrix; no external service implementation |
 
 Auth (ADR-002): every `/internal/*` route requires `Authorization: Bearer <token>` against

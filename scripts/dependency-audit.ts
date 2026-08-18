@@ -53,6 +53,68 @@ for (const rel of files) {
   }
 }
 
+const agentServiceRoot = join(REPO_ROOT, "services", "agent-service");
+if (existsSync(join(agentServiceRoot, "go.mod"))) {
+	const serviceModule = readFileSync(join(agentServiceRoot, "go.mod"), "utf8");
+	if (!serviceModule.startsWith("module github.com/ancyloce/anvilkit-agent-service\n")) {
+		failures.push("agent-service module identity changed or was extracted");
+	}
+  const inventory = spawnSync("go", ["list", "-deps", "./cmd/agent-service"], {
+    cwd: agentServiceRoot,
+    encoding: "utf8",
+  });
+  if (inventory.status !== 0) {
+    failures.push("agent-service production dependency inventory could not be generated");
+  } else {
+    const productionDependencies = new Set(inventory.stdout.trim().split(/\r?\n/));
+    if (/(^|\/)(mocks|fakeworker)(\/|$)/m.test(inventory.stdout)) {
+      failures.push("fake or mock package present in agent-service production dependency inventory");
+    }
+    if (productionDependencies.has("github.com/ancyloce/anvilkit-agent-service/internal/workflow/memory")) {
+      failures.push("in-memory proof workflow engine present in agent-service production dependency inventory");
+    }
+    if (!productionDependencies.has("github.com/ancyloce/anvilkit-agent-service/internal/workflow/dbos")) {
+      failures.push("pinned DBOS workflow engine absent from agent-service production dependency inventory");
+    }
+  }
+}
+
+for (const rel of files) {
+	if (rel.startsWith("services/agent-service/") && rel !== "services/agent-service/go.mod" && rel.endsWith("/go.mod")) {
+		failures.push(`nested agent-service module extraction is forbidden: ${rel}`);
+	}
+	if (/^services\/agent-service\/cmd\/[^/]*(?:worker|preview|undo)[^/]*\//i.test(rel)) {
+		failures.push(`P0 agent-service production command inventory contains excluded behavior: ${rel}`);
+	}
+}
+
+const agentOpenAPI = join(REPO_ROOT, "contracts", "openapi", "v1", "agent-service.openapi.json");
+if (!existsSync(agentOpenAPI)) {
+	failures.push("agent-service OpenAPI inventory is missing");
+} else {
+	try {
+		const document = JSON.parse(readFileSync(agentOpenAPI, "utf8"));
+		for (const [pathName, pathItem] of Object.entries(document.paths ?? {})) {
+			for (const operation of Object.values(pathItem as Record<string, any>)) {
+				const operationID = typeof operation?.operationId === "string" ? operation.operationId : "";
+				if (/preview|undo|applyPage|pageApply|interactiveApply/i.test(operationID)) {
+					failures.push(`P1 preview/interactive-apply/undo operation present in P0 surface: ${pathName} ${operationID}`);
+				}
+			}
+		}
+	} catch {
+		failures.push("agent-service OpenAPI inventory is not valid JSON");
+	}
+}
+
+for (const rel of files) {
+  if (!rel.startsWith("services/agent-service/cmd/") || !rel.endsWith(".go")) continue;
+  const body = readFileSync(join(REPO_ROOT, rel), "utf8");
+  if (body.includes("mocks/fakeworker") || body.includes("internal/fakeworker")) {
+    failures.push(`fake worker packaged into production composition: ${rel}`);
+  }
+}
+
 // --- 2. Forbidden frontend dependencies -------------------------------------
 const workspaceNames = new Set<string>();
 for (const rel of files) {
@@ -87,20 +149,45 @@ for (const rel of files) {
   }
 }
 
-// --- 3. No Rust --------------------------------------------------------------
+// --- 3a. Pagix is API-only: no database credential configuration ------------
+const PAGIX_DATABASE_CREDENTIAL = new RegExp(
+  "ANVILKIT_PAGIX_" + "(?:DATABASE|DB|PASSWORD|USERNAME|USER)_?",
+  "i",
+);
+for (const rel of files) {
+  if (!(rel.startsWith("services/agent-service/") || rel.startsWith("infra/"))) continue;
+  if (!/\.(go|ya?ml|json|env|toml)$/.test(rel)) continue;
+  const body = readFileSync(join(REPO_ROOT, rel), "utf8");
+  if (PAGIX_DATABASE_CREDENTIAL.test(body)) {
+    failures.push(`Pagix database credential configuration is forbidden: ${rel}`);
+  }
+}
+
+// --- 4. No Rust --------------------------------------------------------------
 for (const rel of files) {
   if (rel.endsWith(".rs") || rel.endsWith("/Cargo.toml") || rel === "Cargo.toml") {
     failures.push(`Rust file found (AC-018): ${rel}`);
   }
 }
 
-// --- 4. Worker submodule audit ----------------------------------------------
+// --- 5. Production service submodule audits ---------------------------------
 const workerAudit = join(REPO_ROOT, "services", "export-worker", "scripts", "dependency-audit.sh");
 if (!existsSync(workerAudit)) {
   failures.push("worker audit script missing: services/export-worker/scripts/dependency-audit.sh");
 } else {
   const res = spawnSync("bash", [workerAudit], { stdio: "inherit" });
   if (res.status !== 0) failures.push("worker dependency audit failed");
+}
+
+const agentBoundary = join(REPO_ROOT, "services", "agent-service", "cmd", "boundarycheck");
+if (!existsSync(agentBoundary)) {
+  failures.push("agent-service boundary checker missing: services/agent-service/cmd/boundarycheck");
+} else {
+  const res = spawnSync("go", ["run", "./cmd/boundarycheck", "-root", "."], {
+    cwd: join(REPO_ROOT, "services", "agent-service"),
+    stdio: "inherit",
+  });
+  if (res.status !== 0) failures.push("agent-service dependency boundary audit failed");
 }
 
 if (failures.length > 0) {
