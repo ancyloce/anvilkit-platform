@@ -4,21 +4,20 @@
 
 It is deliberately separated from `anvilkit-studio`, which owns the frontend/editor system. `anvilkit-platform` is **not** a subdirectory, package, or Git submodule of `anvilkit-studio`, and it never will be.
 
-This repository owns backend platform services, integration contracts, backend-facing mocks, local infrastructure, CI gates, and platform-level automation for the AnvilKit publishing/export pipeline.
+This repository owns backend platform services, integration contracts and generated adapters, backend-facing mocks, local infrastructure, CI gates, and platform-level automation for the AnvilKit publishing/export and agent-runtime systems.
 
-## First Production Service
+## Production Services
 
-The first production service is:
+Production services live in standalone repositories and are pinned here as Git submodules:
 
-```text
-services/export-worker
-```
+| Platform path | Service repository | Current responsibility |
+| --- | --- | --- |
+| `services/export-worker` | `anvilkit-export-worker` | Stateless, queue-driven export stage that creates and uploads static artifact bundles |
+| `services/agent-service` | `anvilkit-agent-service` | Durable Go modular monolith for the contract-bound Agent Service kernel |
 
-Canonical service name:
+The platform pin is the integration authority for CI. Service source changes are committed and pushed in the service repository first, then the platform gitlink is updated deliberately.
 
-```text
-anvilkit-export-worker
-```
+### Export worker pipeline
 
 `anvilkit-export-worker` is a **stateless, queue-driven Go worker** responsible for the export stage of the deployment pipeline.
 
@@ -39,6 +38,10 @@ Then it:
 deployment.artifact.ready
 ```
 
+### Agent Service
+
+`anvilkit-agent-service` implements the Agent Service runtime boundary. It owns the API composition root and durable workflow, persistence, event, artifact, evaluation, budget, interrupt, and recovery modules under its own `internal/` tree. Its PostgreSQL and DBOS integration proofs require explicit test database configuration; repository checks and operated production-release evidence are separate gates.
+
 ## Repository Boundary Rules
 
 These rules are hard constraints.
@@ -55,8 +58,10 @@ contracts/
 
 Supported contract types:
 
-* JSON Schema for events
-* OpenAPI for internal APIs
+* JSON Schema for events, artifacts, and Agent Contract data
+* OpenAPI for internal service APIs
+* AsyncAPI for agent and Pagix event channels
+* Contract BOM, freeze, conformance, and release-evidence formats
 
 Render output is consumed over HTTP. Render implementation code must never be imported.
 
@@ -153,7 +158,7 @@ AC-018
 
 It must never be used as a render target outside local development.
 
-## Naming Standard
+## Export Worker Naming Standard
 
 Worker names follow ADR-015.
 
@@ -191,18 +196,17 @@ AC-019
 
 ```text
 anvilkit-platform/
-├── contracts/    # Versioned integration contracts and contract freeze rules
+├── contracts/    # Integration contracts, Agent Contract/BOM, and freeze rules
 ├── services/     # Production Go services, each pinned as a Git submodule
-├── packages/     # Shared JS/TS tooling workspace packages
-├── mocks/        # Contract-conformant mocks for external services
+├── packages/     # Contract codegen, BOM, and Go/Java/Python/TypeScript adapters
+├── mocks/        # External-service doubles and deterministic test harnesses
 ├── infra/        # Local Compose stack, fixtures, retention, and replay support
 ├── scripts/      # Repository-level CI gates and automation scripts
-├── apps/         # Reserved for future platform apps
+├── docs/         # Versioned architecture decision records
 ├── .github/      # GitHub Actions workflows
 ├── bun.lock      # Bun lockfile
 ├── package.json  # Workspace package manifest
 ├── turbo.json    # Turborepo pipeline configuration
-├── Makefile      # Repository-level make targets
 └── README.md     # Project overview and contributor guide
 ```
 
@@ -210,18 +214,20 @@ anvilkit-platform/
 
 | Path         | Responsibility                                               |
 | ------------ | ------------------------------------------------------------ |
-| `contracts/` | Versioned integration contracts and contract freeze rules    |
+| `contracts/` | Integration contracts, Agent Contract/BOM, conformance evidence, and freeze rules |
 | `services/`  | Production Go services, each pinned as a Git submodule       |
-| `packages/`  | Shared JS/TS tooling workspace packages                      |
-| `mocks/`     | Go module for contract-conformant external service mocks     |
+| `packages/`  | Contract codegen, BOM, and Go/Java/Python/TypeScript adapters |
+| `mocks/`     | Go module for external-service doubles and deterministic test harnesses |
 | `infra/`     | Local Compose stack, fixtures, retention, and replay support |
 | `scripts/`   | Repository-level CI gates and automation scripts             |
-| `apps/`      | Reserved for future platform apps                            |
+| `docs/`      | Versioned architecture decision records                      |
 | `.github/`   | GitHub Actions workflows                                     |
+
+The Bun workspace reserves the `apps/*` pattern, but this repository currently has no versioned platform application.
 
 ## Services as Git Submodules
 
-Each production worker lives in its own repository and is pinned under `services/` as a Git submodule.
+Each production service lives in its own repository and is pinned under `services/` as a Git submodule.
 
 After cloning this repository, initialize submodules with:
 
@@ -244,6 +250,7 @@ This repository uses:
 | JS/TS workspace      | Bun `1.3.11`   |
 | Task orchestration   | Turborepo      |
 | Production services  | Go             |
+| Contract adapters    | Go, Java, Python, TypeScript |
 | Local infrastructure | Docker Compose |
 | Images               | GHCR           |
 | CI                   | GitHub Actions |
@@ -252,6 +259,7 @@ This repository uses:
 Bun is pinned through `devEngines`.
 
 Go services build with the standard Go toolchain inside their own service directories.
+The current service module pins are Go `1.26.5` for the export worker and Go `1.26.6` for Agent Service.
 
 ## Common Commands
 
@@ -285,10 +293,26 @@ Build, vet, and test the export worker:
 make -C services/export-worker all
 ```
 
+Check the Agent Service formatting, boundaries, contract intake, race tests, and build:
+
+```bash
+make -C services/agent-service all
+```
+
+Agent Service PostgreSQL and DBOS integration proofs are opt-in locally:
+
+```bash
+(cd services/agent-service && \
+  POSTGRES_TEST_URL='postgres://...' go test -race -count=1 ./internal/persistence)
+
+(cd services/agent-service && \
+  DBOS_TEST_URL='postgres://...' go test -race -count=1 ./internal/workflow/dbos)
+```
+
 Run mock conformance tests:
 
 ```bash
-cd mocks && go test ./...
+cd mocks && go test -race -count=1 ./...
 ```
 
 Start the local stack:
@@ -331,13 +355,14 @@ CI is defined with GitHub Actions.
 
 Platform CI includes the following jobs:
 
-| Job         | Purpose                                                                            |
-| ----------- | ---------------------------------------------------------------------------------- |
-| `contracts` | Fixture validation, codegen drift check, freeze check                              |
-| `worker`    | `golangci-lint`, `go vet`, unit tests, Redis integration tests with `-race`, build |
-| `mocks`     | Contract conformance through generated clients                                     |
-| `images`    | Worker and mock container builds, Compose validation, build-only                   |
-| `audit`     | Dependency boundary checks and `govulncheck`                                       |
+| Job | Purpose |
+| --- | --- |
+| `contracts` | Fixture/spec validation, four-language adapter conformance, codegen drift, freeze, and service contract-intake checks |
+| `agent-service` | Boundaries, lint, vet, race tests, PostgreSQL/DBOS integration proofs, and build |
+| `worker` | Lint, vet, race-tested unit and Redis/MinIO integration suites, and build |
+| `mocks` | Race-tested contract conformance through generated clients |
+| `images` | Worker and mock container builds plus Compose, Kubernetes, and alert-rule validation |
+| `audit` | Platform/service dependency boundaries, Agent Service M8 pre-entry checks, budgets, and worker `govulncheck` |
 
 The worker repository also runs its own CI on every pull request, including:
 
@@ -348,7 +373,7 @@ The worker repository also runs its own CI on every pull request, including:
 * image build
 * audit checks
 
-Image publishing and Kubernetes manifest validation are introduced with the first deployed environment.
+Separate workflows run the export-worker Compose acceptance suite on `main`, the opt-in sustained Agent Service durable-create proof, the contract release-candidate evidence gates, and the fail-closed manual export-worker deployment workflow. The deployment workflow remains gated until target-cluster credentials are configured.
 
 Related references:
 
