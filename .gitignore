@@ -68,18 +68,14 @@ go.work.sum
 # .idea/
 # .vscode/
 
-# Docs
-/docs/
-!/docs/
+# Local documentation artifacts (ADR-023: only docs/adr/ is tracked under docs/)
 /docs/*
 !/docs/adr/
 
-# Governance
-contracts/governance/
+# Historical PLAN-0003 governance evidence (local-only until regenerated in WP1)
+/contracts/governance/
 
-# Mock data
-/mocks/
-!/mocks/
-/mocks/*
-!/mocks/fakeworker/
-!/mocks/fakeworker/**
+# Obsolete PLAN-0003 M5/M6 local mock machinery (local-only until removed in WP1)
+/mocks/fakeprovider/
+/mocks/releasecandidate/
+/mocks/cmd/m6-report/
