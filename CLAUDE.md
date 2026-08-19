@@ -118,8 +118,12 @@ The compose stack's render-origin is a **contract stand-in** (`mocks/renderorigi
 
 ```bash
 bun install                                     # workspace deps
-bun packages/contracts-codegen/generate.ts      # validate contracts + regenerate Go bindings
-bun packages/contracts-codegen/check-freeze.ts  # verify the contract freeze (ADR-001)
+bun packages/contracts-codegen/generate.ts      # legacy export contracts: validate + regenerate Go bindings
+bun packages/contracts-codegen/check-freeze.ts  # verify the legacy export freeze (ADR-001)
+bun packages/contracts-codegen/check-agent-contracts.ts  # canonical Agent sources, registries, fixtures, separation
+bun packages/contracts-codegen/check-agent-specs.ts      # canonical OpenAPI/AsyncAPI lint
+bash packages/contracts-codegen/prepare-agent-generators.sh && bun packages/contracts-codegen/generate-agent-packages.ts  # regenerate Go/TS + agent-service intake
+bun packages/contracts-codegen/check-agent-profile.ts    # P0-Kernel Profile + canonical lock + intake identity
 bun ./scripts/dependency-audit.ts               # boundary/dependency gate (AC-002/AC-018)
 
 make -C services/agent-service all              # Agent Service: format + vet + boundaries + contracts + race tests + build
