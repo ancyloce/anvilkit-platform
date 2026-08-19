@@ -1,0 +1,223 @@
+{
+  "registrySetVersion": 1,
+  "registries": {
+    "artifact-kind": [
+      "compiled-context",
+      "target-snapshot",
+      "agent-plan",
+      "worker-result",
+      "validation-report"
+    ],
+    "artifact-lifecycle": [
+      "pending",
+      "scanning",
+      "valid",
+      "finalized",
+      "committed",
+      "quarantined",
+      "expired",
+      "deleted"
+    ],
+    "retryability": [
+      "never",
+      "safe-immediate",
+      "safe-after-backoff",
+      "after-input",
+      "after-approval",
+      "after-rebase",
+      "operator-action"
+    ],
+    "problem-code": [
+      "AK-SRC-001",
+      "AK-SRC-002",
+      "AK-SRC-003",
+      "AK-SRC-004",
+      "AK-SRC-005",
+      "AK-SRC-006",
+      "AK-SRC-007",
+      "AK-SRC-008",
+      "AK-SRC-009",
+      "AK-SRC-010",
+      "AK-SRC-011",
+      "AK-SRC-012",
+      "AK-SRC-013",
+      "AK-SRC-014",
+      "AK-SRC-015",
+      "AK-REF-001",
+      "AK-REF-002",
+      "AK-REF-003",
+      "AK-REF-004",
+      "AK-REF-005",
+      "AK-REF-006",
+      "AK-REF-007",
+      "AK-REF-008",
+      "AK-REF-009",
+      "AK-REG-001",
+      "AK-REG-002",
+      "AK-REG-003",
+      "AK-REG-004",
+      "AK-REG-005",
+      "AK-REG-006",
+      "AK-FREEZE-001",
+      "AK-FREEZE-002",
+      "AK-FREEZE-003",
+      "PARSE_REJECTED",
+      "VALIDATION_FAILED",
+      "CONTRACT_UNSUPPORTED",
+      "CONTRACT_INTEGRITY_FAILED",
+      "AK-CAT-001",
+      "AK-CAT-002",
+      "AK-SPEC-001",
+      "AK-SPEC-002",
+      "AK-SPEC-003",
+      "AK-FIX-001",
+      "AK-FIX-002",
+      "AK-INV-001",
+      "AK-PROFILE-001"
+    ],
+    "run-status": [
+      "created",
+      "preparing",
+      "planning",
+      "awaiting_input",
+      "executing",
+      "validating",
+      "awaiting_review",
+      "awaiting_approval",
+      "committing",
+      "awaiting_domain_confirmation",
+      "conflict",
+      "cancelling",
+      "failed",
+      "completed",
+      "cancelled",
+      "refused",
+      "discarded"
+    ],
+    "event-type": [
+      "run.created",
+      "run.state-changed",
+      "run.input-requested",
+      "run.approval-requested",
+      "run.artifact-available",
+      "run.problem-recorded"
+    ],
+    "domain": [
+      "platform-agent",
+      "pagix-page",
+      "contract-runtime"
+    ],
+    "operation": [
+      "page-change",
+      "artifact-validation",
+      "image-operation",
+      "component-package"
+    ],
+    "tool-capability": [
+      "provider.invoke",
+      "contract.validate",
+      "artifact.scan",
+      "fake.execute"
+    ],
+    "risk-class": [
+      "low",
+      "medium",
+      "high",
+      "critical"
+    ],
+    "side-effect-class": [
+      "none",
+      "read",
+      "artifact-write",
+      "domain-effect"
+    ],
+    "data-class": [
+      "public",
+      "internal",
+      "confidential",
+      "restricted"
+    ],
+    "usage-meter": [
+      "input-tokens",
+      "output-tokens",
+      "worker-duration",
+      "gpu-duration",
+      "provider-cost"
+    ],
+    "usage-unit": [
+      "token",
+      "millisecond",
+      "byte",
+      "count",
+      "usd-micro"
+    ],
+    "identity-purpose": [
+      "action",
+      "artifact-metadata",
+      "schema",
+      "canonical-request",
+      "apply-authorization",
+      "release-evidence",
+      "contract-bom"
+    ],
+    "digest-algorithm": [
+      "sha256"
+    ],
+    "signature-algorithm": [
+      "dsse-ed25519-v1",
+      "jws-eddsa-v1"
+    ],
+    "issuer": [
+      "urn:anvilkit:issuer:contracts-release",
+      "urn:anvilkit:issuer:agent-service"
+    ],
+    "audience": [
+      "urn:anvilkit:audience:contract-consumers",
+      "urn:anvilkit:audience:pagix"
+    ],
+    "key-status": [
+      "active",
+      "overlap",
+      "revoked",
+      "retired"
+    ],
+    "logical-component-name": [
+      "anvilkit.contract.schema.shared-primitives",
+      "anvilkit.contract.schema.agent-definition",
+      "anvilkit.contract.schema.agent-run",
+      "anvilkit.contract.schema.tool-definition",
+      "anvilkit.contract.schema.agent-task",
+      "anvilkit.contract.schema.worker-lease",
+      "anvilkit.contract.schema.worker-result",
+      "anvilkit.contract.schema.agent-artifact",
+      "anvilkit.contract.schema.agent-budget",
+      "anvilkit.contract.schema.usage-observation",
+      "anvilkit.contract.schema.input-request",
+      "anvilkit.contract.schema.approval-request",
+      "anvilkit.contract.schema.target-snapshot",
+      "anvilkit.contract.schema.compiled-context",
+      "anvilkit.contract.schema.provider-continuation",
+      "anvilkit.contract.schema.agent-event",
+      "anvilkit.contract.schema.agent-evidence",
+      "anvilkit.contract.schema.agent-stream-delta",
+      "anvilkit.contract.schema.apply-authorization",
+      "anvilkit.contract.schema.issued-apply-authorization",
+      "anvilkit.contract.schema.problem-details",
+      "anvilkit.contract.schema.image-operation-plan",
+      "anvilkit.contract.schema.component-package-spec",
+      "anvilkit.contract.schema.contract-revocation-snapshot",
+      "anvilkit.contract.schema.contract-signature-statement",
+      "anvilkit.contract.schema.contract-trust-root",
+      "anvilkit.contract.schema.contract-bom",
+      "anvilkit.contract.schema.create-agent-run-request",
+      "anvilkit.contract.schema.issue-apply-authorization-request",
+      "anvilkit.contract.schema.submit-input-response-request",
+      "anvilkit.contract.schema.submit-approval-decision-request",
+      "anvilkit.contract.schema.contract-runtime-request",
+      "anvilkit.contract.schema.contract-runtime-result",
+      "anvilkit.contract.registry-set",
+      "anvilkit.contract.fixture-manifest",
+      "anvilkit.contract.p0-kernel-profile"
+    ]
+  }
+}

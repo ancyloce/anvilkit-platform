@@ -1,0 +1,14 @@
+{
+  "kind": "ContractRevocationSnapshot",
+  "snapshotId": "revocation-snapshot-synthetic-001",
+  "issuedAt": "2026-08-18T12:00:00.000Z",
+  "nextUpdate": "2026-08-25T12:00:00.000Z",
+  "revokedKeys": [
+    {
+      "keyId": "urn:anvilkit:key:contracts-release:synthetic-revoked",
+      "effectiveAt": "2026-08-18T12:00:00.000Z",
+      "reason": "synthetic revocation drill"
+    }
+  ],
+  "unexpectedField": true
+}

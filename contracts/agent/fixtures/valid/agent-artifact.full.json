@@ -1,0 +1,36 @@
+{
+  "createdAt": "2026-08-09T12:00:00.000Z",
+  "lifecycle": "valid",
+  "validation": {
+    "validatedAt": "2026-08-09T12:00:00.000Z",
+    "checks": [
+      {
+        "name": "schema",
+        "result": "passed",
+        "evidenceDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    ]
+  },
+  "producer": {
+    "taskId": "task.synthetic.001",
+    "recoveryEpoch": 7,
+    "executionGeneration": 0,
+    "physicalAttemptId": "attempt.synthetic.001",
+    "leaseEpoch": 3
+  },
+  "lineage": [],
+  "reference": {
+    "bucket": "synthetic-artifacts",
+    "objectKey": "tenant/workspace/artifact.synthetic.001",
+    "sizeBytes": 128,
+    "mediaType": "application/json"
+  },
+  "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "schema": {
+    "componentName": "anvilkit.contract.schema.problem-details",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "kind": "validation-report",
+  "artifactId": "artifact.synthetic.001",
+  "contractType": "AgentArtifact"
+}

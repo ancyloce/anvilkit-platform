@@ -1,0 +1,36 @@
+{
+  "kind": "ApprovalRequest",
+  "requestId": "approval.synthetic.001",
+  "runId": "run.synthetic.001",
+  "actionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "effects": [
+    {
+      "effectType": "page-persist",
+      "target": {
+        "targetType": "page",
+        "targetId": "page.synthetic.001",
+        "workspaceId": "workspace.synthetic.001",
+        "projectId": "project.synthetic.001"
+      },
+      "summary": "Persist the reviewed synthetic page."
+    }
+  ],
+  "cost": {
+    "amount": "1000",
+    "currency": "USD"
+  },
+  "allowedDecisions": [
+    "approve",
+    "reject",
+    "request-changes"
+  ],
+  "expiresAt": "2026-08-09T12:05:00.000Z",
+  "resumeState": "awaiting_review",
+  "reviewerPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "decisionVersion": 1,
+  "unexpectedField": "must be rejected"
+}

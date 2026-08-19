@@ -1,0 +1,48 @@
+{
+  "kind": "AgentDefinition",
+  "role": "specialist",
+  "owner": "Platform Definitions owner",
+  "domain": "platform-agent",
+  "promptDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "inputSchema": {
+    "componentName": "anvilkit.contract.schema.example",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "outputSchema": {
+    "componentName": "anvilkit.contract.schema.example",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "toolProfile": {
+    "tools": [],
+    "maximumParallelTools": 1
+  },
+  "modelPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "memoryPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "guardrailPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "repairPolicy": {
+    "maximumAttempts": 0,
+    "mode": "reject"
+  },
+  "allowedDelegates": [],
+  "maximumDelegationDepth": 0,
+  "maximumFanOut": 0,
+  "turnLimit": 8,
+  "stopConditions": [
+    "completed"
+  ],
+  "evaluators": [],
+  "definitionId": "definition.synthetic.001",
+  "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+}

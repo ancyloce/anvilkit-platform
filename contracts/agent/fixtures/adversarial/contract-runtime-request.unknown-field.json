@@ -1,0 +1,24 @@
+{
+  "kind": "ContractRuntimeRequest",
+  "operation": "validate",
+  "bundleDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "contract": {
+    "componentName": "anvilkit.contract.schema.example",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "canonicalInput": "{\"value\":1}",
+  "canonicalInputDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "policy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "limits": {
+    "timeoutMilliseconds": 1000,
+    "memoryBytes": 67108864,
+    "cpuMillis": 1000,
+    "gpuMillis": 0,
+    "outputBytes": 1048576
+  },
+  "unexpectedField": true
+}

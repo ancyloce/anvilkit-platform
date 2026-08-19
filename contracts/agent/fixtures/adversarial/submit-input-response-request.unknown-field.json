@@ -1,0 +1,8 @@
+{
+  "kind": "SubmitInputResponseRequest",
+  "requestVersion": 1,
+  "responsePayload": {
+    "answer": "blue"
+  },
+  "unexpectedField": true
+}

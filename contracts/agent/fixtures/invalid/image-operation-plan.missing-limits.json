@@ -1,0 +1,33 @@
+{
+  "kind": "ImageOperationPlan",
+  "operations": [
+    {
+      "operationId": "operation.synthetic.001",
+      "operationType": "resize",
+      "parameters": {
+        "width": "800",
+        "height": "600"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "artifactId": "artifact.synthetic.001",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mediaType": "application/json",
+      "sizeBytes": 128
+    }
+  ],
+  "outputs": [
+    {
+      "name": "hero-image",
+      "mediaType": "image/webp",
+      "maximumBytes": 1048576
+    }
+  ],
+  "validationPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+}

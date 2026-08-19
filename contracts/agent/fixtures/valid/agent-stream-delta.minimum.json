@@ -1,0 +1,11 @@
+{
+  "kind": "AgentStreamDelta",
+  "runId": "run.synthetic.001",
+  "workspaceId": "workspace.synthetic.001",
+  "channel": "text",
+  "provisional": true,
+  "emittedAt": "2026-08-18T12:00:00.000Z",
+  "payload": {
+    "text": "partial output"
+  }
+}

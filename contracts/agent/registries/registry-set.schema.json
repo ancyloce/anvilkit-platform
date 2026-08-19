@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.anvilkit.dev/agent/registries/registry-set.schema.json",
+  "title": "AnvilKit governed registry set",
+  "type": "object",
+  "required": [
+    "registrySetVersion",
+    "status",
+    "registries"
+  ],
+  "properties": {
+    "registrySetVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "status": {
+      "enum": [
+        "candidate",
+        "frozen",
+        "deprecated"
+      ]
+    },
+    "registries": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/registry"
+      }
+    }
+  },
+  "$defs": {
+    "registry": {
+      "type": "object",
+      "required": [
+        "registryId",
+        "owner",
+        "entries"
+      ],
+      "properties": {
+        "registryId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 96,
+          "pattern": "^[a-z][a-z0-9-]*[a-z0-9]$"
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 512,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/entry"
+          }
+        }
+      },
+      "minProperties": 3,
+      "maxProperties": 3,
+      "unevaluatedProperties": false
+    },
+    "entry": {
+      "type": "object",
+      "required": [
+        "wireValue",
+        "meaning",
+        "owner",
+        "status",
+        "aliases",
+        "replacement"
+      ],
+      "properties": {
+        "wireValue": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+        },
+        "meaning": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 512
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128
+        },
+        "status": {
+          "enum": [
+            "active",
+            "deprecated",
+            "revoked"
+          ]
+        },
+        "aliases": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+          }
+        },
+        "replacement": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$",
+          "x-anvilkit-nullSemantics": "null means no replacement is designated"
+        },
+        "retryability": {
+          "enum": [
+            "never",
+            "safe-immediate",
+            "safe-after-backoff",
+            "after-input",
+            "after-approval",
+            "after-rebase",
+            "operator-action"
+          ]
+        }
+      },
+      "minProperties": 6,
+      "maxProperties": 7,
+      "unevaluatedProperties": false,
+      "x-anvilkit-omittedSemantics": {
+        "retryability": "absence means the registry is not a problem-code registry"
+      }
+    }
+  },
+  "minProperties": 3,
+  "maxProperties": 3,
+  "unevaluatedProperties": false,
+  "x-anvilkit-contract": {
+    "logicalId": "RegistrySet",
+    "componentName": "anvilkit.contract.registry-set",
+    "owner": "Platform Contracts owner",
+    "stability": "p0-kernel",
+    "identityFields": [
+      "/registrySetVersion",
+      "/status",
+      "/registries"
+    ],
+    "maximumSerializedBytes": 524288,
+    "descriptions": []
+  }
+}

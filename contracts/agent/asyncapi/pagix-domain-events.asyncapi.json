@@ -1,0 +1,262 @@
+{
+  "asyncapi": "3.1.0",
+  "info": {
+    "title": "Pagix domain events for Agent workflows",
+    "version": "p0-kernel",
+    "description": "Canonical Kafka-bound Pagix business events and additive usage observations."
+  },
+  "defaultContentType": "application/json",
+  "servers": {
+    "candidateKafka": {
+      "host": "kafka.internal.anvilkit.dev:9092",
+      "protocol": "kafka",
+      "description": "Candidate Pagix domain event transport.",
+      "x-anvilkit-ownerAcknowledgement": "pending"
+    }
+  },
+  "channels": {
+    "targetSnapshots": {
+      "address": "anvilkit.pagix.target-snapshots",
+      "messages": {
+        "TargetSnapshot": {
+          "$ref": "#/components/messages/TargetSnapshot"
+        }
+      },
+      "bindings": {
+        "kafka": {
+          "topicConfiguration": {
+            "cleanupPolicy": [
+              "delete"
+            ]
+          },
+          "bindingVersion": "0.5.0"
+        }
+      },
+      "x-anvilkit-partitionKey": "targetId",
+      "x-anvilkit-delivery": "at-least-once"
+    },
+    "usageObservations": {
+      "address": "anvilkit.pagix.usage-observations",
+      "messages": {
+        "UsageObservation": {
+          "$ref": "#/components/messages/UsageObservation"
+        }
+      },
+      "bindings": {
+        "kafka": {
+          "topicConfiguration": {
+            "cleanupPolicy": [
+              "delete"
+            ]
+          },
+          "bindingVersion": "0.5.0"
+        }
+      },
+      "x-anvilkit-partitionKey": "rootRunId",
+      "x-anvilkit-delivery": "at-least-once"
+    },
+    "domainDlq": {
+      "address": "anvilkit.pagix.domain-dlq",
+      "messages": {
+        "ProblemDetails": {
+          "$ref": "#/components/messages/ProblemDetails"
+        }
+      },
+      "bindings": {
+        "kafka": {
+          "topicConfiguration": {
+            "cleanupPolicy": [
+              "delete"
+            ]
+          },
+          "bindingVersion": "0.5.0"
+        }
+      },
+      "x-anvilkit-partitionKey": "runId",
+      "x-anvilkit-delivery": "at-least-once"
+    }
+  },
+  "operations": {
+    "publishTargetSnapshots": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/targetSnapshots"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/targetSnapshots/messages/TargetSnapshot"
+        }
+      ],
+      "description": "Pagix publishes immutable authorized target snapshots."
+    },
+    "consumeTargetSnapshots": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/targetSnapshots"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/targetSnapshots/messages/TargetSnapshot"
+        }
+      ],
+      "description": "Agent Service consumes immutable snapshots."
+    },
+    "consumeUsageObservations": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/usageObservations"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/usageObservations/messages/UsageObservation"
+        }
+      ],
+      "description": "The financially authoritative ledger consumes additive usage."
+    },
+    "consumeDomainDlq": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/domainDlq"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/domainDlq/messages/ProblemDetails"
+        }
+      ],
+      "description": "Operators consume dead-lettered domain problems."
+    }
+  },
+  "components": {
+    "messages": {
+      "TargetSnapshot": {
+        "name": "TargetSnapshot",
+        "title": "TargetSnapshot message",
+        "summary": "Bounded TargetSnapshot payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/target-snapshot?digest=sha256:24d36aef73946c2618dec27104ddc58553c32eb6ba3933f8250459e7452970bc"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is targetId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        }
+      },
+      "UsageObservation": {
+        "name": "UsageObservation",
+        "title": "UsageObservation message",
+        "summary": "Bounded UsageObservation payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/usage-observation?digest=sha256:c3beabfc7abfa5565a082806b356585bc64ce8b6dd46f26606feff87677b5eb8"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is rootRunId."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        }
+      },
+      "ProblemDetails": {
+        "name": "ProblemDetails",
+        "title": "ProblemDetails message",
+        "summary": "Bounded ProblemDetails payload.",
+        "contentType": "application/json",
+        "headers": {
+          "type": "object",
+          "required": [
+            "messageId",
+            "traceparent"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "traceparent": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "payload": {
+          "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+        },
+        "correlationId": {
+          "description": "Trace correlation.",
+          "location": "$message.header#/traceparent"
+        },
+        "bindings": {
+          "kafka": {
+            "key": {
+              "type": "string",
+              "description": "Partition key is runId when available."
+            },
+            "bindingVersion": "0.5.0"
+          }
+        }
+      }
+    }
+  },
+  "x-anvilkit-ordering": {
+    "targetSnapshots": "snapshots are immutable; consumers key on snapshot identity",
+    "duplicates": "same message ID must have byte-identical content",
+    "maximumPayloadBytes": 65536,
+    "largeContent": "AgentArtifact reference"
+  }
+}

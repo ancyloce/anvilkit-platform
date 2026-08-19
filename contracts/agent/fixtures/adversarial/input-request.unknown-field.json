@@ -1,0 +1,14 @@
+{
+  "kind": "InputRequest",
+  "requestId": "input.synthetic.001",
+  "runId": "run.synthetic.001",
+  "question": "Choose the synthetic target.",
+  "responseSchema": {
+    "componentName": "anvilkit.contract.schema.problem-details",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "expiresAt": "2026-08-09T12:05:00.000Z",
+  "version": 1,
+  "resumeState": "planning",
+  "unexpectedField": "must be rejected"
+}

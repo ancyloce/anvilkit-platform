@@ -1,0 +1,8 @@
+{
+  "kind": "ProblemDetails",
+  "code": "VALIDATION_FAILED",
+  "retryability": "never",
+  "message": "Synthetic validation failure.",
+  "fieldErrors": [],
+  "unexpectedField": "must be rejected"
+}

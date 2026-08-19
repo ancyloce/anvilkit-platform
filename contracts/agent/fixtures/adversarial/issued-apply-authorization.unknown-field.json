@@ -1,0 +1,31 @@
+{
+  "kind": "IssuedApplyAuthorization",
+  "authorization": {
+    "kind": "ApplyAuthorization",
+    "authorizationId": "authorization.synthetic.001",
+    "keyId": "urn:anvilkit:key:agent-service:synthetic",
+    "issuer": "urn:anvilkit:issuer:agent-service",
+    "audience": "urn:anvilkit:audience:pagix",
+    "issuedAt": "2026-08-18T12:00:00.000Z",
+    "notBefore": "2026-08-18T12:00:00.000Z",
+    "expiresAt": "2026-08-18T12:05:00.000Z",
+    "runId": "run.synthetic.001",
+    "actionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "artifactDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "target": {
+      "targetType": "page",
+      "targetId": "page.synthetic.001",
+      "workspaceId": "workspace.synthetic.001",
+      "projectId": "project.synthetic.001"
+    },
+    "baseRevision": "revision.synthetic.001",
+    "actorId": "actor.synthetic.001",
+    "workspaceId": "workspace.synthetic.001",
+    "approvalVersion": 1,
+    "contractBomDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "policyDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "compactJws": "eyJhbGciOiJFZERTQSIsImtpZCI6InVybjphbnZpbGtpdDprZXk6YWdlbnQtc2VydmljZTpzeW50aGV0aWMiLCJ0eXAiOiJhbnZpbGtpdC1hcHBseS1hdXRob3JpemF0aW9uK2p3cyJ9.eyJzeW50aGV0aWMiOnRydWV9.c3ludGhldGljLXNpZ25hdHVyZS1ieXRlcw",
+  "unexpectedField": true
+}

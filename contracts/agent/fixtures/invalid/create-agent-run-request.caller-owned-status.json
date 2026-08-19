@@ -1,0 +1,15 @@
+{
+  "kind": "CreateAgentRunRequest",
+  "definition": {
+    "definitionId": "definition.synthetic.001",
+    "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "operation": "page-change",
+  "target": {
+    "targetType": "page",
+    "targetId": "page.synthetic.001",
+    "workspaceId": "workspace.synthetic.001",
+    "projectId": "project.synthetic.001"
+  },
+  "status": "completed"
+}

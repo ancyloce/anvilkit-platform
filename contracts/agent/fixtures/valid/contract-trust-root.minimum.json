@@ -1,0 +1,27 @@
+{
+  "kind": "ContractTrustRoot",
+  "snapshotId": "trust-snapshot-synthetic-001",
+  "issuedAt": "2026-08-18T12:00:00.000Z",
+  "nextUpdate": "2026-08-25T12:00:00.000Z",
+  "maximumClockSkewSeconds": 120,
+  "keys": [
+    {
+      "keyId": "urn:anvilkit:key:contracts-release:synthetic-rfc8032",
+      "issuer": "urn:anvilkit:issuer:contracts-release",
+      "audiences": [
+        "urn:anvilkit:audience:contract-consumers"
+      ],
+      "algorithms": [
+        "dsse-ed25519-v1"
+      ],
+      "publicKeyJwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo"
+      },
+      "status": "active",
+      "notBefore": "2026-08-18T12:00:00.000Z",
+      "notAfter": "2027-08-18T12:00:00.000Z"
+    }
+  ]
+}

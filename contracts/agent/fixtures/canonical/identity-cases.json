@@ -1,0 +1,185 @@
+{
+  "corpusVersion": 1,
+  "status": "canonical",
+  "profiles": [
+    "RFC8785",
+    "ComponentIdentityV1",
+    "ContractBomIdentityV1"
+  ],
+  "description": "Canonical JCS canonical-byte and domain-separated identity vectors shared by the Go and TypeScript consumers. Synthetic review inputs, not release identities.",
+  "applicableLanguages": [
+    "go",
+    "typescript"
+  ],
+  "jcsCases": [
+    {
+      "id": "rfc8785-primitive-serialization",
+      "value": {
+        "numbers": [
+          333333333.3333333,
+          1e+30,
+          4.5,
+          0.002,
+          1e-27
+        ],
+        "string": "€$\u000f\nA'B\"\\\\\"/",
+        "literals": [
+          null,
+          true,
+          false
+        ]
+      },
+      "expectedCanonical": "{\"literals\":[null,true,false],\"numbers\":[333333333.3333333,1e+30,4.5,0.002,1e-27],\"string\":\"€$\\u000f\\nA'B\\\"\\\\\\\\\\\"/\"}"
+    },
+    {
+      "id": "rfc8785-utf16-property-order",
+      "value": {
+        "1": "One",
+        "€": "Euro Sign",
+        "\r": "Carriage Return",
+        "דּ": "Hebrew Letter Dalet With Dagesh",
+        "😀": "Emoji: Grinning Face",
+        "": "Control",
+        "ö": "Latin Small Letter O With Diaeresis"
+      },
+      "expectedCanonical": "{\"\\r\":\"Carriage Return\",\"1\":\"One\",\"\":\"Control\",\"ö\":\"Latin Small Letter O With Diaeresis\",\"€\":\"Euro Sign\",\"😀\":\"Emoji: Grinning Face\",\"דּ\":\"Hebrew Letter Dalet With Dagesh\"}"
+    },
+    {
+      "id": "unicode-preserved-and-nested-objects-sorted",
+      "value": {
+        "é": "composed",
+        "é": "decomposed",
+        "nested": [
+          {
+            "z": 0,
+            "a": 1
+          }
+        ]
+      },
+      "expectedCanonical": "{\"é\":\"decomposed\",\"nested\":[{\"a\":1,\"z\":0}],\"é\":\"composed\"}"
+    },
+    {
+      "id": "reject-negative-zero-programmatic-value",
+      "value": {
+        "value": -0
+      },
+      "expectedCode": "JCS_NEGATIVE_ZERO"
+    },
+    {
+      "id": "reject-unpaired-surrogate-programmatic-value",
+      "value": {
+        "value": "\ud800"
+      },
+      "expectedCode": "JCS_INVALID_UNICODE"
+    }
+  ],
+  "componentCases": [
+    {
+      "id": "schema-component-in-bom-a",
+      "value": {
+        "$id": "https://contracts.anvilkit.dev/example.schema.json",
+        "type": "object"
+      },
+      "purpose": "schema",
+      "mediaType": "application/schema+json",
+      "expectedDigest": "sha256:d2ac6760e4e1ff8dad734f00a0ce58bf16fbc86ac3393332fa6439cf010a0acd"
+    },
+    {
+      "id": "same-schema-component-in-bom-b",
+      "value": {
+        "type": "object",
+        "$id": "https://contracts.anvilkit.dev/example.schema.json"
+      },
+      "purpose": "schema",
+      "mediaType": "application/schema+json",
+      "expectedDigest": "sha256:d2ac6760e4e1ff8dad734f00a0ce58bf16fbc86ac3393332fa6439cf010a0acd"
+    },
+    {
+      "id": "cross-purpose-domain-separation",
+      "value": {
+        "$id": "https://contracts.anvilkit.dev/example.schema.json",
+        "type": "object"
+      },
+      "purpose": "action",
+      "mediaType": "application/schema+json",
+      "expectedDigest": "sha256:e3328c3cdcf8d31a03c8c86a50fa17e72af6339cce16c094ecdbcf2b11a7918c"
+    },
+    {
+      "id": "cross-media-type-domain-separation",
+      "value": {
+        "$id": "https://contracts.anvilkit.dev/example.schema.json",
+        "type": "object"
+      },
+      "purpose": "schema",
+      "mediaType": "application/json",
+      "expectedDigest": "sha256:60d2f151c1691b1730d9321270e1a04424dd1b889fa5c26e7220f8ad41146ca8"
+    },
+    {
+      "id": "reject-reserved-bom-purpose",
+      "value": {},
+      "purpose": "contract-bom",
+      "mediaType": "application/json",
+      "expectedCode": "IDENTITY_PURPOSE_RESERVED"
+    },
+    {
+      "id": "reject-purpose-with-nul",
+      "value": {},
+      "purpose": "schema\u0000action",
+      "mediaType": "application/json",
+      "expectedCode": "IDENTITY_PURPOSE_INVALID"
+    },
+    {
+      "id": "reject-non-ascii-purpose",
+      "value": {},
+      "purpose": "schéma",
+      "mediaType": "application/json",
+      "expectedCode": "IDENTITY_PURPOSE_INVALID"
+    },
+    {
+      "id": "reject-unknown-purpose",
+      "value": {},
+      "purpose": "unknown-purpose",
+      "mediaType": "application/json",
+      "expectedCode": "IDENTITY_PURPOSE_UNKNOWN"
+    },
+    {
+      "id": "reject-non-profile-media-type",
+      "value": {},
+      "purpose": "schema",
+      "mediaType": "Application/JSON",
+      "expectedCode": "IDENTITY_MEDIA_TYPE_INVALID"
+    }
+  ],
+  "bomCases": [
+    {
+      "id": "root-digest-omits-exactly-digest",
+      "value": {
+        "kind": "ContractBom",
+        "name": "platform-kernel",
+        "digest": "sha256:274643d684210bd8a1f3900e51d0f6071bc371902be6fe7b8570c786d4d38379",
+        "createdAt": "2026-08-08T00:00:00.000Z",
+        "issuer": "urn:anvilkit:issuer:contracts-release",
+        "components": [],
+        "registrySetDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "profileDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "expectedDigest": "sha256:274643d684210bd8a1f3900e51d0f6071bc371902be6fe7b8570c786d4d38379",
+      "expectedVerification": true,
+      "expectedCanonicalWithoutDigest": "{\"components\":[],\"createdAt\":\"2026-08-08T00:00:00.000Z\",\"issuer\":\"urn:anvilkit:issuer:contracts-release\",\"kind\":\"ContractBom\",\"name\":\"platform-kernel\",\"profileDigest\":\"sha256:1111111111111111111111111111111111111111111111111111111111111111\",\"registrySetDigest\":\"sha256:3333333333333333333333333333333333333333333333333333333333333333\"}"
+    },
+    {
+      "id": "declared-digest-mismatch",
+      "copyOf": "root-digest-omits-exactly-digest",
+      "declaredDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "expectedDigest": "sha256:274643d684210bd8a1f3900e51d0f6071bc371902be6fe7b8570c786d4d38379",
+      "expectedVerification": false
+    },
+    {
+      "id": "missing-declared-digest-rejected",
+      "value": {
+        "kind": "ContractBom"
+      },
+      "expectedCode": "BOM_DIGEST_MISSING"
+    }
+  ]
+}

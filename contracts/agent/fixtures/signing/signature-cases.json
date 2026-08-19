@@ -1,0 +1,64 @@
+{
+  "corpusVersion": 1,
+  "profile": "AnvilKitSignaturePrimitive",
+  "notice": "The private seed is an RFC 8032-derived synthetic conformance key. It must never be used outside tests.",
+  "key": {
+    "curve": "Ed25519",
+    "publicKeyBase64Url": "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo",
+    "privateSeedBase64Url": "nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A"
+  },
+  "dsse": {
+    "payloadType": "application/vnd.anvilkit.contract-signature-statement+json",
+    "payloadBase64Url": "eyJhbGdvcml0aG0iOiJkc3NlLWVkMjU1MTktdjEiLCJhdWRpZW5jZSI6InVybjphbnZpbGtpdDphdWRpZW5jZTpjb250cmFjdC1jb25zdW1lcnMiLCJjb250cmFjdEJvbURpZ2VzdCI6InNoYTI1NjpiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwiZXhwaXJlc0F0IjoiMjAyNi0wOC0xOFQxMzowMDowMC4wMDBaIiwiaXNzdWVkQXQiOiIyMDI2LTA4LTE4VDEyOjAwOjAwLjAwMFoiLCJpc3N1ZXIiOiJ1cm46YW52aWxraXQ6aXNzdWVyOmNvbnRyYWN0cy1yZWxlYXNlIiwia2V5SWQiOiJ1cm46YW52aWxraXQ6a2V5OmNvbnRyYWN0cy1yZWxlYXNlOnN5bnRoZXRpYy1yZmM4MDMyIiwia2luZCI6IkNvbnRyYWN0U2lnbmF0dXJlU3RhdGVtZW50Iiwibm90QmVmb3JlIjoiMjAyNi0wOC0xOFQxMjowMDowMC4wMDBaIiwic3ViamVjdCI6eyJkaWdlc3QiOiJzaGEyNTY6YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYSIsIm1lZGlhVHlwZSI6ImFwcGxpY2F0aW9uL3NjaGVtYStqc29uIiwicHVycG9zZSI6InNjaGVtYSIsInNpemUiOjQyfX0",
+    "signatureBase64Url": "LdDDhPvWFHfBJ3HeoT3zV_Ac9a3k8CJY3mY9ADqqvY1W1luKzhRknl06_D4vh7HQDS8L1omVuxi4UDhlvQfVAA"
+  },
+  "jws": {
+    "protectedBase64Url": "eyJhbGciOiJFZERTQSIsImtpZCI6InVybjphbnZpbGtpdDprZXk6YWdlbnQtc2VydmljZTpzeW50aGV0aWMiLCJ0eXAiOiJhbnZpbGtpdC1hcHBseS1hdXRob3JpemF0aW9uK2p3cyJ9",
+    "payloadBase64Url": "eyJhY3Rpb25EaWdlc3QiOiJzaGEyNTY6YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYSIsImFjdG9ySWQiOiJhY3Rvci5zeW50aGV0aWMuMDAxIiwiYXBwcm92YWxWZXJzaW9uIjoxLCJhcnRpZmFjdERpZ2VzdCI6InNoYTI1NjpiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwiYXVkaWVuY2UiOiJ1cm46YW52aWxraXQ6YXVkaWVuY2U6cGFnaXgiLCJhdXRob3JpemF0aW9uSWQiOiJhdXRob3JpemF0aW9uLnN5bnRoZXRpYy4wMDEiLCJiYXNlUmV2aXNpb24iOiJyZXZpc2lvbi5zeW50aGV0aWMuMDAxIiwiY29udHJhY3RCb21EaWdlc3QiOiJzaGEyNTY6Y2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjYyIsImRlZmluaXRpb25EaWdlc3QiOiJzaGEyNTY6ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZCIsImV4cGlyZXNBdCI6IjIwMjYtMDgtMDlUMTI6MDU6MDAuMDAwWiIsImlzc3VlZEF0IjoiMjAyNi0wOC0wOVQxMjowMDowMC4wMDBaIiwiaXNzdWVyIjoidXJuOmFudmlsa2l0Omlzc3VlcjphZ2VudC1zZXJ2aWNlIiwia2V5SWQiOiJ1cm46YW52aWxraXQ6a2V5OmFnZW50LXNlcnZpY2U6c3ludGhldGljIiwia2luZCI6IkFwcGx5QXV0aG9yaXphdGlvbiIsIm5vdEJlZm9yZSI6IjIwMjYtMDgtMDlUMTI6MDA6MDAuMDAwWiIsInBvbGljeURpZ2VzdCI6InNoYTI1NjphYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhIiwicnVuSWQiOiJydW4uc3ludGhldGljLjAwMSIsInRhcmdldCI6eyJwcm9qZWN0SWQiOiJwcm9qZWN0LnN5bnRoZXRpYy4wMDEiLCJ0YXJnZXRJZCI6InBhZ2Uuc3ludGhldGljLjAwMSIsInRhcmdldFR5cGUiOiJwYWdlIiwid29ya3NwYWNlSWQiOiJ3b3Jrc3BhY2Uuc3ludGhldGljLjAwMSJ9LCJ3b3Jrc3BhY2VJZCI6IndvcmtzcGFjZS5zeW50aGV0aWMuMDAxIn0",
+    "signatureBase64Url": "kFD1BTSYGma3y1me-F6Ty83W0eTTKPwMKAGo7c22_Pb3d2r9fGGp0hqbGGyy4fJ1Os0YdKj5FnF6_HmfLfe6Cg"
+  },
+  "cases": [
+    {
+      "id": "dsse-pae-message-tamper",
+      "profile": "dsse",
+      "operation": "verify",
+      "mutation": "message-last-byte",
+      "expectedVerified": false
+    },
+    {
+      "id": "dsse-sign-and-verify",
+      "profile": "dsse",
+      "operation": "sign-and-verify",
+      "mutation": "none",
+      "expectedVerified": true
+    },
+    {
+      "id": "dsse-signature-tamper",
+      "profile": "dsse",
+      "operation": "verify",
+      "mutation": "signature-first-byte",
+      "expectedVerified": false
+    },
+    {
+      "id": "jws-signature-tamper",
+      "profile": "jws",
+      "operation": "verify",
+      "mutation": "signature-first-byte",
+      "expectedVerified": false
+    },
+    {
+      "id": "jws-signing-input-tamper",
+      "profile": "jws",
+      "operation": "verify",
+      "mutation": "message-last-byte",
+      "expectedVerified": false
+    },
+    {
+      "id": "jws-verify",
+      "profile": "jws",
+      "operation": "verify",
+      "mutation": "none",
+      "expectedVerified": true
+    }
+  ]
+}

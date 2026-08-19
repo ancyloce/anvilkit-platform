@@ -1,0 +1,26 @@
+{
+  "kind": "WorkerResult",
+  "taskId": "task.synthetic.001",
+  "recoveryEpoch": 7,
+  "executionGeneration": 0,
+  "physicalAttemptId": "attempt.synthetic.001",
+  "leaseEpoch": 3,
+  "capability": "fake.execute",
+  "buildIdentity": "build.synthetic.001",
+  "artifacts": [
+    {
+      "artifactId": "artifact.synthetic.001",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mediaType": "application/json",
+      "sizeBytes": 128
+    }
+  ],
+  "metrics": {
+    "durationMilliseconds": "100"
+  },
+  "usageReferences": [
+    "usage.synthetic.001"
+  ],
+  "warnings": [],
+  "completedAt": "2026-08-09T12:00:00.000Z"
+}

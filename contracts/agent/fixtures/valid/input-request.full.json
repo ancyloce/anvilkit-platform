@@ -1,0 +1,13 @@
+{
+  "resumeState": "planning",
+  "version": 1,
+  "expiresAt": "2026-08-09T12:05:00.000Z",
+  "responseSchema": {
+    "componentName": "anvilkit.contract.schema.problem-details",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "question": "Choose the synthetic café target 🚀.",
+  "runId": "run.synthetic.001",
+  "requestId": "input.synthetic.001",
+  "kind": "InputRequest"
+}

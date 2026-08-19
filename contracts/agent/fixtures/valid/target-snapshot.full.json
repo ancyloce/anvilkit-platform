@@ -1,0 +1,19 @@
+{
+  "capturedAt": "2026-08-09T12:00:00.000Z",
+  "catalogDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "contractBomDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "snapshot": {
+    "artifactId": "artifact.synthetic.001",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mediaType": "application/json",
+    "sizeBytes": 128
+  },
+  "baseRevision": "revision.synthetic.001",
+  "target": {
+    "targetType": "page",
+    "targetId": "page.synthetic.001",
+    "workspaceId": "workspace.synthetic.001",
+    "projectId": "project.synthetic.001"
+  },
+  "kind": "TargetSnapshot"
+}

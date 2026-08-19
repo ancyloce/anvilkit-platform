@@ -1,0 +1,34 @@
+{
+  "kind": "ToolDefinition",
+  "capability": "contract.validate",
+  "inputSchema": {
+    "componentName": "anvilkit.contract.schema.problem-details",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "outputSchema": {
+    "componentName": "anvilkit.contract.schema.problem-details",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "sideEffectClass": "none",
+  "riskClass": "low",
+  "approvalPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "timeoutPolicy": {
+    "timeoutMilliseconds": 5000
+  },
+  "retryPolicy": {
+    "maximumAttempts": 3,
+    "backoffMilliseconds": 250,
+    "retryability": [
+      "safe-after-backoff"
+    ]
+  },
+  "acceptedDataClasses": [
+    "public",
+    "internal"
+  ],
+  "toolId": "tool.synthetic.001"
+}

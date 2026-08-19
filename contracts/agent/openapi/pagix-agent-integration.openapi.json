@@ -1,0 +1,1170 @@
+{
+  "openapi": "3.1.2",
+  "info": {
+    "title": "Pagix Agent Integration API",
+    "version": "p0-kernel",
+    "description": "Canonical internal Pagix integration contract for Agent workflows and governed effects (ADR-021)."
+  },
+  "servers": [
+    {
+      "url": "https://pagix.internal.invalid"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Snapshots"
+    },
+    {
+      "name": "Usage"
+    },
+    {
+      "name": "Assets"
+    },
+    {
+      "name": "Domain"
+    }
+  ],
+  "security": [
+    {
+      "workloadIdentity": []
+    }
+  ],
+  "paths": {
+    "/internal/agent/context-snapshots": {
+      "post": {
+        "operationId": "createTargetSnapshot",
+        "summary": "Capture an immutable authorized target snapshot.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Immutable snapshot bound to catalog, policy, and Contract BOM digests.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/target-snapshot?digest=sha256:24d36aef73946c2618dec27104ddc58553c32eb6ba3933f8250459e7452970bc"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Business-state or idempotency conflict.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/internal/agent/entitlements/check": {
+      "post": {
+        "operationId": "checkAgentEntitlement",
+        "summary": "Check current Team, Project, permission, and entitlement authority.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bounded current-authority decision.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Business-state or idempotency conflict.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/internal/agent/usage/reservations": {
+      "post": {
+        "operationId": "reserveAgentUsage",
+        "summary": "Reserve worst-case budget before expensive dispatch.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/agent-budget?digest=sha256:e2942efa249ebe3c79c105b3356d50a8cc3c99e8b544616a6ed10fb44a0b8467"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Recorded reservation state.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Business-state or idempotency conflict.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/internal/agent/usage/observations": {
+      "post": {
+        "operationId": "observeAgentUsage",
+        "summary": "Record one additive per-attempt usage observation.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/usage-observation?digest=sha256:c3beabfc7abfa5565a082806b356585bc64ce8b6dd46f26606feff87677b5eb8"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Recorded additive observation.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Business-state or idempotency conflict.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/internal/agent/usage/reconciliation": {
+      "post": {
+        "operationId": "reconcileAgentUsage",
+        "summary": "Reconcile reservation and observed usage exactly once.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded reconciliation outcome.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Business-state or idempotency conflict.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/internal/agent/assets/reservations": {
+      "post": {
+        "operationId": "reserveAgentAsset",
+        "summary": "Reserve governed asset capacity before finalization.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Recorded asset reservation.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Business-state or idempotency conflict.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/internal/agent/assets/finalization": {
+      "post": {
+        "operationId": "finalizeAgentAsset",
+        "summary": "Finalize an immutable governed asset.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/agent-artifact?digest=sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Finalized artifact metadata.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/agent-artifact?digest=sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Business-state or idempotency conflict.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    },
+    "/internal/agent/domain/page-persistence": {
+      "post": {
+        "operationId": "persistAuthorizedPage",
+        "summary": "Verify and atomically commit an authorized page mutation with its outbox event.",
+        "security": [
+          {
+            "workloadIdentity": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/issued-apply-authorization?digest=sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authoritative domain outcome; a revision conflict consumes the authorization.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Business-state or idempotency conflict.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "conflict"
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "workloadIdentity": {
+        "type": "mutualTLS",
+        "description": "Authenticated internal service workload identity."
+      }
+    },
+    "parameters": {
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "RequestDigest": {
+        "name": "X-AnvilKit-Request-Digest",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "Traceparent": {
+        "name": "traceparent",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
+        }
+      }
+    },
+    "schemas": {
+      "AgentArtifact": {
+        "$ref": "anvilkit://schema/agent-artifact?digest=sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43"
+      },
+      "AgentBudget": {
+        "$ref": "anvilkit://schema/agent-budget?digest=sha256:e2942efa249ebe3c79c105b3356d50a8cc3c99e8b544616a6ed10fb44a0b8467"
+      },
+      "ApplyAuthorization": {
+        "$ref": "anvilkit://schema/apply-authorization?digest=sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b"
+      },
+      "IssuedApplyAuthorization": {
+        "$ref": "anvilkit://schema/issued-apply-authorization?digest=sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf"
+      },
+      "ProblemDetails": {
+        "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+      },
+      "TargetSnapshot": {
+        "$ref": "anvilkit://schema/target-snapshot?digest=sha256:24d36aef73946c2618dec27104ddc58553c32eb6ba3933f8250459e7452970bc"
+      },
+      "UsageObservation": {
+        "$ref": "anvilkit://schema/usage-observation?digest=sha256:c3beabfc7abfa5565a082806b356585bc64ce8b6dd46f26606feff87677b5eb8"
+      },
+      "BoundedRequest": {
+        "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+      }
+    }
+  }
+}

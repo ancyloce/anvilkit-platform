@@ -1,0 +1,6 @@
+{
+  "kind": "SubmitApprovalDecisionRequest",
+  "decision": "approve",
+  "decisionVersion": 1,
+  "actionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}

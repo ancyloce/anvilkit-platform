@@ -1,0 +1,356 @@
+{
+  "corpusVersion": 1,
+  "status": "canonical",
+  "profile": "AnvilKitStrictJsonAdmissionV1",
+  "description": "Byte-exact strict JSON admission cases. Hex inputs preserve invalid UTF-8 and BOM bytes that cannot be represented as JSON strings. This governance corpus is not added to the identity-bearing freeze set until DP-008 and owner approval gates pass.",
+  "applicableLanguages": [
+    "go",
+    "typescript"
+  ],
+  "cases": [
+    {
+      "id": "accept-empty-object",
+      "input": {
+        "encoding": "utf8",
+        "data": "{}"
+      },
+      "expected": {
+        "outcome": "accepted"
+      }
+    },
+    {
+      "id": "accept-unicode-without-normalization",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"é\":\"composed\",\"é\":\"decomposed\"}"
+      },
+      "expected": {
+        "outcome": "accepted"
+      }
+    },
+    {
+      "id": "accept-escaped-surrogate-pair",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"emoji\":\"\\uD83D\\uDE00\"}"
+      },
+      "expected": {
+        "outcome": "accepted"
+      }
+    },
+    {
+      "id": "accept-safe-integer-boundary",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":9007199254740991}"
+      },
+      "expected": {
+        "outcome": "accepted"
+      }
+    },
+    {
+      "id": "accept-finite-small-number",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":1e-300}"
+      },
+      "expected": {
+        "outcome": "accepted"
+      }
+    },
+    {
+      "id": "accept-prototype-named-property-as-data",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"__proto__\":1}"
+      },
+      "expected": {
+        "outcome": "accepted",
+        "rootKeys": [
+          "__proto__"
+        ]
+      }
+    },
+    {
+      "id": "reject-duplicate-literal-key",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"a\":1,\"a\":2}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "duplicate-key",
+        "instancePath": "/a"
+      }
+    },
+    {
+      "id": "reject-duplicate-key-after-escape-decoding",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"a\":1,\"\\u0061\":2}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "duplicate-key",
+        "instancePath": "/a"
+      }
+    },
+    {
+      "id": "reject-invalid-utf8",
+      "input": {
+        "encoding": "hex",
+        "data": "7b2278223ac3287d"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "invalid-unicode",
+        "instancePath": "/"
+      }
+    },
+    {
+      "id": "reject-utf8-bom",
+      "input": {
+        "encoding": "hex",
+        "data": "efbbbf7b7d"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "invalid-bom",
+        "instancePath": "/"
+      }
+    },
+    {
+      "id": "reject-unpaired-high-surrogate",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":\"\\uD800\"}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "invalid-unicode",
+        "instancePath": "/value"
+      }
+    },
+    {
+      "id": "reject-unpaired-low-surrogate",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":\"\\uDC00\"}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "invalid-unicode",
+        "instancePath": "/value"
+      }
+    },
+    {
+      "id": "reject-non-json-number",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":NaN}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "invalid-json",
+        "instancePath": "/value"
+      }
+    },
+    {
+      "id": "reject-number-overflow",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":1e400}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "number-range",
+        "instancePath": "/value"
+      }
+    },
+    {
+      "id": "reject-number-underflow",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":1e-400}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "number-range",
+        "instancePath": "/value"
+      }
+    },
+    {
+      "id": "reject-negative-zero",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":-0.0}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "negative-zero",
+        "instancePath": "/value"
+      }
+    },
+    {
+      "id": "reject-unsafe-positive-integer",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":9007199254740992}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "unsafe-integer",
+        "instancePath": "/value"
+      }
+    },
+    {
+      "id": "reject-leading-zero",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":01}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "invalid-json",
+        "instancePath": "/value"
+      }
+    },
+    {
+      "id": "reject-unescaped-control-character",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"value\":\"line\nbreak\"}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "invalid-json",
+        "instancePath": "/value"
+      }
+    },
+    {
+      "id": "reject-trailing-value",
+      "input": {
+        "encoding": "utf8",
+        "data": "{}{}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "invalid-json",
+        "instancePath": "/"
+      }
+    },
+    {
+      "id": "reject-byte-limit",
+      "input": {
+        "encoding": "utf8",
+        "data": "{}"
+      },
+      "limits": {
+        "maxBytes": 1
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "byte-limit",
+        "instancePath": "/"
+      }
+    },
+    {
+      "id": "reject-depth-limit",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"a\":{\"b\":{}}}"
+      },
+      "limits": {
+        "maxDepth": 2
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "depth-limit",
+        "instancePath": "/a/b"
+      }
+    },
+    {
+      "id": "reject-array-item-limit",
+      "input": {
+        "encoding": "utf8",
+        "data": "[0,1,2]"
+      },
+      "limits": {
+        "maxCollectionItems": 2
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "item-limit",
+        "instancePath": "/"
+      }
+    },
+    {
+      "id": "reject-string-byte-limit",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"x\":\"é\"}"
+      },
+      "limits": {
+        "maxStringBytes": 1
+      },
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "byte-limit",
+        "instancePath": "/x"
+      }
+    },
+    {
+      "id": "reject-time-limit",
+      "input": {
+        "encoding": "utf8",
+        "data": "{}"
+      },
+      "limits": {
+        "maxMilliseconds": 1
+      },
+      "clockTicksMilliseconds": [
+        0,
+        2
+      ],
+      "expected": {
+        "outcome": "rejected",
+        "code": "PARSE_REJECTED",
+        "reason": "time-limit",
+        "instancePath": "/"
+      }
+    },
+    {
+      "id": "reject-unknown-field-before-identity",
+      "input": {
+        "encoding": "utf8",
+        "data": "{\"a\":1,\"extra\":2}"
+      },
+      "validator": "closed-root-a",
+      "expected": {
+        "outcome": "rejected",
+        "code": "VALIDATION_FAILED",
+        "reason": "schema-invalid",
+        "instancePath": "/extra",
+        "schemaPath": "/additionalProperties"
+      }
+    }
+  ]
+}

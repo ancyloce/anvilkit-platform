@@ -1,0 +1,6 @@
+{
+  "kind": "ProblemDetails",
+  "retryability": "never",
+  "message": "Synthetic validation failure.",
+  "fieldErrors": []
+}

@@ -1,0 +1,8 @@
+{
+  "kind": "CreateAgentRunRequest",
+  "definition": {
+    "definitionId": "definition.synthetic.001",
+    "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "operation": "page-change"
+}

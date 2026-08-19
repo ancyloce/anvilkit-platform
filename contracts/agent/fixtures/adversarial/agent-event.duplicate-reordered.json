@@ -1,0 +1,26 @@
+{
+  "contractBomReference": {
+    "repository": "anvilkit/contracts",
+    "bomDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "ociManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "evidenceManifestDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "payload": {
+    "status": "created"
+  },
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  },
+  "occurredAt": "2026-08-09T12:00:00.000Z",
+  "subject": {
+    "subjectType": "system",
+    "subjectId": "actor.synthetic.001"
+  },
+  "eventType": "run.created",
+  "sequence": 1,
+  "runId": "run.synthetic.001",
+  "workspaceId": "workspace.synthetic.001",
+  "projectId": "project.synthetic.001",
+  "eventId": "event.synthetic.001",
+  "kind": "AgentEvent"
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "AgentEvidence",
+  "evidenceId": "evidence.synthetic.001",
+  "runId": "run.synthetic.001",
+  "workspaceId": "workspace.synthetic.001",
+  "projectId": "project.synthetic.001",
+  "evidenceType": "run.created",
+  "evidenceSequence": 1,
+  "recordedAt": "2026-08-18T12:00:00.000Z",
+  "occurredAt": "2026-08-18T12:00:00.000Z",
+  "producer": {
+    "component": "agent-runner",
+    "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "policyDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "contractBomDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "dataClassification": "internal",
+  "retentionCategory": "audit",
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  }
+}

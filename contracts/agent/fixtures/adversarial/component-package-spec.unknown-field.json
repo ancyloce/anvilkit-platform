@@ -1,0 +1,44 @@
+{
+  "kind": "ComponentPackageSpec",
+  "packageIntent": {
+    "name": "hero-section",
+    "version": "1.0.0",
+    "componentType": "section"
+  },
+  "inputs": [
+    {
+      "artifactId": "artifact.synthetic.001",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mediaType": "application/json",
+      "sizeBytes": 128
+    }
+  ],
+  "outputs": [
+    {
+      "name": "bundle",
+      "schema": {
+        "componentName": "anvilkit.contract.schema.example",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "maximumBytes": 10485760
+    }
+  ],
+  "validationConstraints": [
+    {
+      "policyId": "policy.synthetic",
+      "version": "v1",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "buildPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "certificationPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "unexpectedField": true
+}

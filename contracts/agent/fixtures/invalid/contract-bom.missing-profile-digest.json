@@ -1,0 +1,26 @@
+{
+  "kind": "ContractBom",
+  "name": "anvilkit-agent-contracts",
+  "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "createdAt": "2026-08-18T12:00:00.000Z",
+  "issuer": "urn:anvilkit:issuer:contracts-release",
+  "components": [
+    {
+      "kind": "json-schema",
+      "name": "anvilkit.contract.schema.agent-run",
+      "mediaType": "application/schema+json",
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "size": 4096,
+      "dependencies": [
+        {
+          "kind": "json-schema",
+          "name": "anvilkit.contract.schema.shared-primitives",
+          "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "issuer": "urn:anvilkit:issuer:contracts-release",
+      "provenanceDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }
+  ],
+  "registrySetDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+}

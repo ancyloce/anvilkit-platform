@@ -1,0 +1,60 @@
+{
+  "kind": "AgentDefinition",
+  "role": "manager",
+  "owner": "Platform Definitions owner",
+  "domain": "platform-agent",
+  "promptDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "inputSchema": {
+    "componentName": "anvilkit.contract.schema.example",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "outputSchema": {
+    "componentName": "anvilkit.contract.schema.example",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "toolProfile": {
+    "tools": [
+      {
+        "componentName": "anvilkit.contract.schema.example",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "maximumParallelTools": 2
+  },
+  "modelPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "memoryPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "guardrailPolicy": {
+    "policyId": "policy.synthetic",
+    "version": "v1",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "repairPolicy": {
+    "maximumAttempts": 8,
+    "mode": "bounded-repair"
+  },
+  "allowedDelegates": [
+    "definition.synthetic.specialist"
+  ],
+  "maximumDelegationDepth": 8,
+  "maximumFanOut": 64,
+  "turnLimit": 1024,
+  "stopConditions": [
+    "completed",
+    "refused",
+    "budget-exhausted",
+    "approval-required",
+    "input-required",
+    "policy-blocked"
+  ],
+  "evaluators": [],
+  "definitionId": "definition.synthetic.001",
+  "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+}
