@@ -8,10 +8,6 @@
         "turbo": "^2.10.2",
       },
     },
-    "packages/contracts-bom": {
-      "name": "@anvilkit/contracts-bom",
-      "version": "0.1.0",
-    },
     "packages/contracts-codegen": {
       "name": "@anvilkit/contracts-codegen",
       "version": "0.1.0",
@@ -40,8 +36,6 @@
   },
   "packages": {
     "@anvilkit/contracts": ["@anvilkit/contracts@workspace:packages/contracts-typescript"],
-
-    "@anvilkit/contracts-bom": ["@anvilkit/contracts-bom@workspace:packages/contracts-bom"],
 
     "@anvilkit/contracts-codegen": ["@anvilkit/contracts-codegen@workspace:packages/contracts-codegen"],
 
