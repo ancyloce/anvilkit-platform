@@ -88,7 +88,28 @@ for (const rel of files) {
 	}
 }
 
-const agentOpenAPI = join(REPO_ROOT, "contracts", "openapi", "v1", "agent-service.openapi.json");
+// ADR-018: Go and TypeScript are the only active Agent contract consumers.
+// Java/Python Agent packages and the superseded versioned contract tree must
+// not reappear without a new governance decision.
+for (const forbiddenPath of [
+	"packages/contracts-java",
+	"packages/contracts-python",
+	"packages/contracts-bom",
+	"contracts/schemas",
+	"contracts/freeze",
+	"contracts/compatibility",
+	"contracts/registries",
+	"contracts/fixtures",
+	"contracts/evidence",
+	"contracts/bom",
+	"contracts/asyncapi",
+]) {
+	if (existsSync(join(REPO_ROOT, forbiddenPath))) {
+		failures.push(`superseded Agent contract machinery is present: ${forbiddenPath} (ADR-018 canonical cutover)`);
+	}
+}
+
+const agentOpenAPI = join(REPO_ROOT, "contracts", "agent", "openapi", "agent-service.openapi.json");
 if (!existsSync(agentOpenAPI)) {
 	failures.push("agent-service OpenAPI inventory is missing");
 } else {
