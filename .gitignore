@@ -72,10 +72,5 @@ go.work.sum
 /docs/*
 !/docs/adr/
 
-# Historical PLAN-0003 governance evidence (local-only until regenerated in WP1)
+# Historical PLAN-0003 governance evidence (superseded; retained locally as history)
 /contracts/governance/
-
-# Obsolete PLAN-0003 M5/M6 local mock machinery (local-only until removed in WP1)
-/mocks/fakeprovider/
-/mocks/releasecandidate/
-/mocks/cmd/m6-report/
