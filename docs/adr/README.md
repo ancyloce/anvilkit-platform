@@ -29,7 +29,7 @@ This precedence is scoped to the Agent platform. ADR-001 remains the governing d
 | [ADR-015](ADR-015-service-naming-alignment.md) | Service naming: `anvilkit-render-worker` → `anvilkit-export-worker` on every surface | **Accepted** |
 | [ADR-016](ADR-016-agent-contract-signing-trust-and-revocation.md) | Agent contract signing, trust, revocation, and rollover profile | **Accepted design** — production integration evidence remains M7-T01 |
 | [ADR-017](ADR-017-agent-contract-compatibility-engine.md) | Repository-owned four-class Agent contract compatibility engine | **Superseded by ADR-018** |
-| [ADR-018](ADR-018-canonical-agent-contract-refactor-and-p0-kernel-profile.md) | Canonical greenfield Agent Contract refactor and P0-kernel profile | **Accepted** |
+| [ADR-018](ADR-018-canonical-agent-contract-refactor-and-p0-kernel-profile.md) | Canonical greenfield Agent Contract refactor and P0-kernel profile | **Accepted** — implemented by the Work Package 1 canonical cutover (`contracts/agent/`, P0-Kernel Profile + lock, Go/TypeScript-only generation; 2026-08-18) |
 | [ADR-019](ADR-019-dbos-go-pin-and-agentrunworkflow-runtime-boundary.md) | DBOS Go dependency pin and `AgentRunWorkflow` runtime boundary | **Accepted** |
 | [ADR-020](ADR-020-public-agent-events-and-internal-evidence.md) | Separate stable public Agent Events from detailed internal Evidence | **Accepted** |
 | [ADR-021](ADR-021-agent-api-command-envelopes-and-concurrency.md) | Intent-only command envelopes, authorization carrier, and concurrency rules | **Accepted** |
