@@ -92,7 +92,7 @@ func ContractBOM(raw []byte) ([]byte, string, bool, error) {
 	}
 	digest := wireDigest(
 		[]byte("anvilkit.contract-bom.identity.v1\x00"),
-		[]byte("application/vnd.anvilkit.contract-bom.v1+json"), []byte{0}, canonical,
+		[]byte("application/vnd.anvilkit.contract-bom+json"), []byte{0}, canonical,
 	)
 	verified := len(declared) == len(digest) && subtle.ConstantTimeCompare([]byte(declared), []byte(digest)) == 1
 	return canonical, digest, verified, nil

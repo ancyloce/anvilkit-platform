@@ -7,11 +7,11 @@ import Ajv2020, { type ErrorObject, type ValidateFunction } from "ajv/dist/2020.
 import addFormats from "ajv-formats";
 import { admitStrictJson, type JsonValue, type ValidationFinding } from "./strict-json.ts";
 
-type ContractSchema = Record<string, unknown> & { "x-anvilkit-contract": { semanticVersion: string } };
+type ContractSchema = Record<string, unknown> & { "x-anvilkit-contract": { logicalId: string } };
 
-function logicalUri(path: string, bytes: Uint8Array, version: string): string {
+function logicalUri(path: string, bytes: Uint8Array): string {
   const name = basename(path, ".schema.json");
-  return `anvilkit://schema/${name}.v${version.split(".", 1)[0]}@${version}?digest=sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+  return `anvilkit://schema/${name}?digest=sha256:${createHash("sha256").update(bytes).digest("hex")}`;
 }
 
 function compare(left: ValidationFinding, right: ValidationFinding): number {
@@ -27,13 +27,13 @@ export class NativeTypeScriptValidator {
     for (const keyword of ["x-anvilkit-integerString", "x-anvilkit-decimalString", "x-anvilkit-extensionMap", "x-anvilkit-omittedSemantics"]) {
       ajv.addKeyword({ keyword, schemaType: ["boolean", "string", "object"], valid: true });
     }
-    const directory = join(repositoryRoot, "contracts", "schemas", "v1");
+    const directory = join(repositoryRoot, "contracts", "agent", "schemas");
     const projected: Array<{ uri: string; schema: Record<string, unknown> }> = [];
     for (const name of readdirSync(directory).filter((value) => value.endsWith(".schema.json")).sort()) {
       const path = join(directory, name);
       const bytes = readFileSync(path);
       const source = JSON.parse(bytes.toString("utf8")) as ContractSchema;
-      const uri = logicalUri(path, bytes, source["x-anvilkit-contract"].semanticVersion);
+      const uri = logicalUri(path, bytes);
       const schema = structuredClone(source) as Record<string, unknown>;
       schema.$schema = "https://json-schema.org/draft/2020-12/schema";
       schema.$id = uri;

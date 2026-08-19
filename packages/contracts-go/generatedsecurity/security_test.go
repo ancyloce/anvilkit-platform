@@ -15,7 +15,7 @@ import (
 )
 
 func TestGeneratedSchemaRejectsUnknownProperties(t *testing.T) {
-	var artifact schema.AgentArtifactV1
+	var artifact schema.AgentArtifact
 	err := json.Unmarshal([]byte(`{"unexpected":true}`), &artifact)
 	if err == nil || !strings.Contains(err.Error(), "unknown field") {
 		t.Fatalf("unknown property was accepted: %v", err)
@@ -37,7 +37,7 @@ func TestGeneratedBoundedMapEnforcesLimits(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var bounded schema.SharedPrimitivesV1BoundedStringMap
+	var bounded schema.SharedPrimitivesBoundedStringMap
 	if err := json.Unmarshal(raw, &bounded); err == nil {
 		t.Fatal("map with excessive properties was accepted")
 	}

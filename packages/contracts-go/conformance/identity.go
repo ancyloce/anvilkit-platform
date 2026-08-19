@@ -52,7 +52,7 @@ func identityBase(id, corpusDigest string, corpusBytes int) resultCase {
 }
 
 func identityPurposes(repositoryRoot string) (map[string]bool, error) {
-	raw, err := os.ReadFile(filepath.Join(repositoryRoot, "contracts", "registries", "v1", "registry-set.json"))
+	raw, err := os.ReadFile(filepath.Join(repositoryRoot, "contracts", "agent", "registries", "registry-set.json"))
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +106,7 @@ func GenerateIdentity(repositoryRoot string) ([]byte, error) {
 	if runtime.Version() != "go1.26.4" {
 		return nil, fmt.Errorf("expected Go go1.26.4, got %s", runtime.Version())
 	}
-	corpusPath := filepath.Join(repositoryRoot, "contracts", "governance", "m3", "identity-cases.json")
+	corpusPath := filepath.Join(repositoryRoot, "contracts", "agent", "fixtures", "canonical", "identity-cases.json")
 	corpusBytes, err := os.ReadFile(corpusPath)
 	if err != nil {
 		return nil, err

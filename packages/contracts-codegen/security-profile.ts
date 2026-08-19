@@ -9,8 +9,8 @@ import { admitStrictJson, type JsonValue } from "./strict-json.ts";
 const DIGEST = /^sha256:[0-9a-f]{64}$/;
 const KEY_ID = /^urn:anvilkit:key:[a-z0-9][a-z0-9:-]{14,255}$/;
 const TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-const DSSE_PAYLOAD_TYPE = "application/vnd.anvilkit.contract-signature-statement.v1+json";
-const APPLY_TYP = "application/vnd.anvilkit.apply-authorization.v1+json";
+const DSSE_PAYLOAD_TYPE = "application/vnd.anvilkit.contract-signature-statement+json";
+const APPLY_TYP = "anvilkit-apply-authorization+jws";
 
 export class SecurityProfileError extends Error {
   constructor(readonly code: string, message: string) {
@@ -19,7 +19,7 @@ export class SecurityProfileError extends Error {
   }
 }
 
-export type TrustedKeyV1 = {
+export type TrustedKey = {
   keyId: string;
   issuer: string;
   audiences: string[];
@@ -30,18 +30,16 @@ export type TrustedKeyV1 = {
   notAfter: string;
 };
 
-export type TrustRootV1 = {
-  apiVersion: "anvilkit.io/contracts/v1";
+export type TrustRoot = {
   kind: "ContractTrustRoot";
   snapshotId: string;
   issuedAt: string;
   nextUpdate: string;
   maximumClockSkewSeconds: number;
-  keys: TrustedKeyV1[];
+  keys: TrustedKey[];
 };
 
-export type RevocationSnapshotV1 = {
-  apiVersion: "anvilkit.io/contracts/v1";
+export type RevocationSnapshot = {
   kind: "ContractRevocationSnapshot";
   snapshotId: string;
   issuedAt: string;
@@ -49,8 +47,7 @@ export type RevocationSnapshotV1 = {
   revokedKeys: { keyId: string; effectiveAt: string; reason: string }[];
 };
 
-export type SignatureStatementV1 = {
-  apiVersion: "anvilkit.io/contracts/v1";
+export type SignatureStatement = {
   kind: "ContractSignatureStatement";
   subject: { digest: string; size: number; purpose: string; mediaType: string };
   contractBomDigest: string;
@@ -73,8 +70,8 @@ export type VerificationContext = {
   issuer: string;
   audience: string;
   now: string;
-  trust: TrustRootV1;
-  revocations: RevocationSnapshotV1;
+  trust: TrustRoot;
+  revocations: RevocationSnapshot;
 };
 
 function parseInstant(value: string, label: string): number {
@@ -125,7 +122,7 @@ function validateTrustSnapshots(context: VerificationContext): number {
   return now;
 }
 
-function trustedKey(keyId: string, algorithm: TrustedKeyV1["algorithms"][number], context: VerificationContext): TrustedKeyV1 {
+function trustedKey(keyId: string, algorithm: TrustedKey["algorithms"][number], context: VerificationContext): TrustedKey {
   const now = validateTrustSnapshots(context);
   const keys = context.trust.keys.filter((candidate) => candidate.keyId === keyId);
   if (keys.length !== 1) throw new SecurityProfileError("KEY_NOT_TRUSTED", "key ID is missing or ambiguous");
@@ -163,12 +160,12 @@ export function dssePreAuthEncoding(payloadType: string, payload: Uint8Array): U
   ]);
 }
 
-function statementFromBytes(bytes: Uint8Array): SignatureStatementV1 {
+function statementFromBytes(bytes: Uint8Array): SignatureStatement {
   const value = asObject(admitStrictJson(bytes).value, "signature statement");
-  requireExactKeys(value, ["apiVersion", "kind", "subject", "contractBomDigest", "issuer", "audience", "keyId", "issuedAt", "notBefore", "expiresAt", "algorithm"], "signature statement");
+  requireExactKeys(value, ["kind", "subject", "contractBomDigest", "issuer", "audience", "keyId", "issuedAt", "notBefore", "expiresAt", "algorithm"], "signature statement");
   const subject = asObject(value.subject, "subject");
   requireExactKeys(subject, ["digest", "size", "purpose", "mediaType"], "subject");
-  if (value.apiVersion !== "anvilkit.io/contracts/v1" || value.kind !== "ContractSignatureStatement" || value.algorithm !== "dsse-ed25519-v1") {
+  if (value.kind !== "ContractSignatureStatement" || value.algorithm !== "dsse-ed25519-v1") {
     throw new SecurityProfileError("SIGNATURE_PROFILE_INVALID", "statement profile constants differ");
   }
   for (const digest of [subject.digest, value.contractBomDigest]) {
@@ -176,10 +173,10 @@ function statementFromBytes(bytes: Uint8Array): SignatureStatementV1 {
   }
   if (!Number.isSafeInteger(subject.size) || (subject.size as number) < 0) throw new SecurityProfileError("SIZE_INVALID", "subject size is invalid");
   if (typeof value.keyId !== "string" || !KEY_ID.test(value.keyId)) throw new SecurityProfileError("KEY_ID_INVALID", "statement key ID is invalid");
-  return value as unknown as SignatureStatementV1;
+  return value as unknown as SignatureStatement;
 }
 
-export function verifyDsseEnvelope(envelope: DsseEnvelope, expected: SignatureStatementV1, context: VerificationContext): SignatureStatementV1 {
+export function verifyDsseEnvelope(envelope: DsseEnvelope, expected: SignatureStatement, context: VerificationContext): SignatureStatement {
   if (envelope.payloadType !== DSSE_PAYLOAD_TYPE) throw new SecurityProfileError("DSSE_PAYLOAD_TYPE_INVALID", "unexpected DSSE payload type");
   if (envelope.signatures.length !== 1) throw new SecurityProfileError("DSSE_MULTIPLICITY_INVALID", "exactly one DSSE signature is required");
   const payload = decodeBase64Url(envelope.payload, "DSSE payload");
@@ -198,11 +195,11 @@ export function verifyDsseEnvelope(envelope: DsseEnvelope, expected: SignatureSt
   return statement;
 }
 
-export type ApplyAuthorizationV1 = Record<string, JsonValue> & {
+export type ApplyAuthorization = Record<string, JsonValue> & {
   keyId: string; issuer: string; audience: string; notBefore: string; expiresAt: string; authorizationId: string;
 };
 
-export function verifyApplyAuthorizationJws(compact: string, context: VerificationContext): ApplyAuthorizationV1 {
+export function verifyApplyAuthorizationJws(compact: string, context: VerificationContext): ApplyAuthorization {
   const segments = compact.split(".");
   if (segments.length !== 3) throw new SecurityProfileError("JWS_COMPACT_INVALID", "compact JWS must have three segments");
   const header = asObject(admitStrictJson(decodeBase64Url(segments[0], "JWS protected header")).value, "protected header");
@@ -211,8 +208,8 @@ export function verifyApplyAuthorizationJws(compact: string, context: Verificati
     throw new SecurityProfileError("JWS_HEADER_INVALID", "protected JWS header differs from the governed profile");
   }
   const payloadBytes = decodeBase64Url(segments[1], "JWS payload");
-  const payload = asObject(admitStrictJson(payloadBytes).value, "ApplyAuthorizationV1") as ApplyAuthorizationV1;
-  if (payload.apiVersion !== "anvilkit.io/contracts/v1" || payload.kind !== "ApplyAuthorization") throw new SecurityProfileError("AUTHORIZATION_PROFILE_INVALID", "payload profile constants differ");
+  const payload = asObject(admitStrictJson(payloadBytes).value, "ApplyAuthorization") as ApplyAuthorization;
+  if (payload.kind !== "ApplyAuthorization") throw new SecurityProfileError("AUTHORIZATION_PROFILE_INVALID", "payload profile constants differ");
   if (payload.keyId !== header.kid) throw new SecurityProfileError("KEY_ID_MISMATCH", "header and payload key IDs differ");
   if (payload.issuer !== context.issuer || payload.audience !== context.audience) throw new SecurityProfileError("AUTHORIZATION_CONTEXT_MISMATCH", "issuer or audience differs");
   verifyTimeWindow(String(payload.notBefore), String(payload.expiresAt), context);
@@ -227,7 +224,7 @@ export function verifyApplyAuthorizationJws(compact: string, context: Verificati
 export class AuthorizationRedemptionSet {
   private readonly redeemed = new Map<string, string>();
 
-  redeem(authorization: ApplyAuthorizationV1, compactJws: string): "accepted" | "identical-retry" {
+  redeem(authorization: ApplyAuthorization, compactJws: string): "accepted" | "identical-retry" {
     const key = `${authorization.issuer}\0${authorization.authorizationId}`;
     const previous = this.redeemed.get(key);
     if (previous === undefined) {

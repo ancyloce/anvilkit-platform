@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import Ajv2020, { type ErrorObject, type ValidateFunction } from "ajv/dist/2020.js";
 
-export const CONFORMANCE_LANGUAGES = ["go", "typescript", "python", "java"] as const;
+export const CONFORMANCE_LANGUAGES = ["go", "typescript"] as const;
 export type ConformanceLanguage = typeof CONFORMANCE_LANGUAGES[number];
 
 export type Finding = {
@@ -71,15 +71,7 @@ let schemaValidator: ValidateFunction | undefined;
 
 function validator(): ValidateFunction {
   if (schemaValidator) return schemaValidator;
-  const schemaPath = join(
-    import.meta.dir,
-    "..",
-    "..",
-    "contracts",
-    "evidence",
-    "v1",
-    "conformance-result.schema.json",
-  );
+  const schemaPath = join(import.meta.dir, "conformance-result.schema.json");
   const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
   schemaValidator = new Ajv2020({ allErrors: true, strict: true, strictRequired: false }).compile(schema);
   return schemaValidator;

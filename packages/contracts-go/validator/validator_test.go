@@ -1,7 +1,10 @@
 package validator_test
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -16,26 +19,32 @@ func root(t *testing.T) string {
 	_, file, _, _ := runtime.Caller(0)
 	return filepath.Clean(filepath.Join(filepath.Dir(file), "..", "..", ".."))
 }
+
+func canonicalURI(t *testing.T, name string) string {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join(root(t), "contracts", "agent", "schemas", name+".schema.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	digest := sha256.Sum256(raw)
+	return fmt.Sprintf("anvilkit://schema/%s?digest=sha256:%s", name, hex.EncodeToString(digest[:]))
+}
+
 func TestPinnedClosedValidator(t *testing.T) {
 	adapter, err := validator.New(root(t))
 	if err != nil {
 		t.Fatal(err)
 	}
-	schemaBytes, err := os.ReadFile(filepath.Join(root(t), "contracts", "schemas", "v1", "agent-run.schema.json"))
+	fixture, err := os.ReadFile(filepath.Join(root(t), "contracts", "agent", "fixtures", "valid", "agent-run.minimum.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	_ = schemaBytes
-	fixture, err := os.ReadFile(filepath.Join(root(t), "contracts", "fixtures", "v1", "valid", "agent-run.minimum.json"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	// URI is byte-bound to authoritative schema bytes and version.
-	uri := "anvilkit://schema/agent-run.v1@1.0.0?digest=sha256:68949242c9b4557a8b5ff965f76de8f2de49c11523a7cc1e64cfd1b4af824233"
-	if findings := adapter.Validate(uri, fixture); len(findings) != 0 {
+	// The logical URI is byte-bound to the canonical schema bytes.
+	if findings := adapter.Validate(canonicalURI(t, "agent-run"), fixture); len(findings) != 0 {
 		t.Fatalf("valid findings=%+v", findings)
 	}
 }
+
 func TestStrictAdmission(t *testing.T) {
 	for _, input := range []string{`{"a":1,"a":2}`, "\ufeff{}", `{"n":-0}`, `{"n":9007199254740992}`, strings.Repeat("[", 66) + strings.Repeat("]", 66)} {
 		if _, err := validator.Admit([]byte(input)); err == nil {
@@ -46,11 +55,11 @@ func TestStrictAdmission(t *testing.T) {
 
 func TestSchemaRootRejectsEscapingSymlink(t *testing.T) {
 	repositoryRoot := t.TempDir()
-	directory := filepath.Join(repositoryRoot, "contracts", "schemas", "v1")
+	directory := filepath.Join(repositoryRoot, "contracts", "agent", "schemas")
 	if err := os.MkdirAll(directory, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Symlink(filepath.Join(root(t), "contracts", "schemas", "v1", "agent-run.schema.json"), filepath.Join(directory, "escape.schema.json")); err != nil {
+	if err := os.Symlink(filepath.Join(root(t), "contracts", "agent", "schemas", "agent-run.schema.json"), filepath.Join(directory, "escape.schema.json")); err != nil {
 		t.Skipf("symbolic links unavailable: %v", err)
 	}
 	if _, err := validator.New(repositoryRoot); err == nil || !strings.Contains(err.Error(), "symbolic link") {
@@ -68,7 +77,6 @@ func TestValidationFindingsAreBounded(t *testing.T) {
 		revoked[index] = map[string]any{"unexpected": index}
 	}
 	raw, err := json.Marshal(map[string]any{
-		"apiVersion":  "anvilkit.io/contracts/v1",
 		"kind":        "ContractRevocationSnapshot",
 		"snapshotId":  "snapshot:bounded:test",
 		"issuedAt":    "2026-08-14T00:00:00.000Z",
@@ -78,8 +86,7 @@ func TestValidationFindingsAreBounded(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	const schemaURI = "anvilkit://schema/contract-revocation-snapshot.v1@1.0.0?digest=sha256:3f1513e42d97b2f5175cfd5ab1f380719d5233e27095de32caf96c771f5ef410"
-	findings := adapter.Validate(schemaURI, raw)
+	findings := adapter.Validate(canonicalURI(t, "contract-revocation-snapshot"), raw)
 	if len(findings) != 100 {
 		t.Fatalf("finding count = %d, want 100", len(findings))
 	}

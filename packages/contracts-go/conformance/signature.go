@@ -69,7 +69,7 @@ func GenerateSignature(repositoryRoot string) ([]byte, error) {
 	if runtime.Version() != "go1.26.4" {
 		return nil, fmt.Errorf("expected Go go1.26.4, got %s", runtime.Version())
 	}
-	corpusPath := filepath.Join(repositoryRoot, "contracts", "governance", "m3", "signature-cases.json")
+	corpusPath := filepath.Join(repositoryRoot, "contracts", "agent", "fixtures", "signing", "signature-cases.json")
 	corpusBytes, err := os.ReadFile(corpusPath)
 	if err != nil {
 		return nil, err

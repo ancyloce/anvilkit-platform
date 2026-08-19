@@ -184,7 +184,7 @@ func scanJSONValue(decoder *json.Decoder, depth int) error {
 }
 
 // UnmarshalJSON enforces the bounds declared by BoundedStringMap.
-func (j *SharedPrimitivesV1BoundedStringMap) UnmarshalJSON(value []byte) error {
+func (j *SharedPrimitivesBoundedStringMap) UnmarshalJSON(value []byte) error {
 \tvar plain map[string]string
 \tif err := json.Unmarshal(value, &plain); err != nil {
 \t\treturn err

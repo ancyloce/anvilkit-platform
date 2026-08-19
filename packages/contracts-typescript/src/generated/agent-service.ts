@@ -1,5 +1,5 @@
 export interface paths {
-    readonly "/v1/workspaces/{workspaceId}/agent-runs": {
+    readonly "/workspaces/{workspaceId}/agent-runs": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -8,10 +8,10 @@ export interface paths {
             };
             readonly cookie?: never;
         };
-        /** List bounded Agent run snapshots. */
+        /** List workspace runs with bounded pagination. */
         readonly get: operations["listAgentRuns"];
         readonly put?: never;
-        /** Create an idempotent Agent run. */
+        /** Create an idempotent Agent run from an intent-only command. */
         readonly post: operations["createAgentRun"];
         readonly delete?: never;
         readonly options?: never;
@@ -19,7 +19,7 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/v1/workspaces/{workspaceId}/agent-runs/{runId}": {
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -29,7 +29,7 @@ export interface paths {
             };
             readonly cookie?: never;
         };
-        /** Get the authoritative Agent run snapshot. */
+        /** Read the authoritative run resource and its strong ETag. */
         readonly get: operations["getAgentRun"];
         readonly put?: never;
         readonly post?: never;
@@ -39,7 +39,7 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/v1/workspaces/{workspaceId}/agent-runs/{runId}/apply-authorizations": {
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/apply-authorizations": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -51,7 +51,7 @@ export interface paths {
         };
         readonly get?: never;
         readonly put?: never;
-        /** Issue a short-lived single-use apply authorization. */
+        /** Issue a server-owned single-use Apply Authorization from an intent-only command. */
         readonly post: operations["issueApplyAuthorization"];
         readonly delete?: never;
         readonly options?: never;
@@ -59,7 +59,7 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/v1/workspaces/{workspaceId}/agent-runs/{runId}/approvals/{requestId}/decisions": {
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/approvals/{requestId}/decisions": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -72,7 +72,7 @@ export interface paths {
         };
         readonly get?: never;
         readonly put?: never;
-        /** Record an immutable approval decision. */
+        /** Record a governed approval decision bound to the exact action digest. */
         readonly post: operations["decideAgentApproval"];
         readonly delete?: never;
         readonly options?: never;
@@ -80,7 +80,7 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/v1/workspaces/{workspaceId}/agent-runs/{runId}/cancel": {
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/cancel": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -100,7 +100,7 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/v1/workspaces/{workspaceId}/agent-runs/{runId}/discard": {
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/discard": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -112,7 +112,7 @@ export interface paths {
         };
         readonly get?: never;
         readonly put?: never;
-        /** Discard a reviewed run without a domain effect. */
+        /** Discard an eligible reviewed artifact and terminate the run. */
         readonly post: operations["discardAgentRun"];
         readonly delete?: never;
         readonly options?: never;
@@ -120,7 +120,7 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/v1/workspaces/{workspaceId}/agent-runs/{runId}/events": {
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/events": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -130,7 +130,7 @@ export interface paths {
             };
             readonly cookie?: never;
         };
-        /** Stream ordered run events with Last-Event-ID recovery. */
+        /** Stream durable public AgentEvent frames with Last-Event-ID recovery. */
         readonly get: operations["streamAgentRunEvents"];
         readonly put?: never;
         readonly post?: never;
@@ -140,7 +140,7 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/v1/workspaces/{workspaceId}/agent-runs/{runId}/inputs/{requestId}/responses": {
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/inputs/{requestId}/responses": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -153,7 +153,7 @@ export interface paths {
         };
         readonly get?: never;
         readonly put?: never;
-        /** Submit schema-conformant input and resume the run. */
+        /** Submit a bounded response to the current input request revision. */
         readonly post: operations["respondToAgentInput"];
         readonly delete?: never;
         readonly options?: never;
@@ -161,7 +161,7 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/v1/workspaces/{workspaceId}/agent-runs/{runId}/retry": {
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/retry": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -173,7 +173,7 @@ export interface paths {
         };
         readonly get?: never;
         readonly put?: never;
-        /** Explicitly increment execution generation and retry from a safe checkpoint. */
+        /** Explicitly retry a failed run under current authority. */
         readonly post: operations["retryAgentRun"];
         readonly delete?: never;
         readonly options?: never;
@@ -181,7 +181,7 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/v1/workspaces/{workspaceId}/artifacts/{artifactId}": {
+    readonly "/workspaces/{workspaceId}/artifacts/{artifactId}": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
@@ -191,7 +191,7 @@ export interface paths {
             };
             readonly cookie?: never;
         };
-        /** Read metadata for an authorized immutable artifact. */
+        /** Read immutable artifact metadata under its governed lifecycle. */
         readonly get: operations["getAgentArtifact"];
         readonly put?: never;
         readonly post?: never;
@@ -206,28 +206,26 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /**
-         * AgentArtifactV1 contract
-         * @description Bounded AgentArtifactV1 wire contract governed by PRD 0012.
+         * AgentArtifact contract
+         * @description Bounded AgentArtifact wire contract governed by PRD 0012.
          */
-        readonly AgentArtifactV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly artifactId: components["schemas"]["SharedPrimitivesV1ArtifactId"];
+        readonly AgentArtifact: {
+            readonly artifactId: components["schemas"]["SharedPrimitivesArtifactId"];
             /** @constant */
             readonly contractType: "AgentArtifact";
-            readonly createdAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
-            readonly digest: components["schemas"]["SharedPrimitivesV1Digest"];
+            readonly createdAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly digest: components["schemas"]["SharedPrimitivesDigest"];
             /** @enum {unknown} */
             readonly kind: "compiled-context" | "target-snapshot" | "agent-plan" | "worker-result" | "validation-report";
             /** @enum {unknown} */
             readonly lifecycle: "pending" | "scanning" | "valid" | "finalized" | "committed" | "quarantined" | "expired" | "deleted";
-            readonly lineage: readonly components["schemas"]["SharedPrimitivesV1ArtifactReference"][];
+            readonly lineage: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
             readonly producer: {
                 readonly executionGeneration: number;
                 readonly leaseEpoch: number;
-                readonly physicalAttemptId: components["schemas"]["SharedPrimitivesV1PhysicalAttemptId"];
+                readonly physicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
                 readonly recoveryEpoch: number;
-                readonly taskId: components["schemas"]["SharedPrimitivesV1TaskId"];
+                readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
             };
             readonly reference: {
                 readonly bucket: string;
@@ -235,27 +233,25 @@ export interface components {
                 readonly objectKey: string;
                 readonly sizeBytes: number;
             };
-            readonly schema: components["schemas"]["SharedPrimitivesV1SchemaReference"];
+            readonly schema: components["schemas"]["SharedPrimitivesSchemaReference"];
             readonly validation: {
                 readonly checks: readonly {
-                    readonly evidenceDigest: components["schemas"]["SharedPrimitivesV1Digest"];
+                    readonly evidenceDigest: components["schemas"]["SharedPrimitivesDigest"];
                     readonly name: string;
                     /** @enum {unknown} */
                     readonly result: "passed" | "failed";
                 }[];
-                readonly validatedAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+                readonly validatedAt: components["schemas"]["SharedPrimitivesTimestamp"];
             };
         };
         /**
-         * AgentBudgetV1 contract
-         * @description Bounded AgentBudgetV1 wire contract governed by PRD 0012.
+         * AgentBudget contract
+         * @description Bounded AgentBudget wire contract governed by PRD 0012.
          */
-        readonly AgentBudgetV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
+        readonly AgentBudget: {
             readonly currencyLimits: {
-                readonly maximumCost: components["schemas"]["SharedPrimitivesV1Cost"];
-                readonly reservedCost: components["schemas"]["SharedPrimitivesV1Cost"];
+                readonly maximumCost: components["schemas"]["SharedPrimitivesCost"];
+                readonly reservedCost: components["schemas"]["SharedPrimitivesCost"];
             };
             /** @enum {unknown} */
             readonly exceedBehavior: "refuse" | "pause-for-approval" | "cancel";
@@ -268,8 +264,8 @@ export interface components {
                 readonly maximumCalls: number;
                 readonly maximumConcurrentCalls: number;
             };
-            readonly policy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
-            readonly reservationId: components["schemas"]["SharedPrimitivesV1ReservationId"];
+            readonly policy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly reservationId: components["schemas"]["SharedPrimitivesReservationId"];
             readonly tokenLimits: {
                 readonly inputTokens: number;
                 readonly outputTokens: number;
@@ -281,193 +277,249 @@ export interface components {
             };
         };
         /**
-         * AgentDefinitionV1 contract
-         * @description Bounded AgentDefinitionV1 wire contract governed by PRD 0012.
+         * AgentDefinition contract
+         * @description Bounded AgentDefinition wire contract governed by PRD 0012 and ADR-018. A definition is immutable by definitionId and definitionDigest and carries role, owner, instruction digest, input/output schema identity, Tool profile, delegation constraints, repair policy, and evaluation profile.
          */
-        readonly AgentDefinitionV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly definitionId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+        readonly AgentDefinition: {
+            readonly allowedDelegates: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
+            readonly definitionDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly definitionId: components["schemas"]["SharedPrimitivesOpaqueId"];
             /** @enum {unknown} */
             readonly domain: "platform-agent" | "pagix-page" | "contract-runtime";
-            readonly evaluators: readonly components["schemas"]["SharedPrimitivesV1SchemaReference"][];
-            readonly guardrailPolicy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
+            readonly evaluators: readonly components["schemas"]["SharedPrimitivesSchemaReference"][];
+            readonly guardrailPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly inputSchema: components["schemas"]["SharedPrimitivesSchemaReference"];
             /** @constant */
             readonly kind: "AgentDefinition";
-            readonly memoryPolicy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
-            readonly modelPolicy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
-            readonly outputSchema: components["schemas"]["SharedPrimitivesV1SchemaReference"];
-            readonly promptDigest: components["schemas"]["SharedPrimitivesV1Digest"];
+            readonly maximumDelegationDepth: number;
+            readonly maximumFanOut: number;
+            readonly memoryPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly modelPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly outputSchema: components["schemas"]["SharedPrimitivesSchemaReference"];
+            readonly owner: string;
+            readonly promptDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly repairPolicy: {
+                readonly maximumAttempts: number;
+                /** @enum {unknown} */
+                readonly mode: "reject" | "bounded-repair";
+            };
+            /** @enum {unknown} */
+            readonly role: "manager" | "specialist";
             readonly stopConditions: readonly ("completed" | "refused" | "budget-exhausted" | "approval-required" | "input-required" | "policy-blocked")[];
             readonly toolProfile: {
                 readonly maximumParallelTools: number;
-                readonly tools: readonly components["schemas"]["SharedPrimitivesV1SchemaReference"][];
+                readonly tools: readonly components["schemas"]["SharedPrimitivesSchemaReference"][];
             };
             readonly turnLimit: number;
-            readonly version: string;
         };
         /**
-         * AgentEventV1 contract
-         * @description Bounded AgentEventV1 wire contract governed by PRD 0012.
+         * AgentEvent contract
+         * @description Bounded AgentEvent wire contract governed by PRD 0012.
          */
-        readonly AgentEventV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly artifactReference?: components["schemas"]["SharedPrimitivesV1ArtifactReference"];
-            readonly contractBomReference: components["schemas"]["SharedPrimitivesV1ContractBomReferenceV1"];
-            readonly eventId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+        readonly AgentEvent: {
+            readonly artifactReference?: components["schemas"]["SharedPrimitivesArtifactReference"];
+            readonly contractBomReference: components["schemas"]["SharedPrimitivesContractBomReference"];
+            readonly eventId: components["schemas"]["SharedPrimitivesOpaqueId"];
             /** @enum {unknown} */
             readonly eventType: "run.created" | "run.state-changed" | "run.input-requested" | "run.approval-requested" | "run.artifact-available" | "run.problem-recorded";
             /** @constant */
             readonly kind: "AgentEvent";
-            readonly occurredAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
-            readonly payload?: components["schemas"]["SharedPrimitivesV1BoundedStringMap"];
-            readonly runId: components["schemas"]["SharedPrimitivesV1RunId"];
+            readonly occurredAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly payload?: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            readonly projectId: components["schemas"]["SharedPrimitivesProjectId"];
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
             readonly sequence: number;
-            readonly taskId?: components["schemas"]["SharedPrimitivesV1TaskId"];
-            readonly traceContext: components["schemas"]["SharedPrimitivesV1TraceContext"];
+            readonly subject: {
+                readonly subjectId: components["schemas"]["SharedPrimitivesActorId"];
+                /** @enum {unknown} */
+                readonly subjectType: "user" | "system";
+            };
+            readonly taskId?: components["schemas"]["SharedPrimitivesTaskId"];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
+            readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
         };
         /**
-         * AgentRunV1 contract
-         * @description Bounded AgentRunV1 wire contract governed by PRD 0012.
+         * AgentEvidence contract
+         * @description Bounded internal AgentEvidence wire contract governed by ADR-020. Evidence is internal, separately sequenced, access-controlled execution fact and is never a public AgentEvent.
          */
-        readonly AgentRunV1: {
-            readonly actorId: components["schemas"]["SharedPrimitivesV1ActorId"];
+        readonly AgentEvidence: {
+            readonly artifactReference?: components["schemas"]["SharedPrimitivesArtifactReference"];
+            readonly causedByEvidenceId?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            /** @enum {unknown} */
+            readonly dataClassification: "public" | "internal" | "confidential" | "restricted";
+            readonly evidenceId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly evidenceSequence: number;
+            readonly evidenceType: string;
             /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly budget: components["schemas"]["AgentBudgetV1"];
-            readonly contractBomReference: components["schemas"]["SharedPrimitivesV1ContractBomReferenceV1"];
-            readonly createdAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+            readonly kind: "AgentEvidence";
+            readonly occurredAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly payload?: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            readonly producer: {
+                readonly component: components["schemas"]["SharedPrimitivesOpaqueId"];
+                readonly contractBomDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly definitionDigest?: components["schemas"]["SharedPrimitivesDigest"];
+                readonly policyDigest: components["schemas"]["SharedPrimitivesDigest"];
+            };
+            readonly projectId: components["schemas"]["SharedPrimitivesProjectId"];
+            readonly publicEventId?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly recordedAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            /** @enum {unknown} */
+            readonly retentionCategory: "operational" | "audit" | "security";
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
+            readonly turnId?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly workflowId?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
+        };
+        /**
+         * AgentRun contract
+         * @description Bounded AgentRun wire contract governed by PRD 0012.
+         */
+        readonly AgentRun: {
+            readonly actorId: components["schemas"]["SharedPrimitivesActorId"];
+            readonly budget: components["schemas"]["AgentBudget"];
+            readonly contractBomReference: components["schemas"]["SharedPrimitivesContractBomReference"];
+            readonly createdAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly definition: components["schemas"]["SharedPrimitivesDefinitionReference"];
             /** @enum {unknown} */
             readonly domain: "platform-agent" | "pagix-page" | "contract-runtime";
             readonly executionGeneration: number;
-            readonly idempotency: components["schemas"]["SharedPrimitivesV1Idempotency"];
+            readonly idempotency: components["schemas"]["SharedPrimitivesIdempotency"];
             /** @constant */
             readonly kind: "AgentRun";
             /** @enum {unknown} */
             readonly operation: "page-change" | "artifact-validation" | "image-operation" | "component-package";
-            readonly parentRunId?: components["schemas"]["SharedPrimitivesV1RunId"];
-            readonly policy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
-            readonly problem?: components["schemas"]["ProblemDetailsV1"];
-            readonly rootRunId: components["schemas"]["SharedPrimitivesV1RunId"];
-            readonly runId: components["schemas"]["SharedPrimitivesV1RunId"];
+            readonly parentRunId?: components["schemas"]["SharedPrimitivesRunId"];
+            readonly policy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly problem?: components["schemas"]["ProblemDetails"];
+            readonly resourceRevision: number;
+            readonly rootRunId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
             /** @enum {unknown} */
             readonly status: "created" | "preparing" | "planning" | "awaiting_input" | "executing" | "validating" | "awaiting_review" | "awaiting_approval" | "committing" | "awaiting_domain_confirmation" | "conflict" | "cancelling" | "failed" | "completed" | "cancelled" | "refused" | "discarded";
-            readonly target: components["schemas"]["SharedPrimitivesV1TargetReference"];
-            readonly tenantId: components["schemas"]["SharedPrimitivesV1TenantId"];
-            readonly updatedAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
-            readonly workspaceId: components["schemas"]["SharedPrimitivesV1WorkspaceId"];
+            readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
+            readonly updatedAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
         };
         /**
-         * AgentTaskV1 contract
-         * @description Bounded AgentTaskV1 wire contract governed by PRD 0012.
+         * AgentStreamDelta contract
+         * @description Provisional streaming transport shape governed by ADR-020. Deltas are not AgentEvent, carry no public sequence, may be dropped, combined, sampled, or rate-limited, and can never satisfy a Validator, approval, or final-state reconstruction.
          */
-        readonly AgentTaskV1: {
+        readonly AgentStreamDelta: {
+            /** @enum {unknown} */
+            readonly channel: "token" | "text" | "field" | "progress";
+            readonly emittedAt: components["schemas"]["SharedPrimitivesTimestamp"];
             /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly artifactInputs: readonly components["schemas"]["SharedPrimitivesV1ArtifactReference"][];
+            readonly kind: "AgentStreamDelta";
+            readonly payload: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            /** @constant */
+            readonly provisional: true;
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly traceContext?: components["schemas"]["SharedPrimitivesTraceContext"];
+            readonly turnId?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
+        };
+        /**
+         * AgentTask contract
+         * @description Bounded AgentTask wire contract governed by PRD 0012.
+         */
+        readonly AgentTask: {
+            readonly artifactInputs: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
             /** @enum {unknown} */
             readonly capability: "provider.invoke" | "contract.validate" | "artifact.scan" | "fake.execute";
-            /** @enum {unknown} */
-            readonly capabilityVersion: "provider.invoke/v1" | "contract.validate/v1" | "artifact.scan/v1" | "fake.execute/v1";
-            readonly contractBomReference: components["schemas"]["SharedPrimitivesV1ContractBomReferenceV1"];
+            readonly contractBomReference: components["schemas"]["SharedPrimitivesContractBomReference"];
             readonly executionGeneration: number;
-            readonly idempotency: components["schemas"]["SharedPrimitivesV1Idempotency"];
-            readonly inputSchemaVersion: components["schemas"]["SharedPrimitivesV1SchemaReference"];
+            readonly idempotency: components["schemas"]["SharedPrimitivesIdempotency"];
+            readonly inputSchema: components["schemas"]["SharedPrimitivesSchemaReference"];
             /** @constant */
             readonly kind: "AgentTask";
-            readonly limits: components["schemas"]["SharedPrimitivesV1ResourceLimits"];
-            readonly parameters: components["schemas"]["SharedPrimitivesV1BoundedStringMap"];
+            readonly limits: components["schemas"]["SharedPrimitivesResourceLimits"];
+            readonly parameters: components["schemas"]["SharedPrimitivesBoundedStringMap"];
             readonly resources: {
                 readonly priority: number;
                 /** @enum {unknown} */
                 readonly resourceClass: "interactive-cpu" | "batch-cpu" | "interactive-gpu" | "batch-gpu";
             };
-            readonly rootRunId: components["schemas"]["SharedPrimitivesV1RunId"];
-            readonly runId: components["schemas"]["SharedPrimitivesV1RunId"];
-            readonly taskId: components["schemas"]["SharedPrimitivesV1TaskId"];
-            readonly traceContext: components["schemas"]["SharedPrimitivesV1TraceContext"];
+            readonly rootRunId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
         };
         /**
-         * ApplyAuthorizationV1 contract
-         * @description Bounded ApplyAuthorizationV1 wire contract governed by PRD 0012.
+         * ApplyAuthorization contract
+         * @description Bounded ApplyAuthorization wire contract governed by PRD 0012.
          */
-        readonly ApplyAuthorizationV1: {
-            readonly actionDigest: components["schemas"]["SharedPrimitivesV1Digest"];
-            readonly actorId: components["schemas"]["SharedPrimitivesV1ActorId"];
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
+        readonly ApplyAuthorization: {
+            readonly actionDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly actorId: components["schemas"]["SharedPrimitivesActorId"];
             readonly approvalVersion: number;
-            readonly artifactDigest: components["schemas"]["SharedPrimitivesV1Digest"];
+            readonly artifactDigest: components["schemas"]["SharedPrimitivesDigest"];
             /** @constant */
             readonly audience: "urn:anvilkit:audience:pagix";
-            readonly authorizationId: components["schemas"]["SharedPrimitivesV1AuthorizationId"];
-            readonly baseRevision: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-            readonly contractBomDigest: components["schemas"]["SharedPrimitivesV1Digest"];
-            readonly expiresAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
-            readonly issuedAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+            readonly authorizationId: components["schemas"]["SharedPrimitivesAuthorizationId"];
+            readonly baseRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly contractBomDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly definitionDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly expiresAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly issuedAt: components["schemas"]["SharedPrimitivesTimestamp"];
             /** @constant */
             readonly issuer: "urn:anvilkit:issuer:agent-service";
             readonly keyId: string;
             /** @constant */
             readonly kind: "ApplyAuthorization";
-            readonly notBefore: components["schemas"]["SharedPrimitivesV1Timestamp"];
-            readonly policyDigest: components["schemas"]["SharedPrimitivesV1Digest"];
-            readonly runId: components["schemas"]["SharedPrimitivesV1RunId"];
-            readonly target: components["schemas"]["SharedPrimitivesV1TargetReference"];
-            readonly workspaceId: components["schemas"]["SharedPrimitivesV1WorkspaceId"];
+            readonly notBefore: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly policyDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
+            readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
         };
         /**
-         * ApprovalRequestV1 contract
-         * @description Bounded ApprovalRequestV1 wire contract governed by PRD 0012.
+         * ApprovalRequest contract
+         * @description Bounded ApprovalRequest wire contract governed by PRD 0012.
          */
-        readonly ApprovalRequestV1: {
-            readonly actionDigest: components["schemas"]["SharedPrimitivesV1Digest"];
+        readonly ApprovalRequest: {
+            readonly actionDigest: components["schemas"]["SharedPrimitivesDigest"];
             readonly allowedDecisions: readonly ("approve" | "reject" | "request-changes")[];
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly cost: components["schemas"]["SharedPrimitivesV1Cost"];
+            readonly cost: components["schemas"]["SharedPrimitivesCost"];
             readonly decisionVersion: number;
             readonly effects: readonly {
                 /** @enum {unknown} */
                 readonly effectType: "artifact-finalize" | "page-persist" | "asset-finalize" | "component-apply" | "package-publish";
                 readonly summary: string;
-                readonly target: components["schemas"]["SharedPrimitivesV1TargetReference"];
+                readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
             }[];
-            readonly expiresAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+            readonly expiresAt: components["schemas"]["SharedPrimitivesTimestamp"];
             /** @constant */
             readonly kind: "ApprovalRequest";
-            readonly requestId: components["schemas"]["SharedPrimitivesV1RequestId"];
+            readonly requestId: components["schemas"]["SharedPrimitivesRequestId"];
             /** @enum {unknown} */
             readonly resumeState: "created" | "preparing" | "planning" | "awaiting_input" | "executing" | "validating" | "awaiting_review" | "awaiting_approval" | "committing" | "awaiting_domain_confirmation" | "conflict" | "cancelling" | "failed" | "completed" | "cancelled" | "refused" | "discarded";
-            readonly reviewerPolicy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
-            readonly runId: components["schemas"]["SharedPrimitivesV1RunId"];
+            readonly reviewerPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
         };
-        readonly BoundedResponse: components["schemas"]["SharedPrimitivesV1BoundedStringMap"];
+        readonly BoundedResponse: components["schemas"]["SharedPrimitivesBoundedStringMap"];
         /**
-         * CompiledContextV1 contract
-         * @description Bounded CompiledContextV1 wire contract governed by PRD 0012.
+         * CompiledContext contract
+         * @description Bounded CompiledContext wire contract governed by PRD 0012.
          */
-        readonly CompiledContextV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
+        readonly CompiledContext: {
             readonly classifications: readonly ("public" | "internal" | "confidential" | "restricted")[];
-            readonly compiledAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+            readonly compiledAt: components["schemas"]["SharedPrimitivesTimestamp"];
             /** @constant */
             readonly kind: "CompiledContext";
-            readonly layerDigests: readonly components["schemas"]["SharedPrimitivesV1Digest"][];
+            readonly layerDigests: readonly components["schemas"]["SharedPrimitivesDigest"][];
             readonly orderedTrustLayers: readonly {
                 /** @enum {unknown} */
                 readonly classification: "public" | "internal" | "confidential" | "restricted";
-                readonly digest: components["schemas"]["SharedPrimitivesV1Digest"];
-                readonly layerId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+                readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly layerId: components["schemas"]["SharedPrimitivesOpaqueId"];
                 readonly position: number;
                 readonly redacted: boolean;
                 readonly tokenBudget: number;
             }[];
-            readonly policySnapshot: components["schemas"]["SharedPrimitivesV1PolicyReference"];
+            readonly policySnapshot: components["schemas"]["SharedPrimitivesPolicyReference"];
             readonly redaction: {
-                readonly policy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
+                readonly policy: components["schemas"]["SharedPrimitivesPolicyReference"];
                 readonly removedFieldCount: number;
                 readonly replacementMarker: string;
             };
@@ -480,21 +532,19 @@ export interface components {
             };
         };
         /**
-         * ComponentPackageSpecV1 contract
-         * @description Bounded ComponentPackageSpecV1 wire contract governed by PRD 0012.
+         * ComponentPackageSpec contract
+         * @description Bounded ComponentPackageSpec wire contract governed by PRD 0012.
          */
-        readonly ComponentPackageSpecV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly buildPolicy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
-            readonly certificationPolicy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
-            readonly inputs: readonly components["schemas"]["SharedPrimitivesV1ArtifactReference"][];
+        readonly ComponentPackageSpec: {
+            readonly buildPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly certificationPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly inputs: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
             /** @constant */
             readonly kind: "ComponentPackageSpec";
             readonly outputs: readonly {
                 readonly maximumBytes: number;
                 readonly name: string;
-                readonly schema: components["schemas"]["SharedPrimitivesV1SchemaReference"];
+                readonly schema: components["schemas"]["SharedPrimitivesSchemaReference"];
             }[];
             readonly packageIntent: {
                 /** @enum {unknown} */
@@ -502,15 +552,46 @@ export interface components {
                 readonly name: string;
                 readonly version: string;
             };
-            readonly validationConstraints: readonly components["schemas"]["SharedPrimitivesV1PolicyReference"][];
+            readonly validationConstraints: readonly components["schemas"]["SharedPrimitivesPolicyReference"][];
         };
         /**
-         * ContractRevocationSnapshotV1 contract
+         * ContractBom contract
+         * @description Closed content-addressed Contract BOM manifest governed by design 0003 §8: the exact schema, registry, definition, Tool profile, policy, bundle, and generator/runtime identities resolved for a run. Resolution uses immutable digests, rejects missing, duplicate-conflicting, revoked, unsigned, or mismatched components, and performs no bundle-directed network fetch.
+         */
+        readonly ContractBom: {
+            readonly components: readonly components["schemas"]["ContractBomEntry"][];
+            readonly createdAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly issuer: string;
+            /** @constant */
+            readonly kind: "ContractBom";
+            readonly name: string;
+            readonly profileDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly registrySetDigest: components["schemas"]["SharedPrimitivesDigest"];
+        };
+        /** @enum {unknown} */
+        readonly ContractBomComponentKind: "agent-definition" | "asyncapi" | "declarative-bundle" | "fixture-manifest" | "generated-binding" | "generator" | "json-schema" | "openapi" | "policy" | "registry-set" | "runtime" | "tool-profile";
+        readonly ContractBomComponentName: string;
+        readonly ContractBomDependency: {
+            readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly kind: components["schemas"]["ContractBomComponentKind"];
+            readonly name: components["schemas"]["ContractBomComponentName"];
+        };
+        readonly ContractBomEntry: {
+            readonly dependencies: readonly components["schemas"]["ContractBomDependency"][];
+            readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly issuer: string;
+            readonly kind: components["schemas"]["ContractBomComponentKind"];
+            readonly mediaType: string;
+            readonly name: components["schemas"]["ContractBomComponentName"];
+            readonly provenanceDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly size: number;
+        };
+        /**
+         * ContractRevocationSnapshot contract
          * @description Signed fail-closed key revocation snapshot with explicit freshness.
          */
-        readonly ContractRevocationSnapshotV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
+        readonly ContractRevocationSnapshot: {
             /** Format: date-time */
             readonly issuedAt: string;
             /** @constant */
@@ -526,14 +607,50 @@ export interface components {
             readonly snapshotId: string;
         };
         /**
-         * ContractSignatureStatementV1 contract
+         * ContractRuntimeRequest contract
+         * @description Transport-neutral Contract Runtime request governed by ADR-022. The same request under the same bundle, runtime profile, and declared inputs must produce the same canonical result; time, randomness, environment, and locale are unavailable unless explicitly supplied as input.
+         */
+        readonly ContractRuntimeRequest: {
+            readonly bundleDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly canonicalInput: string;
+            readonly canonicalInputDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly contract: components["schemas"]["SharedPrimitivesSchemaReference"];
+            /** @constant */
+            readonly kind: "ContractRuntimeRequest";
+            readonly limits: components["schemas"]["SharedPrimitivesResourceLimits"];
+            /** @enum {unknown} */
+            readonly operation: "validate" | "execute";
+            readonly policy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly traceContext?: components["schemas"]["SharedPrimitivesTraceContext"];
+        };
+        /**
+         * ContractRuntimeResult contract
+         * @description Transport-neutral deterministic Contract Runtime result governed by ADR-022: a canonical result or ProblemDetails, plus the bundle, schema, policy, runtime, and execution digests used for execution.
+         */
+        readonly ContractRuntimeResult: {
+            readonly bundleDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly canonicalOutput?: string;
+            readonly executionDigest: components["schemas"]["SharedPrimitivesDigest"];
+            /** @constant */
+            readonly kind: "ContractRuntimeResult";
+            /** @enum {unknown} */
+            readonly outcome: "ok" | "problem";
+            readonly outputDigest?: components["schemas"]["SharedPrimitivesDigest"];
+            readonly policyDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly problem?: components["schemas"]["ProblemDetails"];
+            readonly runtime: {
+                readonly buildIdentity: components["schemas"]["SharedPrimitivesBuildId"];
+                readonly runtimeId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            };
+            readonly schemaDigest: components["schemas"]["SharedPrimitivesDigest"];
+        };
+        /**
+         * ContractSignatureStatement contract
          * @description Canonical context-bound statement carried by a standard single-signature DSSE envelope.
          */
-        readonly ContractSignatureStatementV1: {
+        readonly ContractSignatureStatement: {
             /** @constant */
             readonly algorithm: "dsse-ed25519-v1";
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
             /** @constant */
             readonly audience: "urn:anvilkit:audience:contract-consumers";
             readonly contractBomDigest: string;
@@ -556,12 +673,10 @@ export interface components {
             };
         };
         /**
-         * ContractTrustRootV1 contract
+         * ContractTrustRoot contract
          * @description Pinned public trust snapshot for contract release and apply-authorization verification.
          */
-        readonly ContractTrustRootV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
+        readonly ContractTrustRoot: {
             /** Format: date-time */
             readonly issuedAt: string;
             readonly keys: readonly {
@@ -591,54 +706,93 @@ export interface components {
             readonly snapshotId: string;
         };
         /**
-         * ImageOperationPlanV1 contract
-         * @description Bounded ImageOperationPlanV1 wire contract governed by PRD 0012.
+         * CreateAgentRunRequest contract
+         * @description Intent-only AgentRun creation command governed by ADR-021. The caller declares only authorized intent; run identity, workspace, actor, state, revision, digest bindings, timestamps, sequence, and signatures are resolved or generated by Agent Service and are structurally absent from this command.
          */
-        readonly ImageOperationPlanV1: {
+        readonly CreateAgentRunRequest: {
+            readonly definition: components["schemas"]["SharedPrimitivesDefinitionReference"];
+            readonly input?: {
+                readonly artifactInputs?: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
+                readonly userInput?: string;
+            };
             /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly inputs: readonly components["schemas"]["SharedPrimitivesV1ArtifactReference"][];
+            readonly kind: "CreateAgentRunRequest";
+            readonly labels?: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            /** @enum {unknown} */
+            readonly operation: "page-change" | "artifact-validation" | "image-operation" | "component-package";
+            readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
+        };
+        /**
+         * ImageOperationPlan contract
+         * @description Bounded ImageOperationPlan wire contract governed by PRD 0012.
+         */
+        readonly ImageOperationPlan: {
+            readonly inputs: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
             /** @constant */
             readonly kind: "ImageOperationPlan";
-            readonly limits: components["schemas"]["SharedPrimitivesV1ResourceLimits"];
+            readonly limits: components["schemas"]["SharedPrimitivesResourceLimits"];
             readonly operations: readonly {
-                readonly operationId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+                readonly operationId: components["schemas"]["SharedPrimitivesOpaqueId"];
                 /** @enum {unknown} */
                 readonly operationType: "crop" | "resize" | "composite" | "encode";
-                readonly parameters: components["schemas"]["SharedPrimitivesV1BoundedStringMap"];
+                readonly parameters: components["schemas"]["SharedPrimitivesBoundedStringMap"];
             }[];
             readonly outputs: readonly {
                 readonly maximumBytes: number;
                 readonly mediaType: string;
                 readonly name: string;
             }[];
-            readonly validationPolicy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
+            readonly validationPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
         };
         /**
-         * InputRequestV1 contract
-         * @description Bounded InputRequestV1 wire contract governed by PRD 0012.
+         * InputRequest contract
+         * @description Bounded InputRequest wire contract governed by PRD 0012.
          */
-        readonly InputRequestV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly expiresAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+        readonly InputRequest: {
+            readonly expiresAt: components["schemas"]["SharedPrimitivesTimestamp"];
             /** @constant */
             readonly kind: "InputRequest";
             readonly question: string;
-            readonly requestId: components["schemas"]["SharedPrimitivesV1RequestId"];
-            readonly responseSchema: components["schemas"]["SharedPrimitivesV1SchemaReference"];
+            readonly requestId: components["schemas"]["SharedPrimitivesRequestId"];
+            readonly responseSchema: components["schemas"]["SharedPrimitivesSchemaReference"];
             /** @enum {unknown} */
             readonly resumeState: "created" | "preparing" | "planning" | "awaiting_input" | "executing" | "validating" | "awaiting_review" | "awaiting_approval" | "committing" | "awaiting_domain_confirmation" | "conflict" | "cancelling" | "failed" | "completed" | "cancelled" | "refused" | "discarded";
-            readonly runId: components["schemas"]["SharedPrimitivesV1RunId"];
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
             readonly version: number;
         };
         /**
-         * ProblemDetailsV1 contract
-         * @description Bounded ProblemDetailsV1 wire contract governed by PRD 0012.
+         * IssueApplyAuthorizationRequest contract
+         * @description Intent-only Apply Authorization issuance command governed by ADR-021. Issuer, subject, audience, key identity, times, final digest bindings, and replay protection are server-owned and structurally absent from this command.
          */
-        readonly ProblemDetailsV1: {
+        readonly IssueApplyAuthorizationRequest: {
+            readonly actionDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly approvalReference: {
+                readonly decisionVersion: number;
+                readonly requestId: components["schemas"]["SharedPrimitivesRequestId"];
+            };
+            readonly artifact: components["schemas"]["SharedPrimitivesArtifactReference"];
+            readonly baseRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly expectedRunRevision: number;
             /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
+            readonly kind: "IssueApplyAuthorizationRequest";
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
+        };
+        /**
+         * IssuedApplyAuthorization contract
+         * @description Issued Apply Authorization response governed by ADR-021: the canonical ApplyAuthorization document plus its compact JWS carrier. The document must be byte-equivalent to the decoded JWS payload after canonicalization.
+         */
+        readonly IssuedApplyAuthorization: {
+            readonly authorization: components["schemas"]["ApplyAuthorization"];
+            readonly compactJws: string;
+            /** @constant */
+            readonly kind: "IssuedApplyAuthorization";
+        };
+        /**
+         * ProblemDetails contract
+         * @description Bounded ProblemDetails wire contract governed by PRD 0012.
+         */
+        readonly ProblemDetails: {
             readonly code: string;
             readonly fieldErrors: readonly {
                 readonly code: string;
@@ -651,178 +805,197 @@ export interface components {
             readonly message: string;
             /** @enum {unknown} */
             readonly retryability: "never" | "safe-immediate" | "safe-after-backoff" | "after-input" | "after-approval" | "after-rebase" | "operator-action";
-            readonly runId?: components["schemas"]["SharedPrimitivesV1RunId"];
+            readonly runId?: components["schemas"]["SharedPrimitivesRunId"];
             readonly stage?: string;
             readonly traceId?: string;
         };
         /**
-         * ProviderContinuationV1 contract
-         * @description Bounded ProviderContinuationV1 wire contract governed by PRD 0012.
+         * ProviderContinuation contract
+         * @description Bounded ProviderContinuation wire contract governed by PRD 0012.
          */
-        readonly ProviderContinuationV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly bindingDigest: components["schemas"]["SharedPrimitivesV1Digest"];
+        readonly ProviderContinuation: {
+            readonly bindingDigest: components["schemas"]["SharedPrimitivesDigest"];
             readonly encryptedBinding: string;
-            readonly expiresAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+            readonly expiresAt: components["schemas"]["SharedPrimitivesTimestamp"];
             /** @constant */
             readonly kind: "ProviderContinuation";
-            readonly provider: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+            readonly provider: components["schemas"]["SharedPrimitivesOpaqueId"];
             /** @enum {unknown} */
             readonly restartPolicy: "resume-if-valid" | "restart-stage" | "restart-run";
         };
         /**
-         * AnvilKit Agent shared primitives v1
+         * AnvilKit Agent shared primitives
          * @description Bounded reusable wire primitives for the Agent contract catalog.
          */
-        readonly SharedPrimitivesV1: {
-            readonly $defs: components["schemas"]["SharedPrimitivesV1DefinitionSet"];
+        readonly SharedPrimitives: {
+            readonly $defs: components["schemas"]["SharedPrimitivesDefinitionSet"];
         };
-        readonly SharedPrimitivesV1ActorId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1ArtifactId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1ArtifactReference: {
-            readonly artifactId: components["schemas"]["SharedPrimitivesV1ArtifactId"];
-            readonly digest: components["schemas"]["SharedPrimitivesV1Digest"];
+        readonly SharedPrimitivesActorId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesArtifactId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesArtifactReference: {
+            readonly artifactId: components["schemas"]["SharedPrimitivesArtifactId"];
+            readonly digest: components["schemas"]["SharedPrimitivesDigest"];
             readonly mediaType: string;
             readonly sizeBytes: number;
         };
-        readonly SharedPrimitivesV1AuthorizationId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1BoundedStringMap: {
+        readonly SharedPrimitivesAuthorizationId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesBoundedStringMap: {
             readonly [key: string]: string;
         };
-        readonly SharedPrimitivesV1BuildId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1ContractBomReferenceV1: {
-            readonly bomDigest: components["schemas"]["SharedPrimitivesV1Digest"];
-            readonly evidenceManifestDigest: components["schemas"]["SharedPrimitivesV1Digest"];
-            readonly ociManifestDigest: components["schemas"]["SharedPrimitivesV1Digest"];
+        readonly SharedPrimitivesBuildId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesContractBomReference: {
+            readonly bomDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly evidenceManifestDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly ociManifestDigest: components["schemas"]["SharedPrimitivesDigest"];
             readonly repository: string;
         };
-        readonly SharedPrimitivesV1Cost: {
-            readonly amount: components["schemas"]["SharedPrimitivesV1DecimalString"];
+        readonly SharedPrimitivesCost: {
+            readonly amount: components["schemas"]["SharedPrimitivesDecimalString"];
             readonly currency: string;
         };
-        readonly SharedPrimitivesV1Cursor: string;
-        readonly SharedPrimitivesV1DecimalString: string;
-        readonly SharedPrimitivesV1DefinitionSet: {
-            readonly ActorId: components["schemas"]["SharedPrimitivesV1ActorId"];
-            readonly ArtifactId: components["schemas"]["SharedPrimitivesV1ArtifactId"];
-            readonly ArtifactReference: components["schemas"]["SharedPrimitivesV1ArtifactReference"];
-            readonly AuthorizationId: components["schemas"]["SharedPrimitivesV1AuthorizationId"];
-            readonly BoundedStringMap: components["schemas"]["SharedPrimitivesV1BoundedStringMap"];
-            readonly BuildId: components["schemas"]["SharedPrimitivesV1BuildId"];
-            readonly ContractBomReferenceV1: components["schemas"]["SharedPrimitivesV1ContractBomReferenceV1"];
-            readonly Cost: components["schemas"]["SharedPrimitivesV1Cost"];
-            readonly Cursor: components["schemas"]["SharedPrimitivesV1Cursor"];
-            readonly DecimalString: components["schemas"]["SharedPrimitivesV1DecimalString"];
-            readonly Digest: components["schemas"]["SharedPrimitivesV1Digest"];
-            readonly Idempotency: components["schemas"]["SharedPrimitivesV1Idempotency"];
-            readonly IntegerString: components["schemas"]["SharedPrimitivesV1IntegerString"];
-            readonly OpaqueId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-            readonly PageInfo: components["schemas"]["SharedPrimitivesV1PageInfo"];
-            readonly PhysicalAttemptId: components["schemas"]["SharedPrimitivesV1PhysicalAttemptId"];
-            readonly PolicyId: components["schemas"]["SharedPrimitivesV1PolicyId"];
-            readonly PolicyReference: components["schemas"]["SharedPrimitivesV1PolicyReference"];
-            readonly RequestId: components["schemas"]["SharedPrimitivesV1RequestId"];
-            readonly ReservationId: components["schemas"]["SharedPrimitivesV1ReservationId"];
-            readonly ResourceLimits: components["schemas"]["SharedPrimitivesV1ResourceLimits"];
-            readonly RunId: components["schemas"]["SharedPrimitivesV1RunId"];
-            readonly SchemaReference: components["schemas"]["SharedPrimitivesV1SchemaReference"];
-            readonly TargetReference: components["schemas"]["SharedPrimitivesV1TargetReference"];
-            readonly TaskId: components["schemas"]["SharedPrimitivesV1TaskId"];
-            readonly TenantId: components["schemas"]["SharedPrimitivesV1TenantId"];
-            readonly Timestamp: components["schemas"]["SharedPrimitivesV1Timestamp"];
-            readonly TraceAndScope: components["schemas"]["SharedPrimitivesV1TraceAndScope"];
-            readonly TraceContext: components["schemas"]["SharedPrimitivesV1TraceContext"];
-            readonly WorkspaceId: components["schemas"]["SharedPrimitivesV1WorkspaceId"];
+        readonly SharedPrimitivesCursor: string;
+        readonly SharedPrimitivesDecimalString: string;
+        readonly SharedPrimitivesDefinitionReference: {
+            readonly definitionDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly definitionId: components["schemas"]["SharedPrimitivesOpaqueId"];
         };
-        readonly SharedPrimitivesV1Digest: string;
-        readonly SharedPrimitivesV1Idempotency: {
-            readonly canonicalRequestDigest: components["schemas"]["SharedPrimitivesV1Digest"];
+        readonly SharedPrimitivesDefinitionSet: {
+            readonly ActorId: components["schemas"]["SharedPrimitivesActorId"];
+            readonly ArtifactId: components["schemas"]["SharedPrimitivesArtifactId"];
+            readonly ArtifactReference: components["schemas"]["SharedPrimitivesArtifactReference"];
+            readonly AuthorizationId: components["schemas"]["SharedPrimitivesAuthorizationId"];
+            readonly BoundedStringMap: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            readonly BuildId: components["schemas"]["SharedPrimitivesBuildId"];
+            readonly ContractBomReference: components["schemas"]["SharedPrimitivesContractBomReference"];
+            readonly Cost: components["schemas"]["SharedPrimitivesCost"];
+            readonly Cursor: components["schemas"]["SharedPrimitivesCursor"];
+            readonly DecimalString: components["schemas"]["SharedPrimitivesDecimalString"];
+            readonly DefinitionReference: components["schemas"]["SharedPrimitivesDefinitionReference"];
+            readonly Digest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly Idempotency: components["schemas"]["SharedPrimitivesIdempotency"];
+            readonly IntegerString: components["schemas"]["SharedPrimitivesIntegerString"];
+            readonly OpaqueId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly PageInfo: components["schemas"]["SharedPrimitivesPageInfo"];
+            readonly PhysicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
+            readonly PolicyId: components["schemas"]["SharedPrimitivesPolicyId"];
+            readonly PolicyReference: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly ProjectId: components["schemas"]["SharedPrimitivesProjectId"];
+            readonly RequestId: components["schemas"]["SharedPrimitivesRequestId"];
+            readonly ReservationId: components["schemas"]["SharedPrimitivesReservationId"];
+            readonly ResourceLimits: components["schemas"]["SharedPrimitivesResourceLimits"];
+            readonly RunId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly SchemaReference: components["schemas"]["SharedPrimitivesSchemaReference"];
+            readonly TargetReference: components["schemas"]["SharedPrimitivesTargetReference"];
+            readonly TaskId: components["schemas"]["SharedPrimitivesTaskId"];
+            readonly Timestamp: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly TraceAndScope: components["schemas"]["SharedPrimitivesTraceAndScope"];
+            readonly TraceContext: components["schemas"]["SharedPrimitivesTraceContext"];
+            readonly WorkspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
+        };
+        readonly SharedPrimitivesDigest: string;
+        readonly SharedPrimitivesIdempotency: {
+            readonly canonicalRequestDigest: components["schemas"]["SharedPrimitivesDigest"];
             readonly key: string;
             readonly scope: string;
         };
-        readonly SharedPrimitivesV1IntegerString: string;
-        readonly SharedPrimitivesV1OpaqueId: string;
-        readonly SharedPrimitivesV1PageInfo: {
+        readonly SharedPrimitivesIntegerString: string;
+        readonly SharedPrimitivesOpaqueId: string;
+        readonly SharedPrimitivesPageInfo: {
             readonly hasMore: boolean;
             readonly limit: number;
-            readonly nextCursor?: components["schemas"]["SharedPrimitivesV1Cursor"];
+            readonly nextCursor?: components["schemas"]["SharedPrimitivesCursor"];
         };
-        readonly SharedPrimitivesV1PhysicalAttemptId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1PolicyId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1PolicyReference: {
-            readonly digest: components["schemas"]["SharedPrimitivesV1Digest"];
-            readonly policyId: components["schemas"]["SharedPrimitivesV1PolicyId"];
+        readonly SharedPrimitivesPhysicalAttemptId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesPolicyId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesPolicyReference: {
+            readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly policyId: components["schemas"]["SharedPrimitivesPolicyId"];
             readonly version: string;
         };
-        readonly SharedPrimitivesV1RequestId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1ReservationId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1ResourceLimits: {
+        readonly SharedPrimitivesProjectId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesRequestId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesReservationId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesResourceLimits: {
             readonly cpuMillis: number;
             readonly gpuMillis: number;
             readonly memoryBytes: number;
             readonly outputBytes: number;
             readonly timeoutMilliseconds: number;
         };
-        readonly SharedPrimitivesV1RunId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1SchemaReference: {
+        readonly SharedPrimitivesRunId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        readonly SharedPrimitivesSchemaReference: {
             readonly componentName: string;
-            readonly digest: components["schemas"]["SharedPrimitivesV1Digest"];
-            readonly version: string;
+            readonly digest: components["schemas"]["SharedPrimitivesDigest"];
         };
-        readonly SharedPrimitivesV1TargetReference: {
-            readonly targetId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+        readonly SharedPrimitivesTargetReference: {
+            readonly projectId: components["schemas"]["SharedPrimitivesProjectId"];
+            readonly targetId: components["schemas"]["SharedPrimitivesOpaqueId"];
             readonly targetType: string;
-            readonly workspaceId: components["schemas"]["SharedPrimitivesV1WorkspaceId"];
+            readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
         };
-        readonly SharedPrimitivesV1TaskId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-        readonly SharedPrimitivesV1TenantId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+        readonly SharedPrimitivesTaskId: components["schemas"]["SharedPrimitivesOpaqueId"];
         /** Format: date-time */
-        readonly SharedPrimitivesV1Timestamp: string;
-        readonly SharedPrimitivesV1TraceAndScope: {
-            readonly actorId: components["schemas"]["SharedPrimitivesV1ActorId"];
-            readonly tenantId: components["schemas"]["SharedPrimitivesV1TenantId"];
-            readonly traceContext: components["schemas"]["SharedPrimitivesV1TraceContext"];
-            readonly workspaceId: components["schemas"]["SharedPrimitivesV1WorkspaceId"];
+        readonly SharedPrimitivesTimestamp: string;
+        readonly SharedPrimitivesTraceAndScope: {
+            readonly actorId: components["schemas"]["SharedPrimitivesActorId"];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
+            readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
         };
-        readonly SharedPrimitivesV1TraceContext: {
+        readonly SharedPrimitivesTraceContext: {
             readonly traceparent: string;
             readonly tracestate?: string;
         };
-        readonly SharedPrimitivesV1WorkspaceId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+        readonly SharedPrimitivesWorkspaceId: components["schemas"]["SharedPrimitivesOpaqueId"];
         /**
-         * TargetSnapshotV1 contract
-         * @description Bounded TargetSnapshotV1 wire contract governed by PRD 0012.
+         * SubmitApprovalDecisionRequest contract
+         * @description Intent-only approval decision command governed by ADR-021. The decision binds the current ApprovalRequest decision revision and the exact action digest being approved.
          */
-        readonly TargetSnapshotV1: {
+        readonly SubmitApprovalDecisionRequest: {
+            readonly actionDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly comment?: string;
+            /** @enum {unknown} */
+            readonly decision: "approve" | "reject" | "request-changes";
+            readonly decisionVersion: number;
             /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly baseRevision: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-            readonly capturedAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
-            readonly catalogDigest: components["schemas"]["SharedPrimitivesV1Digest"];
-            readonly contractBomDigest: components["schemas"]["SharedPrimitivesV1Digest"];
-            /** @constant */
-            readonly kind: "TargetSnapshot";
-            readonly snapshot: components["schemas"]["SharedPrimitivesV1ArtifactReference"];
-            readonly target: components["schemas"]["SharedPrimitivesV1TargetReference"];
+            readonly kind: "SubmitApprovalDecisionRequest";
         };
         /**
-         * ToolDefinitionV1 contract
-         * @description Bounded ToolDefinitionV1 wire contract governed by PRD 0012.
+         * SubmitInputResponseRequest contract
+         * @description Intent-only input response command governed by ADR-021. The response binds the current InputRequest revision; the payload is additionally validated against the InputRequest response schema by Agent Service.
          */
-        readonly ToolDefinitionV1: {
-            readonly acceptedDataClasses: readonly ("public" | "internal" | "confidential" | "restricted")[];
+        readonly SubmitInputResponseRequest: {
             /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly approvalPolicy: components["schemas"]["SharedPrimitivesV1PolicyReference"];
+            readonly kind: "SubmitInputResponseRequest";
+            readonly requestVersion: number;
+            readonly responsePayload: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+        };
+        /**
+         * TargetSnapshot contract
+         * @description Bounded TargetSnapshot wire contract governed by PRD 0012.
+         */
+        readonly TargetSnapshot: {
+            readonly baseRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly capturedAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly catalogDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly contractBomDigest: components["schemas"]["SharedPrimitivesDigest"];
+            /** @constant */
+            readonly kind: "TargetSnapshot";
+            readonly snapshot: components["schemas"]["SharedPrimitivesArtifactReference"];
+            readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
+        };
+        /**
+         * ToolDefinition contract
+         * @description Bounded ToolDefinition wire contract governed by PRD 0012.
+         */
+        readonly ToolDefinition: {
+            readonly acceptedDataClasses: readonly ("public" | "internal" | "confidential" | "restricted")[];
+            readonly approvalPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
             /** @enum {unknown} */
             readonly capability: "provider.invoke" | "contract.validate" | "artifact.scan" | "fake.execute";
-            /** @enum {unknown} */
-            readonly capabilityVersion: "provider.invoke/v1" | "contract.validate/v1" | "artifact.scan/v1" | "fake.execute/v1";
-            readonly inputSchema: components["schemas"]["SharedPrimitivesV1SchemaReference"];
+            readonly inputSchema: components["schemas"]["SharedPrimitivesSchemaReference"];
             /** @constant */
             readonly kind: "ToolDefinition";
-            readonly outputSchema: components["schemas"]["SharedPrimitivesV1SchemaReference"];
+            readonly outputSchema: components["schemas"]["SharedPrimitivesSchemaReference"];
             readonly retryPolicy: {
                 readonly backoffMilliseconds: number;
                 readonly maximumAttempts: number;
@@ -835,16 +1008,14 @@ export interface components {
             readonly timeoutPolicy: {
                 readonly timeoutMilliseconds: number;
             };
-            readonly toolId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+            readonly toolId: components["schemas"]["SharedPrimitivesOpaqueId"];
         };
         /**
-         * UsageObservationV1 contract
-         * @description Bounded UsageObservationV1 wire contract governed by PRD 0012.
+         * UsageObservation contract
+         * @description Bounded UsageObservation wire contract governed by PRD 0012.
          */
-        readonly UsageObservationV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly cost: components["schemas"]["SharedPrimitivesV1Cost"];
+        readonly UsageObservation: {
+            readonly cost: components["schemas"]["SharedPrimitivesCost"];
             readonly executionGeneration: number;
             readonly final: boolean;
             /** @constant */
@@ -852,73 +1023,71 @@ export interface components {
             /** @enum {unknown} */
             readonly meter: "input-tokens" | "output-tokens" | "worker-duration" | "gpu-duration" | "provider-cost";
             readonly meterSequence: number;
-            readonly observationId: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-            readonly observedAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
-            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesV1PhysicalAttemptId"];
-            readonly providerEventId?: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-            readonly quantity: components["schemas"]["SharedPrimitivesV1DecimalString"];
+            readonly observationId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly observedAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
+            readonly providerEventId?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly quantity: components["schemas"]["SharedPrimitivesDecimalString"];
             readonly recoveryEpoch: number;
-            readonly reservationId: components["schemas"]["SharedPrimitivesV1ReservationId"];
-            readonly rootRunId: components["schemas"]["SharedPrimitivesV1RunId"];
-            readonly runId: components["schemas"]["SharedPrimitivesV1RunId"];
+            readonly reservationId: components["schemas"]["SharedPrimitivesReservationId"];
+            readonly rootRunId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
             readonly source: {
-                readonly buildIdentity: components["schemas"]["SharedPrimitivesV1BuildId"];
-                readonly provider: components["schemas"]["SharedPrimitivesV1OpaqueId"];
+                readonly buildIdentity: components["schemas"]["SharedPrimitivesBuildId"];
+                readonly provider: components["schemas"]["SharedPrimitivesOpaqueId"];
             };
-            readonly taskId: components["schemas"]["SharedPrimitivesV1TaskId"];
-            readonly traceContext: components["schemas"]["SharedPrimitivesV1TraceContext"];
+            readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
             /** @enum {unknown} */
             readonly unit: "token" | "millisecond" | "byte" | "count" | "usd-micro";
         };
         /**
-         * WorkerLeaseV1 contract
-         * @description Bounded WorkerLeaseV1 wire contract governed by PRD 0012.
+         * WorkerLease contract
+         * @description Bounded WorkerLease wire contract governed by PRD 0012.
          */
-        readonly WorkerLeaseV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
+        readonly WorkerLease: {
             readonly attemptNumber: number;
             readonly executionGeneration: number;
-            readonly expiresAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+            readonly expiresAt: components["schemas"]["SharedPrimitivesTimestamp"];
             readonly fenceToken: string;
-            readonly issuedAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+            readonly issuedAt: components["schemas"]["SharedPrimitivesTimestamp"];
             /** @constant */
             readonly kind: "WorkerLease";
             readonly leaseEpoch: number;
-            readonly owner: components["schemas"]["SharedPrimitivesV1OpaqueId"];
-            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesV1PhysicalAttemptId"];
+            readonly owner: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
             readonly recoveryEpoch: number;
-            readonly taskId: components["schemas"]["SharedPrimitivesV1TaskId"];
+            readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
         };
         /**
-         * WorkerResultV1 contract
-         * @description Bounded WorkerResultV1 wire contract governed by PRD 0012.
+         * WorkerResult contract
+         * @description Bounded WorkerResult wire contract governed by PRD 0012.
          */
-        readonly WorkerResultV1: {
-            /** @constant */
-            readonly apiVersion: "anvilkit.io/contracts/v1";
-            readonly artifacts: readonly components["schemas"]["SharedPrimitivesV1ArtifactReference"][];
-            readonly buildIdentity: components["schemas"]["SharedPrimitivesV1BuildId"];
+        readonly WorkerResult: {
+            readonly artifacts: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
+            readonly buildIdentity: components["schemas"]["SharedPrimitivesBuildId"];
             /** @enum {unknown} */
             readonly capability: "provider.invoke" | "contract.validate" | "artifact.scan" | "fake.execute";
-            readonly completedAt: components["schemas"]["SharedPrimitivesV1Timestamp"];
+            readonly completedAt: components["schemas"]["SharedPrimitivesTimestamp"];
             readonly executionGeneration: number;
             /** @constant */
             readonly kind: "WorkerResult";
             readonly leaseEpoch: number;
-            readonly metrics: components["schemas"]["SharedPrimitivesV1BoundedStringMap"];
-            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesV1PhysicalAttemptId"];
-            readonly problem?: components["schemas"]["ProblemDetailsV1"];
+            readonly metrics: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
+            readonly problem?: components["schemas"]["ProblemDetails"];
             readonly recoveryEpoch: number;
-            readonly taskId: components["schemas"]["SharedPrimitivesV1TaskId"];
-            readonly usageReferences: readonly components["schemas"]["SharedPrimitivesV1OpaqueId"][];
-            readonly warnings: readonly components["schemas"]["ProblemDetailsV1"][];
+            readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
+            readonly usageReferences: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
+            readonly warnings: readonly components["schemas"]["ProblemDetails"][];
         };
     };
     responses: never;
     parameters: {
         readonly ArtifactId: string;
         readonly IdempotencyKey: string;
+        /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
+        readonly IfMatch: string;
         readonly RequestDigest: string;
         readonly RequestId: string;
         readonly RunId: string;
@@ -934,7 +1103,7 @@ export interface operations {
     readonly listAgentRuns: {
         readonly parameters: {
             readonly query?: {
-                readonly cursor?: components["schemas"]["SharedPrimitivesV1Cursor"];
+                readonly cursor?: string;
                 readonly limit?: number;
             };
             readonly header: {
@@ -947,25 +1116,52 @@ export interface operations {
         };
         readonly requestBody?: never;
         readonly responses: {
-            /** @description Current authoritative representation. */
+            /** @description Bounded page of runs. */
             readonly 200: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
                     readonly "application/json": {
-                        readonly items: readonly components["schemas"]["AgentRunV1"][];
-                        readonly pageInfo: components["schemas"]["SharedPrimitivesV1PageInfo"];
+                        readonly items: readonly components["schemas"]["AgentRun"][];
+                        readonly pageInfo: components["schemas"]["SharedPrimitivesPageInfo"];
                     };
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
             readonly 404: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -985,21 +1181,25 @@ export interface operations {
         };
         readonly requestBody: {
             readonly content: {
-                readonly "application/json": components["schemas"]["AgentRunV1"];
+                readonly "application/json": components["schemas"]["CreateAgentRunRequest"];
             };
         };
         readonly responses: {
-            /** @description Recorded semantic outcome. */
-            readonly 200: {
+            /** @description Created or replayed recorded creation outcome. */
+            readonly 201: {
                 headers: {
+                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
+                    readonly ETag?: string;
                     /** @description true when a recorded semantic outcome is replayed. */
                     readonly "Idempotency-Replayed"?: boolean;
+                    /** @description Canonical resource location of the created run. */
+                    readonly Location?: string;
                     /** @description Canonical request digest accepted for the operation. */
                     readonly "X-AnvilKit-Request-Digest"?: string;
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["AgentRunV1"];
+                    readonly "application/json": components["schemas"]["AgentRun"];
                 };
             };
             /** @description Stable contract problem. */
@@ -1008,25 +1208,61 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Business-state or idempotency conflict. */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Structurally valid command failing domain validation. */
             readonly 422: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -1045,22 +1281,51 @@ export interface operations {
         };
         readonly requestBody?: never;
         readonly responses: {
-            /** @description Current authoritative representation. */
+            /** @description Authoritative run state. */
             readonly 200: {
+                headers: {
+                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
+                    readonly ETag?: string;
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/json": components["schemas"]["AgentRun"];
+                };
+            };
+            /** @description Not authenticated. */
+            readonly 401: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["AgentRunV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
             readonly 404: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -1070,6 +1335,8 @@ export interface operations {
             readonly query?: never;
             readonly header: {
                 readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
+                readonly "If-Match": components["parameters"]["IfMatch"];
                 readonly traceparent: components["parameters"]["Traceparent"];
                 readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
             };
@@ -1081,13 +1348,15 @@ export interface operations {
         };
         readonly requestBody: {
             readonly content: {
-                readonly "application/json": components["schemas"]["ApplyAuthorizationV1"];
+                readonly "application/json": components["schemas"]["IssueApplyAuthorizationRequest"];
             };
         };
         readonly responses: {
-            /** @description Recorded semantic outcome. */
-            readonly 200: {
+            /** @description Issued authorization: canonical document plus byte-equivalent compact JWS. */
+            readonly 201: {
                 headers: {
+                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
+                    readonly ETag?: string;
                     /** @description true when a recorded semantic outcome is replayed. */
                     readonly "Idempotency-Replayed"?: boolean;
                     /** @description Canonical request digest accepted for the operation. */
@@ -1095,7 +1364,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["ApplyAuthorizationV1"];
+                    readonly "application/json": components["schemas"]["IssuedApplyAuthorization"];
                 };
             };
             /** @description Stable contract problem. */
@@ -1104,25 +1373,79 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Business-state or idempotency conflict. */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Stale If-Match resource revision. */
+            readonly 412: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Structurally valid command failing domain validation. */
             readonly 422: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Missing required If-Match precondition. */
+            readonly 428: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -1132,6 +1455,8 @@ export interface operations {
             readonly query?: never;
             readonly header: {
                 readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
+                readonly "If-Match": components["parameters"]["IfMatch"];
                 readonly traceparent: components["parameters"]["Traceparent"];
                 readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
             };
@@ -1144,13 +1469,15 @@ export interface operations {
         };
         readonly requestBody: {
             readonly content: {
-                readonly "application/json": components["schemas"]["SharedPrimitivesV1BoundedStringMap"];
+                readonly "application/json": components["schemas"]["SubmitApprovalDecisionRequest"];
             };
         };
         readonly responses: {
             /** @description Recorded semantic outcome. */
             readonly 200: {
                 headers: {
+                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
+                    readonly ETag?: string;
                     /** @description true when a recorded semantic outcome is replayed. */
                     readonly "Idempotency-Replayed"?: boolean;
                     /** @description Canonical request digest accepted for the operation. */
@@ -1158,7 +1485,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["AgentRunV1"];
+                    readonly "application/json": components["schemas"]["AgentRun"];
                 };
             };
             /** @description Stable contract problem. */
@@ -1167,25 +1494,79 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Business-state or idempotency conflict. */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Stale If-Match resource revision. */
+            readonly 412: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Structurally valid command failing domain validation. */
             readonly 422: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Missing required If-Match precondition. */
+            readonly 428: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -1195,6 +1576,8 @@ export interface operations {
             readonly query?: never;
             readonly header: {
                 readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
+                readonly "If-Match": components["parameters"]["IfMatch"];
                 readonly traceparent: components["parameters"]["Traceparent"];
                 readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
             };
@@ -1209,6 +1592,8 @@ export interface operations {
             /** @description Recorded semantic outcome. */
             readonly 200: {
                 headers: {
+                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
+                    readonly ETag?: string;
                     /** @description true when a recorded semantic outcome is replayed. */
                     readonly "Idempotency-Replayed"?: boolean;
                     /** @description Canonical request digest accepted for the operation. */
@@ -1216,7 +1601,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["AgentRunV1"];
+                    readonly "application/json": components["schemas"]["AgentRun"];
                 };
             };
             /** @description Stable contract problem. */
@@ -1225,25 +1610,70 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Business-state or idempotency conflict. */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
-            readonly 422: {
+            /** @description Stale If-Match resource revision. */
+            readonly 412: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Missing required If-Match precondition. */
+            readonly 428: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -1253,6 +1683,8 @@ export interface operations {
             readonly query?: never;
             readonly header: {
                 readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
+                readonly "If-Match": components["parameters"]["IfMatch"];
                 readonly traceparent: components["parameters"]["Traceparent"];
                 readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
             };
@@ -1267,6 +1699,8 @@ export interface operations {
             /** @description Recorded semantic outcome. */
             readonly 200: {
                 headers: {
+                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
+                    readonly ETag?: string;
                     /** @description true when a recorded semantic outcome is replayed. */
                     readonly "Idempotency-Replayed"?: boolean;
                     /** @description Canonical request digest accepted for the operation. */
@@ -1274,7 +1708,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["AgentRunV1"];
+                    readonly "application/json": components["schemas"]["AgentRun"];
                 };
             };
             /** @description Stable contract problem. */
@@ -1283,25 +1717,70 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Business-state or idempotency conflict. */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
-            readonly 422: {
+            /** @description Stale If-Match resource revision. */
+            readonly 412: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Missing required If-Match precondition. */
+            readonly 428: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -1310,6 +1789,7 @@ export interface operations {
         readonly parameters: {
             readonly query?: never;
             readonly header: {
+                /** @description Durable public AgentEvent sequence cursor for reconnection. */
                 readonly "Last-Event-ID"?: string;
                 readonly traceparent: components["parameters"]["Traceparent"];
             };
@@ -1321,7 +1801,7 @@ export interface operations {
         };
         readonly requestBody?: never;
         readonly responses: {
-            /** @description SSE stream of AgentEventV1 values. Cursor expiry requires a run/artifact resnapshot. */
+            /** @description SSE stream. Durable frames carry AgentEvent; provisional frames carry AgentStreamDelta and never advance the durable cursor. */
             readonly 200: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -1330,13 +1810,49 @@ export interface operations {
                     readonly "text/event-stream": string;
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Cursor is older than the retention window; retrieve a current snapshot. */
             readonly 410: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -1346,6 +1862,8 @@ export interface operations {
             readonly query?: never;
             readonly header: {
                 readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
+                readonly "If-Match": components["parameters"]["IfMatch"];
                 readonly traceparent: components["parameters"]["Traceparent"];
                 readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
             };
@@ -1358,13 +1876,15 @@ export interface operations {
         };
         readonly requestBody: {
             readonly content: {
-                readonly "application/json": components["schemas"]["SharedPrimitivesV1BoundedStringMap"];
+                readonly "application/json": components["schemas"]["SubmitInputResponseRequest"];
             };
         };
         readonly responses: {
             /** @description Recorded semantic outcome. */
             readonly 200: {
                 headers: {
+                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
+                    readonly ETag?: string;
                     /** @description true when a recorded semantic outcome is replayed. */
                     readonly "Idempotency-Replayed"?: boolean;
                     /** @description Canonical request digest accepted for the operation. */
@@ -1372,7 +1892,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["AgentRunV1"];
+                    readonly "application/json": components["schemas"]["AgentRun"];
                 };
             };
             /** @description Stable contract problem. */
@@ -1381,25 +1901,79 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Business-state or idempotency conflict. */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Stale If-Match resource revision. */
+            readonly 412: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Structurally valid command failing domain validation. */
             readonly 422: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Missing required If-Match precondition. */
+            readonly 428: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -1409,6 +1983,8 @@ export interface operations {
             readonly query?: never;
             readonly header: {
                 readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
+                readonly "If-Match": components["parameters"]["IfMatch"];
                 readonly traceparent: components["parameters"]["Traceparent"];
                 readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
             };
@@ -1423,6 +1999,8 @@ export interface operations {
             /** @description Recorded semantic outcome. */
             readonly 200: {
                 headers: {
+                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
+                    readonly ETag?: string;
                     /** @description true when a recorded semantic outcome is replayed. */
                     readonly "Idempotency-Replayed"?: boolean;
                     /** @description Canonical request digest accepted for the operation. */
@@ -1430,7 +2008,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["AgentRunV1"];
+                    readonly "application/json": components["schemas"]["AgentRun"];
                 };
             };
             /** @description Stable contract problem. */
@@ -1439,25 +2017,70 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Business-state or idempotency conflict. */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable contract problem. */
-            readonly 422: {
+            /** @description Stale If-Match resource revision. */
+            readonly 412: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Missing required If-Match precondition. */
+            readonly 428: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
@@ -1476,22 +2099,49 @@ export interface operations {
         };
         readonly requestBody?: never;
         readonly responses: {
-            /** @description Current authoritative representation. */
+            /** @description Immutable artifact metadata. */
             readonly 200: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["AgentArtifactV1"];
+                    readonly "application/json": components["schemas"]["AgentArtifact"];
                 };
             };
-            /** @description Stable contract problem. */
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
             readonly 404: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetailsV1"];
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };

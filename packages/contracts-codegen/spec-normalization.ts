@@ -12,15 +12,13 @@ export type Json = null | boolean | number | string | Json[] | { [key: string]: 
 export type JsonObject = { [key: string]: Json };
 
 const REPO_ROOT = join(import.meta.dir, "..", "..");
-const SCHEMA_DIRECTORY = join(REPO_ROOT, "contracts", "schemas", "v1");
+const SCHEMA_DIRECTORY = join(REPO_ROOT, "contracts", "agent", "schemas");
 const PROFILE_KEYS = new Set(["$schema", "$id", "x-anvilkit-contract"]);
-const IMMUTABLE_REFERENCE = /^anvilkit:\/\/schema\/([a-z0-9]+(?:[.-][a-z0-9]+)*)\.v([1-9][0-9]*)@([1-9][0-9]*\.[0-9]+\.[0-9]+)\?digest=sha256:([0-9a-f]{64})(#\/.*)?$/;
+const IMMUTABLE_REFERENCE = /^anvilkit:\/\/schema\/([a-z0-9]+(?:[.-][a-z0-9]+)*)\?digest=sha256:([0-9a-f]{64})(#\/.*)?$/;
 
 type SchemaSource = {
   key: string;
   logicalId: string;
-  major: string;
-  version: string;
   digest: string;
   schema: JsonObject;
 };
@@ -40,16 +38,13 @@ function schemaSources(): Map<string, SchemaSource> {
     const bytes = readFileSync(path);
     const schema = JSON.parse(bytes.toString("utf8")) as JsonObject;
     const metadata = schema["x-anvilkit-contract"];
-    if (!isObject(metadata) || typeof metadata.semanticVersion !== "string") {
+    if (!isObject(metadata) || typeof metadata.logicalId !== "string") {
       throw new Error(`schema metadata missing for ${name}`);
     }
     const key = basename(name, ".schema.json");
-    const version = metadata.semanticVersion;
     sources.set(key, {
       key,
       logicalId: String(metadata.logicalId),
-      major: version.split(".")[0],
-      version,
       digest: createHash("sha256").update(bytes).digest("hex"),
       schema,
     });
@@ -67,12 +62,9 @@ function rewriteReference(ref: string, sources: Map<string, SchemaSource>, local
   }
   const match = IMMUTABLE_REFERENCE.exec(ref);
   if (!match) throw new Error(`description contains a non-immutable or external reference: ${ref}`);
-  const [, key, major, version, digest, fragment = ""] = match;
+  const [, key, digest, fragment = ""] = match;
   const source = sources.get(key);
   if (!source) throw new Error(`closed description graph is missing schema ${key}`);
-  if (source.major !== major || source.version !== version) {
-    throw new Error(`reference version does not match ${key}: ${version}`);
-  }
   if (source.digest !== digest) throw new Error(`reference digest does not match ${key}`);
   return localReference(key, fragment ? fragment.slice(1) : "");
 }
@@ -165,7 +157,7 @@ export function contractSchemaBundleForGeneration(): JsonObject {
   const sources = schemaSources();
   return {
     $schema: "https://json-schema.org/draft/2020-12/schema",
-    title: "AnvilKitContractsV1",
+    title: "AnvilKitContracts",
     type: "object",
     additionalProperties: false,
     properties: Object.fromEntries(

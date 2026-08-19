@@ -1,8 +1,0 @@
-{
-  "apiVersion":"anvilkit.io/contracts/v1","kind":"ContractBom","name":"platform-kernel","version":"1.0.0","digest":"sha256:1111111111111111111111111111111111111111111111111111111111111111","createdAt":"2026-08-09T00:00:00.000Z","issuer":"urn:anvilkit:issuer:contracts-release","compatibility":{"minimumConsumerGeneration":1,"maximumConsumerGeneration":1},
-  "components":[
-    {"kind":"generator-set","name":"anvilkit.contract.generator-set.v1","version":"1.0.0","mediaType":"application/vnd.anvilkit.contract-generator-set.v1+json","digest":"sha256:3333333333333333333333333333333333333333333333333333333333333333","size":1,"dependencies":[],"issuer":"urn:anvilkit:issuer:contracts-release","provenanceDigest":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-    {"kind":"fixture-manifest","name":"anvilkit.contract.fixture-manifest.v1","version":"1.0.0","mediaType":"application/vnd.anvilkit.contract-fixtures.v1+json","digest":"sha256:2222222222222222222222222222222222222222222222222222222222222222","size":1,"dependencies":[],"issuer":"urn:anvilkit:issuer:contracts-release","provenanceDigest":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
-  ],
-  "generatorSetDigest":"sha256:3333333333333333333333333333333333333333333333333333333333333333","fixtureManifestDigest":"sha256:2222222222222222222222222222222222222222222222222222222222222222","registrySetDigest":"sha256:5555555555555555555555555555555555555555555555555555555555555555","releaseEvidenceDigest":"sha256:6666666666666666666666666666666666666666666666666666666666666666"
-}

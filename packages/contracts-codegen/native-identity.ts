@@ -4,7 +4,7 @@ import { admitStrictJson, type JsonValue } from "./strict-json.ts";
 
 const COMPONENT_PREFIX = Buffer.from("anvilkit.component.identity.v1\0", "utf8");
 const BOM_PREFIX = Buffer.from("anvilkit.contract-bom.identity.v1\0", "utf8");
-const BOM_MEDIA_TYPE = "application/vnd.anvilkit.contract-bom.v1+json";
+const BOM_MEDIA_TYPE = "application/vnd.anvilkit.contract-bom+json";
 const DIGEST = /^sha256:[0-9a-f]{64}$/;
 const PURPOSE = /^[\x21-\x7e]+$/;
 const MEDIA_TYPE = /^[a-z0-9][a-z0-9.+-]*\/[a-z0-9][a-z0-9.+-]*$/;

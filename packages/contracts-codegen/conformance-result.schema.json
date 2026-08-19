@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.anvilkit.dev/agent/tooling/conformance-result.schema.json",
+  "title": "AnvilKit Go/TypeScript conformance result",
+  "description": "One deterministic native-language result set for case-by-case canonical parity aggregation.",
+  "type": "object",
+  "required": [
+    "resultVersion",
+    "fixtureManifestDigest",
+    "language",
+    "implementation",
+    "cases"
+  ],
+  "properties": {
+    "resultVersion": {
+      "const": 1
+    },
+    "fixtureManifestDigest": {
+      "$ref": "#/$defs/digest"
+    },
+    "language": {
+      "enum": [
+        "go",
+        "typescript"
+      ]
+    },
+    "implementation": {
+      "$ref": "#/$defs/implementation"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/+?-]*$"
+    },
+    "implementation": {
+      "type": "object",
+      "required": [
+        "adapterId",
+        "adapterVersion",
+        "runtime",
+        "runtimeVersion",
+        "adapterDigest"
+      ],
+      "properties": {
+        "adapterId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "adapterVersion": {
+          "$ref": "#/$defs/identifier"
+        },
+        "runtime": {
+          "$ref": "#/$defs/identifier"
+        },
+        "runtimeVersion": {
+          "$ref": "#/$defs/identifier"
+        },
+        "adapterDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "packageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "sourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "generatorDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "contractBomDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "projectionDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      },
+      "additionalProperties": false
+    },
+    "finding": {
+      "type": "object",
+      "required": [
+        "code",
+        "instancePath",
+        "schemaPath"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 96,
+          "pattern": "^[A-Z][A-Z0-9_.-]+$"
+        },
+        "instancePath": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^/.*$"
+        },
+        "schemaPath": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(#?/.*|anvilkit://.+)$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "canonicalization": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "produced",
+            "rejected",
+            "not-applicable"
+          ]
+        },
+        "bytesBase64": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1398104,
+          "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 96,
+          "pattern": "^[A-Z][A-Z0-9_.-]+$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "produced"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "bytesBase64",
+              "digest"
+            ],
+            "not": {
+              "required": [
+                "code"
+              ]
+            }
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "bytesBase64"
+                  ]
+                },
+                {
+                  "required": [
+                    "digest"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "rejected"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "code"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "code"
+              ]
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "signature": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "verified",
+            "rejected",
+            "not-applicable"
+          ]
+        },
+        "code": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 96,
+          "pattern": "^[A-Z][A-Z0-9_.-]+$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "rejected"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "code"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "code"
+              ]
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "case": {
+      "type": "object",
+      "required": [
+        "caseId",
+        "inputDigest",
+        "inputBytes",
+        "parseOutcome",
+        "valid",
+        "findings",
+        "canonicalization",
+        "componentDigest",
+        "rootBomDigest",
+        "signature"
+      ],
+      "properties": {
+        "caseId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-z0-9][A-Za-z0-9.-]*$"
+        },
+        "inputDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "inputBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "parseOutcome": {
+          "enum": [
+            "accepted",
+            "rejected"
+          ]
+        },
+        "valid": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "findings": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        },
+        "canonicalization": {
+          "$ref": "#/$defs/canonicalization"
+        },
+        "componentDigest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rootBomDigest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "signature": {
+          "$ref": "#/$defs/signature"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

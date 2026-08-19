@@ -2,7 +2,7 @@
 
 import { readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
-import { lintSchema, sha256, type JsonObject } from "./m1-lib.ts";
+import { lintSchema, sha256, type JsonObject } from "./source-lint.ts";
 
 const REPO_ROOT = join(import.meta.dir, "..", "..");
 const index = process.argv.indexOf("--schema");

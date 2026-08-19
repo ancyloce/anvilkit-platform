@@ -2,6 +2,7 @@ package conformance_test
 
 import (
 	"encoding/json"
+	"os"
 	"path/filepath"
 	"runtime"
 	"testing"
@@ -23,8 +24,18 @@ func TestGenerateCompleteResult(t *testing.T) {
 	if err := json.Unmarshal(raw, &result); err != nil {
 		t.Fatal(err)
 	}
-	if result.Language != "go" || len(result.Cases) != 97 {
-		t.Fatalf("language=%q cases=%d", result.Language, len(result.Cases))
+	manifestRaw, err := os.ReadFile(filepath.Join(root, "contracts", "agent", "fixtures", "manifest.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var manifest struct {
+		Cases []any `json:"cases"`
+	}
+	if err := json.Unmarshal(manifestRaw, &manifest); err != nil {
+		t.Fatal(err)
+	}
+	if result.Language != "go" || len(result.Cases) == 0 || len(result.Cases) != len(manifest.Cases) {
+		t.Fatalf("language=%q cases=%d manifest=%d", result.Language, len(result.Cases), len(manifest.Cases))
 	}
 }
 

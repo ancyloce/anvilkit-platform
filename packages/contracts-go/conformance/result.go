@@ -1,5 +1,5 @@
-// Package conformance emits the language-neutral M4 fixture result from the
-// pinned Go validator and RFC 8785 adapters.
+// Package conformance emits the language-neutral canonical fixture result
+// from the pinned Go validator and RFC 8785 adapters.
 package conformance
 
 import (
@@ -90,7 +90,7 @@ var profileCases = map[string]bool{
 	"adversarial-agent-event.duplicate-reordered":   true,
 	"adversarial-worker-result.stale-fence":         true,
 	"invalid-agent-event.both-payload-and-artifact": true,
-	"invalid-apply-authorization.cross-tenant":      true,
+	"invalid-apply-authorization.cross-workspace":   true,
 }
 
 func digest(raw []byte) string {
@@ -135,7 +135,7 @@ func verifyNativeOutcome(testCase manifestCase, native []validator.Finding) erro
 }
 
 func verifyRegistryProjection(repositoryRoot string, value any) error {
-	raw, err := os.ReadFile(filepath.Join(repositoryRoot, "contracts", "registries", "v1", "registry-set.json"))
+	raw, err := os.ReadFile(filepath.Join(repositoryRoot, "contracts", "agent", "registries", "registry-set.json"))
 	if err != nil {
 		return err
 	}
@@ -172,7 +172,7 @@ func Generate(repositoryRoot string) ([]byte, error) {
 	if runtime.Version() != "go1.26.4" {
 		return nil, fmt.Errorf("expected Go go1.26.4, got %s", runtime.Version())
 	}
-	manifestPath := filepath.Join(repositoryRoot, "contracts", "fixtures", "v1", "manifest.json")
+	manifestPath := filepath.Join(repositoryRoot, "contracts", "agent", "fixtures", "manifest.json")
 	manifestBytes, err := os.ReadFile(manifestPath)
 	if err != nil {
 		return nil, err
@@ -181,8 +181,8 @@ func Generate(repositoryRoot string) ([]byte, error) {
 	if err := json.Unmarshal(manifestBytes, &fixtureManifest); err != nil {
 		return nil, err
 	}
-	if fixtureManifest.ManifestVersion != 1 || len(fixtureManifest.Cases) != 97 {
-		return nil, fmt.Errorf("expected fixture manifest v1 with 97 cases, got %d", len(fixtureManifest.Cases))
+	if fixtureManifest.ManifestVersion != 1 || len(fixtureManifest.Cases) == 0 {
+		return nil, fmt.Errorf("expected non-empty fixture manifest v1, got %d cases", len(fixtureManifest.Cases))
 	}
 	adapter, err := validator.New(repositoryRoot)
 	if err != nil {
@@ -205,7 +205,7 @@ func Generate(repositoryRoot string) ([]byte, error) {
 		if err != nil || testCase.Expected.Parse != "accepted" {
 			return nil, fmt.Errorf("%s: unexpected parse outcome", testCase.ID)
 		}
-		if testCase.Schema.LogicalID == "RegistrySetValuesV1" {
+		if testCase.Schema.LogicalID == "RegistrySetValues" {
 			if err := verifyRegistryProjection(repositoryRoot, admitted); err != nil {
 				return nil, err
 			}

@@ -1,0 +1,11 @@
+{
+  "lockVersion": 1,
+  "packageVersion": "0.1.0",
+  "description": "Pinned generator identities for the canonical Go and TypeScript Agent contract packages (ADR-018). Java is non-blocking and Python is absent until a real consumer exists; neither has an active generator.",
+  "generators": {
+    "goOpenApi": {"name": "github.com/oapi-codegen/oapi-codegen/v2", "version": "v2.8.0"},
+    "goJsonSchema": {"name": "github.com/atombender/go-jsonschema", "version": "v0.24.1"},
+    "typescriptOpenApi": {"name": "openapi-typescript", "version": "7.13.0"},
+    "typescriptJsonSchema": {"name": "json-schema-to-typescript", "version": "15.0.4"}
+  }
+}

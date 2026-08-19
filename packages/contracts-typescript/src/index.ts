@@ -1,8 +1,6 @@
 export * as AgentService from "./generated/agent-service.ts";
 export * as PagixAgentIntegration from "./generated/pagix-agent-integration.ts";
 export * as Schema from "./generated/schema.ts";
-export { ContractCompatibilityError, verifyCandidateBom } from "./compatibility.ts";
-
 export type ContractClientOptions = {
   baseUrl: string;
   fetch?: typeof globalThis.fetch;
