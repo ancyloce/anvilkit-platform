@@ -11,8 +11,8 @@ This is a Go-first backend monorepo. Platform-owned production code lives in the
 - `make -C services/agent-service all` checks formatting, vet, boundaries, contract drift, race tests, and the Agent Service build.
 - `make -C services/export-worker all` vets, race-tests, and builds the worker.
 - `(cd mocks && go test -race -count=1 ./...)` runs mock conformance tests.
-- `bun packages/contracts-codegen/generate.ts` validates fixtures and regenerates Go bindings.
-- `bun packages/contracts-codegen/check-freeze.ts` verifies the currently governed lock manifests, including legacy export contracts until their separate governance changes.
+- `bun packages/contracts-codegen/generate.ts` validates fixtures and regenerates the legacy export Go bindings; `generate-agent-packages.ts` (after `prepare-agent-generators.sh`) regenerates the canonical Go/TypeScript Agent packages and the agent-service intake.
+- `bun packages/contracts-codegen/check-freeze.ts` verifies the legacy export freeze; `check-agent-contracts.ts` and `check-agent-profile.ts` verify the canonical Agent contract set, P0-Kernel Profile, and lock.
 - `bun scripts/dependency-audit.ts` enforces language and dependency boundaries.
 - `docker compose -f infra/docker-compose.yml up -d --build` starts Redis, MinIO, mocks, and the worker; `./scripts/acceptance.sh` exercises the running stack.
 
