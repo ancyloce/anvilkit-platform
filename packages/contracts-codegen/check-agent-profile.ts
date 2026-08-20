@@ -42,8 +42,9 @@ const EXPECTED_CONTRACTS = [
   "ContractRuntimeRequest", "ContractRuntimeResult", "ContractSignatureStatement",
   "ContractTrustRoot", "CreateAgentRunRequest", "ImageOperationPlan", "InputRequest",
   "IssueApplyAuthorizationRequest", "IssuedApplyAuthorization", "ProblemDetails",
-  "ProviderContinuation", "SharedPrimitives", "SubmitApprovalDecisionRequest",
-  "SubmitInputResponseRequest", "TargetReference", "TargetSnapshot", "ToolDefinition",
+  "ProviderContinuation", "ResolveDomainOperationRequest", "SharedPrimitives",
+  "SubmitApprovalDecisionRequest", "SubmitInputResponseRequest", "TargetReference",
+  "TargetSnapshot", "ToolDefinition",
   "UsageObservation", "WorkerLease", "WorkerResult",
 ];
 
