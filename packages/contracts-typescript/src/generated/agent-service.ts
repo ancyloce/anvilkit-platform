@@ -120,6 +120,30 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/domain-operations/{operationId}/resolution": {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path: {
+                readonly operationId: components["parameters"]["OperationId"];
+                readonly runId: components["parameters"]["RunId"];
+                readonly workspaceId: components["parameters"]["WorkspaceId"];
+            };
+            readonly cookie?: never;
+        };
+        readonly get?: never;
+        readonly put?: never;
+        /**
+         * Record the audited operator resolution of an escalated governed domain effect.
+         * @description Operator recovery for a run holding at the submit boundary whose governed effect is durably escalated. The command states which authoritative outcome the effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The resolving operator is derived from the verified request authority and is never carried on the wire. Agent Service re-reads current authority on every call and requires the caller to be admitted under the operator role in this workspace and project; the durable resolution is a compare-and-set on the escalated state, so racing operators produce exactly one audited decision and a replayed decision converges on the recorded one. Nothing here contacts the domain owner and nothing is resubmitted.
+         */
+        readonly post: operations["resolveAgentDomainOperation"];
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
     readonly "/workspaces/{workspaceId}/agent-runs/{runId}/events": {
         readonly parameters: {
             readonly query?: never;
@@ -824,6 +848,18 @@ export interface components {
             readonly restartPolicy: "resume-if-valid" | "restart-stage" | "restart-run";
         };
         /**
+         * ResolveDomainOperationRequest contract
+         * @description Intent-only operator recovery command governed by ADR-021. It records which authoritative outcome an escalated governed effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The resolving operator is never carried on the wire: Agent Service derives it from the verified request authority.
+         */
+        readonly ResolveDomainOperationRequest: {
+            readonly basis: string;
+            /** @constant */
+            readonly kind: "ResolveDomainOperationRequest";
+            readonly operationId: string;
+            /** @enum {unknown} */
+            readonly outcome: "confirmed" | "conflict" | "rejected";
+        };
+        /**
          * AnvilKit Agent shared primitives
          * @description Bounded reusable wire primitives for the Agent contract catalog.
          */
@@ -1088,6 +1124,7 @@ export interface components {
         readonly IdempotencyKey: string;
         /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
         readonly IfMatch: string;
+        readonly OperationId: string;
         readonly RequestDigest: string;
         readonly RequestId: string;
         readonly RunId: string;
@@ -1758,6 +1795,127 @@ export interface operations {
             };
             /** @description Stale If-Match resource revision. */
             readonly 412: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Missing required If-Match precondition. */
+            readonly 428: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    readonly resolveAgentDomainOperation: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header: {
+                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
+                readonly "If-Match": components["parameters"]["IfMatch"];
+                readonly traceparent: components["parameters"]["Traceparent"];
+                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
+            };
+            readonly path: {
+                readonly operationId: components["parameters"]["OperationId"];
+                readonly runId: components["parameters"]["RunId"];
+                readonly workspaceId: components["parameters"]["WorkspaceId"];
+            };
+            readonly cookie?: never;
+        };
+        readonly requestBody: {
+            readonly content: {
+                readonly "application/json": components["schemas"]["ResolveDomainOperationRequest"];
+            };
+        };
+        readonly responses: {
+            /** @description Recorded semantic outcome. */
+            readonly 200: {
+                headers: {
+                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
+                    readonly ETag?: string;
+                    /** @description true when a recorded semantic outcome is replayed. */
+                    readonly "Idempotency-Replayed"?: boolean;
+                    /** @description Canonical request digest accepted for the operation. */
+                    readonly "X-AnvilKit-Request-Digest"?: string;
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/json": components["schemas"]["AgentRun"];
+                };
+            };
+            /** @description Stable contract problem. */
+            readonly 400: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated without the operator scope, or current authority does not admit the caller as an operator in this scope. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description The named operation is not the run’s current submission, the effect is already decided, or the run is not holding at the submit boundary. */
+            readonly 409: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stale If-Match resource revision. */
+            readonly 412: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Structurally valid command failing domain validation. */
+            readonly 422: {
                 headers: {
                     readonly [name: string]: unknown;
                 };

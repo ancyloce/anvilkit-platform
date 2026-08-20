@@ -758,6 +758,18 @@ export interface components {
             readonly restartPolicy: "resume-if-valid" | "restart-stage" | "restart-run";
         };
         /**
+         * ResolveDomainOperationRequest contract
+         * @description Intent-only operator recovery command governed by ADR-021. It records which authoritative outcome an escalated governed effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The resolving operator is never carried on the wire: Agent Service derives it from the verified request authority.
+         */
+        readonly ResolveDomainOperationRequest: {
+            readonly basis: string;
+            /** @constant */
+            readonly kind: "ResolveDomainOperationRequest";
+            readonly operationId: string;
+            /** @enum {unknown} */
+            readonly outcome: "confirmed" | "conflict" | "rejected";
+        };
+        /**
          * AnvilKit Agent shared primitives
          * @description Bounded reusable wire primitives for the Agent contract catalog.
          */

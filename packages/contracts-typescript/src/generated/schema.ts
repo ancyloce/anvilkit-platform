@@ -35,6 +35,7 @@ IssueApplyAuthorizationRequest?: IssueApplyAuthorizationRequestContract
 IssuedApplyAuthorization?: IssuedApplyAuthorizationContract
 ProblemDetails?: ProblemDetailsContract
 ProviderContinuation?: ProviderContinuationContract
+ResolveDomainOperationRequest?: ResolveDomainOperationRequestContract
 SharedPrimitives?: AnvilKitAgentSharedPrimitives
 SubmitApprovalDecisionRequest?: SubmitApprovalDecisionRequestContract
 SubmitInputResponseRequest?: SubmitInputResponseRequestContract
@@ -766,6 +767,15 @@ expiresAt: SharedPrimitivesTimestamp
 kind: "ProviderContinuation"
 provider: SharedPrimitivesActorId
 restartPolicy: ("resume-if-valid" | "restart-stage" | "restart-run")
+}
+/**
+ * Intent-only operator recovery command governed by ADR-021. It records which authoritative outcome an escalated governed effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The resolving operator is never carried on the wire: Agent Service derives it from the verified request authority.
+ */
+export interface ResolveDomainOperationRequestContract {
+basis: string
+kind: "ResolveDomainOperationRequest"
+operationId: string
+outcome: ("confirmed" | "conflict" | "rejected")
 }
 /**
  * Bounded reusable wire primitives for the Agent contract catalog.
