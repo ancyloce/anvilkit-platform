@@ -375,7 +375,7 @@ Platform CI includes the following jobs:
 | Job | Purpose |
 | --- | --- |
 | `contracts` | Fixture/spec validation, four-language adapter conformance, codegen drift, freeze, and service contract-intake checks |
-| `agent-service` | Boundaries, lint, vet, race tests, PostgreSQL/DBOS integration proofs, and build |
+| `agent-service` | Boundaries, lint, vet, race tests, PostgreSQL/DBOS integration proofs, the production restart matrix, and build |
 | `worker` | Lint, vet, race-tested unit and Redis/MinIO integration suites, and build |
 | `mocks` | Race-tested contract conformance through generated clients |
 | `images` | Worker and mock container builds plus Compose, Kubernetes, and alert-rule validation |
