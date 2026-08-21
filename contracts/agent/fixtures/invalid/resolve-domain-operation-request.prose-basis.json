@@ -1,0 +1,6 @@
+{
+  "kind": "ResolveDomainOperationRequest",
+  "operationId": "domain.0123456789abcdef0123456789abcdef",
+  "outcome": "rejected",
+  "basis": "domain-owner audit ticket OPS-7: the authoritative owner has no record of the operation"
+}

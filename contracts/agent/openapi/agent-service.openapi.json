@@ -145,7 +145,7 @@
             }
           },
           "409": {
-            "description": "Business-state or idempotency conflict.",
+            "description": "Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -178,7 +178,7 @@
         "x-anvilkit-idempotency": {
           "scope": "workspace-and-operation",
           "sameKeySameDigest": "return-recorded-outcome",
-          "sameKeyDifferentBytes": "conflict"
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
         }
       },
       "get": {
@@ -583,7 +583,7 @@
             }
           },
           "409": {
-            "description": "Business-state or idempotency conflict.",
+            "description": "Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -626,7 +626,7 @@
         "x-anvilkit-idempotency": {
           "scope": "workspace-and-operation",
           "sameKeySameDigest": "return-recorded-outcome",
-          "sameKeyDifferentBytes": "conflict"
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
         },
         "x-anvilkit-bodyless": {
           "canonicalBody": "{}",
@@ -740,7 +740,7 @@
             }
           },
           "409": {
-            "description": "Business-state or idempotency conflict.",
+            "description": "Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -783,7 +783,7 @@
         "x-anvilkit-idempotency": {
           "scope": "workspace-and-operation",
           "sameKeySameDigest": "return-recorded-outcome",
-          "sameKeyDifferentBytes": "conflict"
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
         },
         "x-anvilkit-bodyless": {
           "canonicalBody": "{}",
@@ -897,7 +897,7 @@
             }
           },
           "409": {
-            "description": "Business-state or idempotency conflict.",
+            "description": "Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -940,7 +940,7 @@
         "x-anvilkit-idempotency": {
           "scope": "workspace-and-operation",
           "sameKeySameDigest": "return-recorded-outcome",
-          "sameKeyDifferentBytes": "conflict"
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
         },
         "x-anvilkit-bodyless": {
           "canonicalBody": "{}",
@@ -1067,7 +1067,7 @@
             }
           },
           "409": {
-            "description": "Business-state or idempotency conflict.",
+            "description": "Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1120,7 +1120,7 @@
         "x-anvilkit-idempotency": {
           "scope": "workspace-and-operation",
           "sameKeySameDigest": "return-recorded-outcome",
-          "sameKeyDifferentBytes": "conflict"
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
         },
         "x-anvilkit-expiry": {
           "expired": "409 REQUEST_EXPIRED",
@@ -1247,7 +1247,7 @@
             }
           },
           "409": {
-            "description": "Business-state or idempotency conflict.",
+            "description": "Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1300,11 +1300,193 @@
         "x-anvilkit-idempotency": {
           "scope": "workspace-and-operation",
           "sameKeySameDigest": "return-recorded-outcome",
-          "sameKeyDifferentBytes": "conflict"
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
         },
         "x-anvilkit-expiry": {
           "expired": "409 REQUEST_EXPIRED",
           "timer": "durable"
+        }
+      }
+    },
+    "/workspaces/{workspaceId}/agent-runs/{runId}/domain-operations/{operationId}/resolution": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/WorkspaceId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        },
+        {
+          "$ref": "#/components/parameters/OperationId"
+        }
+      ],
+      "post": {
+        "operationId": "resolveAgentDomainOperation",
+        "summary": "Record the audited operator resolution of an escalated governed domain effect.",
+        "description": "Operator recovery for a run holding at the submit boundary whose governed effect is durably escalated. The command states which authoritative outcome the effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The resolving operator is derived from the verified request authority and is never carried on the wire. Agent Service re-reads current authority on every call and requires the caller to be admitted under the operator role in this workspace and project; the durable resolution is a compare-and-set on the escalated state, so racing operators produce exactly one audited decision and a replayed decision converges on the recorded one. Nothing here contacts the domain owner and nothing is resubmitted.",
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          },
+          {
+            "$ref": "#/components/parameters/IfMatch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/resolve-domain-operation-request?digest=sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded semantic outcome.",
+            "headers": {
+              "ETag": {
+                "description": "Strong resource revision: \"run:<runId>:<resourceRevision>\".",
+                "schema": {
+                  "type": "string",
+                  "minLength": 8,
+                  "maxLength": 256
+                }
+              },
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated without the operator scope, or current authority does not admit the caller as an operator in this scope.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The named operation is not the run’s current submission, the effect is already decided, or the run is not holding at the submit boundary, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stale If-Match resource revision.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Missing required If-Match precondition.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-operation",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
+        },
+        "x-anvilkit-escalation": {
+          "precondition": "domain-operation-durably-escalated",
+          "resolverIdentity": "derived-from-verified-request-authority",
+          "audit": "immutable-resolution-record-and-evidence"
         }
       }
     },
@@ -1424,7 +1606,7 @@
             }
           },
           "409": {
-            "description": "Business-state or idempotency conflict.",
+            "description": "Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED).",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1477,7 +1659,7 @@
         "x-anvilkit-idempotency": {
           "scope": "workspace-and-operation",
           "sameKeySameDigest": "return-recorded-outcome",
-          "sameKeyDifferentBytes": "conflict"
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
         }
       }
     },
@@ -1609,6 +1791,16 @@
           "maxLength": 128
         }
       },
+      "OperationId": {
+        "name": "operationId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
       "ArtifactId": {
         "name": "artifactId",
         "in": "path",
@@ -1704,6 +1896,9 @@
       },
       "ProviderContinuation": {
         "$ref": "anvilkit://schema/provider-continuation?digest=sha256:5b0e3545a8cf95d40c0b23960d79780419e70857ad00b4fee9c58be8cb7de54d"
+      },
+      "ResolveDomainOperationRequest": {
+        "$ref": "anvilkit://schema/resolve-domain-operation-request?digest=sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b"
       },
       "SubmitApprovalDecisionRequest": {
         "$ref": "anvilkit://schema/submit-approval-decision-request?digest=sha256:580f4673c28360cf4d0bb68ed922aad20ea7eab56879bf69c0dd82459afe7a8e"

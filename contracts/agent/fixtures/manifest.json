@@ -1084,6 +1084,46 @@
       "synthetic": true
     },
     {
+      "id": "adversarial-resolve-domain-operation-request.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/resolve-domain-operation-request.unknown-field.json",
+      "bytesSha256": "sha256:d2e783b5f44fc72145f86f4358d616d0a29a8d00cce099ecaa321f51a9c0f35f",
+      "bytesLength": 254,
+      "schema": {
+        "logicalId": "ResolveDomainOperationRequest",
+        "path": "contracts/agent/schemas/resolve-domain-operation-request.schema.json",
+        "logicalUri": "anvilkit://schema/resolve-domain-operation-request?digest=sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b",
+        "digest": "sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "adversarial-submit-approval-decision-request.unknown-field",
       "path": "contracts/agent/fixtures/adversarial/submit-approval-decision-request.unknown-field.json",
       "bytesSha256": "sha256:b355eba4453ccd6cb10cbe23d7d3b2f6d549bba8fbc737eb2922bf884637bff7",
@@ -3069,6 +3109,81 @@
       "synthetic": true
     },
     {
+      "id": "invalid-resolve-domain-operation-request.missing-basis",
+      "path": "contracts/agent/fixtures/invalid/resolve-domain-operation-request.missing-basis.json",
+      "bytesSha256": "sha256:90cc9a877d89964e9837627e0a35ef4334ce153d08e7d03a776f694c35ff2ab5",
+      "bytesLength": 131,
+      "schema": {
+        "logicalId": "ResolveDomainOperationRequest",
+        "path": "contracts/agent/schemas/resolve-domain-operation-request.schema.json",
+        "logicalUri": "anvilkit://schema/resolve-domain-operation-request?digest=sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b",
+        "digest": "sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-resolve-domain-operation-request.prose-basis",
+      "path": "contracts/agent/fixtures/invalid/resolve-domain-operation-request.prose-basis.json",
+      "bytesSha256": "sha256:a02f8d5ffda42f5a04bdf43cc4d623d749d2bc387102d407009c623d02773b4f",
+      "bytesLength": 233,
+      "schema": {
+        "logicalId": "ResolveDomainOperationRequest",
+        "path": "contracts/agent/schemas/resolve-domain-operation-request.schema.json",
+        "logicalUri": "anvilkit://schema/resolve-domain-operation-request?digest=sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b",
+        "digest": "sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/basis",
+            "schemaPath": "#/properties/basis/pattern"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "invalid-submit-approval-decision-request.missing-action-digest",
       "path": "contracts/agent/fixtures/invalid/submit-approval-decision-request.missing-action-digest.json",
       "bytesSha256": "sha256:d1ea8aa33aa6e905af63edd5f8c4728849566dad47d4003a0273f2a719e5f957",
@@ -4952,17 +5067,46 @@
     {
       "id": "valid-registry-values.full",
       "path": "contracts/agent/fixtures/valid/registry-values.full.json",
-      "bytesSha256": "sha256:d8c20d097f4fb9c7db947fd798843ab02c23c0c2b7df0b522bd05bc49a9630f3",
-      "bytesLength": 5616,
+      "bytesSha256": "sha256:fd342e2992308b4b68ef4ae32f2cd1a874997593fb46dd2b9636d281ba0b418f",
+      "bytesLength": 5715,
       "schema": {
         "logicalId": "RegistrySetValues",
         "path": "contracts/agent/registries/registry-set.json",
-        "logicalUri": "anvilkit://registry/registry-set?digest=sha256:b275fc7bd76b20a45a823987e44140fad53e641e6aa0d06632b8f0e9303363c8",
-        "digest": "sha256:b275fc7bd76b20a45a823987e44140fad53e641e6aa0d06632b8f0e9303363c8"
+        "logicalUri": "anvilkit://registry/registry-set?digest=sha256:661d4731def9d498dc28b0aa7e61c44eb79f9d53f7bedba1c029dbed5505cc06",
+        "digest": "sha256:661d4731def9d498dc28b0aa7e61c44eb79f9d53f7bedba1c029dbed5505cc06"
       },
       "category": "full",
       "tags": [
         "every-registry-value"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-resolve-domain-operation-request.minimum",
+      "path": "contracts/agent/fixtures/valid/resolve-domain-operation-request.minimum.json",
+      "bytesSha256": "sha256:9c5e4beca7c0c690bcb8de3abd7f366dcd439b357572a42f41af3de4c3204070",
+      "bytesLength": 213,
+      "schema": {
+        "logicalId": "ResolveDomainOperationRequest",
+        "path": "contracts/agent/schemas/resolve-domain-operation-request.schema.json",
+        "logicalUri": "anvilkit://schema/resolve-domain-operation-request?digest=sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b",
+        "digest": "sha256:c8118aaaa8f7e73b84f9d307def3536463926ce6290b8ad4b3ad9cad804b1d8b"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
       ],
       "expected": {
         "parse": "accepted",

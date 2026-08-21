@@ -73,7 +73,8 @@
       "AK-FIX-001",
       "AK-FIX-002",
       "AK-INV-001",
-      "AK-PROFILE-001"
+      "AK-PROFILE-001",
+      "IDEMPOTENCY_KEY_REUSED"
     ],
     "run-status": [
       "created",
@@ -213,6 +214,7 @@
       "anvilkit.contract.schema.issue-apply-authorization-request",
       "anvilkit.contract.schema.submit-input-response-request",
       "anvilkit.contract.schema.submit-approval-decision-request",
+      "anvilkit.contract.schema.resolve-domain-operation-request",
       "anvilkit.contract.schema.contract-runtime-request",
       "anvilkit.contract.schema.contract-runtime-result",
       "anvilkit.contract.registry-set",

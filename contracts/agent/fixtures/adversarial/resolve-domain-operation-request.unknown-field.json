@@ -1,0 +1,7 @@
+{
+  "kind": "ResolveDomainOperationRequest",
+  "operationId": "domain.0123456789abcdef0123456789abcdef",
+  "outcome": "rejected",
+  "basis": "anvilkit://evidence/domain-owner-audit/OPS-7-no-record-of-operation",
+  "resolvedBy": "operator.impersonated"
+}

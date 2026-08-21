@@ -597,6 +597,15 @@
           "aliases": [],
           "replacement": null,
           "retryability": "never"
+        },
+        {
+          "wireValue": "IDEMPOTENCY_KEY_REUSED",
+          "meaning": "An idempotency key was replayed with different canonical request bytes (ADR-021 §4).",
+          "owner": "Agent Service owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null,
+          "retryability": "never"
         }
       ]
     },
@@ -1535,6 +1544,14 @@
         {
           "wireValue": "anvilkit.contract.schema.submit-approval-decision-request",
           "meaning": "SubmitApprovalDecisionRequest intent-only command schema component.",
+          "owner": "Agent Service Workflow owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.resolve-domain-operation-request",
+          "meaning": "ResolveDomainOperationRequest authoritative schema component.",
           "owner": "Agent Service Workflow owner",
           "status": "active",
           "aliases": [],
