@@ -1,4 +1,4 @@
-// M4-T01 source-validation stage for the retained legacy export contracts.
+// Source-validation stage for the retained legacy export contracts.
 //
 // This validator intentionally supports only the vocabulary used by that
 // frozen source set. Adding a schema keyword requires implementing it here;

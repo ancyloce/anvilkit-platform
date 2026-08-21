@@ -1,4 +1,4 @@
-// PLAN-0003 M3-T01 strict JSON admission reference adapter.
+// Strict JSON admission reference adapter.
 //
 // This dependency-free implementation is an unapproved corpus runner used to
 // make the byte-level profile executable while DP-008 selects native adapters.

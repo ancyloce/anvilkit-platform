@@ -1,4 +1,4 @@
-// PLAN-0003 M3-T02/T03 canonicalization and identity reference adapter.
+// Canonicalization and identity reference adapter.
 //
 // This dependency-free implementation makes the selected RFC 8785 and
 // AnvilKitIdentityV1 profiles executable for corpus development. It is not an

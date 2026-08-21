@@ -1,4 +1,4 @@
-// M4-T01 normalized-model stage. Source-specific documents are reduced to
+// Normalized-model stage. Source-specific documents are reduced to
 // these deterministic language-neutral shapes before a language emitter runs.
 
 import type { Schema } from "./json-model.ts";

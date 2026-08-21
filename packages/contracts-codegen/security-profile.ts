@@ -1,4 +1,4 @@
-// PLAN-0003 M3-T04..T06 reference security profiles. Production key custody
+// Reference security profiles. Production key custody
 // remains outside this repository; these functions verify standard DSSE/JWS
 // bytes against caller-supplied, pinned trust snapshots.
 

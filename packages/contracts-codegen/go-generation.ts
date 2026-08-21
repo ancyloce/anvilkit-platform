@@ -1,4 +1,4 @@
-// M4-T01 Go language-generation stage for the retained export bindings.
+// Go language-generation stage for the retained export bindings.
 
 import type { Schema } from "./json-model.ts";
 import { normalizeObject, type NormalizedEnum } from "./normalized-model.ts";

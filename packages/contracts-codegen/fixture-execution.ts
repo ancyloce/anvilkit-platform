@@ -1,4 +1,4 @@
-// M4-T01 fixture-execution stage. Native language adapters will consume the
+// Fixture-execution stage. Native language adapters will consume the
 // shared Agent manifest later; these helpers preserve the legacy regression
 // behavior while keeping fixture evaluation separate from generation.
 

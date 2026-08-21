@@ -1,4 +1,4 @@
-// Pinned TypeScript PLAN-0003 M4 adapter: strict admission plus Ajv 2020-12.
+// Pinned TypeScript validation adapter: strict admission plus Ajv 2020-12.
 
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
