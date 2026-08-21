@@ -4,6 +4,10 @@
 # drift, freeze), the mocks module, the monorepo-wide dependency audit, the
 # worker build/test against the pinned submodule, and the container image
 # builds (build-only; publishing joins with the first deployed environment).
+#
+# Every step here runs from a clean checkout of tracked content alone. A check
+# whose inputs are the retained local evidence ADR-023 keeps out of Git belongs
+# in scripts/release-precheck.sh, not in this pipeline.
 name: ci
 
 on:
@@ -65,7 +69,7 @@ jobs:
           name: agent-parity-results
           path: /tmp/anvilkit-agent-parity
           if-no-files-found: error
-      - name: P0-Kernel profile and canonical lock
+      - name: Canonical contract profile and lock
         run: bun packages/contracts-codegen/check-agent-profile.ts
       - name: Agent Service pinned client and schema drift
         working-directory: services/agent-service
@@ -255,10 +259,15 @@ jobs:
         run: |
           bun test scripts/naming-governance.test.ts
           bun scripts/naming-governance.ts
-      - name: Agent Service release evidence and release-claim audit
-        run: bun scripts/agent-service-release-evidence-audit.ts
-      - name: Agent Service approved resource-regression budgets
-        run: bun scripts/agent-service-resource-budget.ts
+      # The Agent Service release-evidence and resource-regression audits are
+      # deliberately absent here and run as local/release prechecks instead
+      # (scripts/release-precheck.sh). Their inputs are the retained local
+      # evidence ADR-023 keeps out of Git, so a hosted clean checkout cannot
+      # read them: running them here would either fail on every commit or,
+      # worse, invite the evidence to be committed to make the job pass, which
+      # is exactly the tracked-documentation boundary ADR-023 draws. The checks
+      # are retained in full, not weakened -- they are a gate on the release
+      # candidate, run where their inputs exist.
       - name: govulncheck (worker)
         working-directory: services/export-worker
         run: |
