@@ -1,6 +1,6 @@
 # Prometheus alert rules for anvilkit-export-worker (EW-OBS-006; PRD 0010
 # §15.4 — thresholds marked "initial" are tuned in staging failure drills
-# before the M5 launch review; the queue-backlog N is To Be Confirmed).
+# before the launch review; the queue-backlog N is To Be Confirmed).
 #
 # Loadable as a plain Prometheus rule file or wrapped in a PrometheusRule CR.
 groups:

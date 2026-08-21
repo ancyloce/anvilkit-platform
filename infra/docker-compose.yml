@@ -1,7 +1,7 @@
 # Local development stack (EW-LOCAL-001, PLAN-0001 §11): Redis, MinIO
 # (+ bucket init), the contract-conformant mocks (deployment-service,
 # asset-service, render-origin stand-in per BD-007/ADR-007), and the worker
-# running the full M3 export pipeline. The otel-collector joins with M4
+# running the full export pipeline. The otel-collector joins for
 # tracing.
 #
 # Quickstart: see infra/README.md.
