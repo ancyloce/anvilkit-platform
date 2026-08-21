@@ -29,7 +29,8 @@ mocks/           standalone Go module: contract-conformant mocks (cmd/deployment
                  cmd/asset-service-mock, cmd/render-origin-mock) + the ADR-014 load driver
 infra/           docker-compose.yml, fixtures, scripts (publish-event/seed-fixtures/verify-artifact),
                  Prometheus alerts/, k8s/, otel-collector.yaml
-scripts/         dependency-audit.ts (boundary gate) · acceptance.sh (full T-* suite)
+scripts/         dependency-audit.ts (boundary gate) · naming-governance.ts (capability-naming gate)
+                 acceptance.sh (full T-* suite)
 docs/            prd/ (read-only authority) · plans/ · adr/ · runbooks/ · acceptance/
                  (ADR-023: only adr/ is Git-tracked; everything else under docs/ is local-only)
 .github/         workflows: ci.yml · acceptance.yml · deploy.yml
@@ -125,6 +126,8 @@ bun packages/contracts-codegen/check-agent-specs.ts      # canonical OpenAPI/Asy
 bash packages/contracts-codegen/prepare-agent-generators.sh && bun packages/contracts-codegen/generate-agent-packages.ts  # regenerate Go/TS + agent-service intake
 bun packages/contracts-codegen/check-agent-profile.ts    # P0-Kernel Profile + canonical lock + intake identity
 bun ./scripts/dependency-audit.ts               # boundary/dependency gate (AC-002/AC-018)
+bun test ./scripts/naming-governance.test.ts   # capability-naming gate: its regression suite
+bun ./scripts/naming-governance.ts             # capability-naming gate: the repository scan
 
 make -C services/agent-service all              # Agent Service: format + vet + boundaries + contracts + race tests + build
 make -C services/export-worker all              # worker: vet + test + build

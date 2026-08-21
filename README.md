@@ -287,6 +287,13 @@ Run repository boundary and dependency audit:
 bun scripts/dependency-audit.ts
 ```
 
+Run the capability-based naming gate (its own regression suite, then the scan):
+
+```bash
+bun test scripts/naming-governance.test.ts
+bun scripts/naming-governance.ts
+```
+
 Build, vet, and test the export worker:
 
 ```bash
@@ -362,7 +369,7 @@ Platform CI includes the following jobs:
 | `worker` | Lint, vet, race-tested unit and Redis/MinIO integration suites, and build |
 | `mocks` | Race-tested contract conformance through generated clients |
 | `images` | Worker and mock container builds plus Compose, Kubernetes, and alert-rule validation |
-| `audit` | Platform/service dependency boundaries, Agent Service M8 pre-entry checks, budgets, and worker `govulncheck` |
+| `audit` | Platform/service dependency boundaries, capability-based naming governance, Agent Service release-evidence and resource-budget checks, and worker `govulncheck` |
 
 The worker repository also runs its own CI on every pull request, including:
 
