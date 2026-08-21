@@ -80,6 +80,15 @@ docker compose -f infra/docker-compose.yml logs -f otel-collector   # span summa
   `terminationGracePeriodSeconds: 90`, ADR-012 proposed sizing) and the non-secret
   ConfigMap example. Secrets arrive via the secret manager per ADR-006 — never from the
   repo. kubeconform-validated in CI; the CD promotion flow lands at M5 (EW-K8S-004).
+- `infra/k8s/agent-service-statefulset.yaml` — the Agent Service, deployed as a
+  StatefulSet because each instance owns durable local state: the stream-cursor spool
+  (ADR-024). `volumeClaimTemplates` give every instance its own retained claim mounted
+  at `ANVILKIT_STREAM_CURSOR_SPOOL`, so a disconnect record the cursor store refused
+  survives restart and rescheduling and is drained by the reconciler once the store is
+  reachable. Includes the headless Service the StatefulSet requires; external routing is
+  a separate decision. `agent-service-config.example.yaml` carries the non-secret
+  configuration. Both are kubeconform-validated in CI. No Agent Service image is built
+  yet, so the manifest is validated rather than deployed.
 
 ## Queue retention and replay (EW-QUEUE-009, ADR-011 — ops sign-off pending, OQ-2/AC-031)
 

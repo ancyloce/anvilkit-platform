@@ -1,0 +1,51 @@
+# Non-secret configuration for a deployed agent-service environment (example —
+# real values land with the first deployed environment). Secrets are NEVER
+# here: ANVILKIT_SIGNING_KEY, ANVILKIT_ENCRYPTION_KEY, and the per-role
+# database URLs (which embed credentials) arrive via the
+# anvilkit-agent-service-secrets Secret per ADR-006.
+#
+# ANVILKIT_STREAM_CURSOR_SPOOL is deliberately absent: it is declared beside
+# its volumeMount in agent-service-statefulset.yaml so the configured path and
+# the mounted path cannot drift apart.
+#
+# The /etc/anvilkit/* paths below name operator-distributed trust material
+# (ADR-006, ADR-016). This example states where the service expects to read
+# them; delivering them into the pod is the secret-management mechanism's job
+# and is not modelled here.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: anvilkit-agent-service-config
+  labels:
+    app.kubernetes.io/name: agent-service
+    app.kubernetes.io/part-of: anvilkit-platform
+data:
+  ANVILKIT_ENVIRONMENT: "staging"
+  ANVILKIT_HTTP_ADDRESS: ":8080"
+  ANVILKIT_CONTRACT_ROOT: "/contracts"
+  ANVILKIT_MIGRATION_MODE: "validate"
+  # Authentication and current-authority material (ADR-002, ADR-016).
+  ANVILKIT_AUTH_TRUST_SNAPSHOT: "/etc/anvilkit/trust.json"
+  ANVILKIT_AUTH_ISSUERS: "urn:anvilkit:issuer:platform"
+  ANVILKIT_AUTH_AUDIENCE: "urn:anvilkit:audience:agent-service"
+  ANVILKIT_POLICY_SNAPSHOT: "/etc/anvilkit/policy.json"
+  ANVILKIT_CAPABILITY_SNAPSHOT: "/etc/anvilkit/capability.json"
+  # The approved Agent definition catalog is authenticated against an
+  # operator-distributed trust root; production never trusts its own copy.
+  ANVILKIT_DEFINITION_TRUST_ROOT: "/etc/anvilkit/definition-trust-root.json"
+  ANVILKIT_DEFINITION_ATTESTATION: "/etc/anvilkit/definition-catalog.dsse.json"
+  # Externally owned services — contracts and authenticated APIs only.
+  ANVILKIT_PAGIX_URL: "https://pagix.internal"
+  ANVILKIT_CONTRACT_RUNTIME_URL: "https://contract-runtime.internal"
+  ANVILKIT_OBJECT_STORE_URL: "https://object-store.internal"
+  ANVILKIT_RECEIPT_JOURNAL_URL: "https://journal.internal"
+  ANVILKIT_RECOVERY_REGISTER_URL: "https://register.internal"
+  ANVILKIT_AUTHORITATIVE_TIME_URL: "https://time.internal"
+  ANVILKIT_PROTECTED_AUDIT_URL: "https://audit.internal"
+  # Event stream and durable public cursor semantics (ADR-020).
+  ANVILKIT_EVENT_RETENTION: "720h"
+  ANVILKIT_SSE_HEARTBEAT: "15s"
+  ANVILKIT_SSE_WRITE_TIMEOUT: "10s"
+  ANVILKIT_SSE_CONNECTIONS: "256"
+  ANVILKIT_AUTH_REVALIDATION: "60s"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
