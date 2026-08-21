@@ -54,7 +54,7 @@ const EMBEDDED_CONTRACTS: Record<string, { schema: string; pointer: string }> = 
   TargetReference: { schema: "shared-primitives", pointer: "#/$defs/TargetReference" },
 };
 
-// Minimum required fixture coverage per logical contract. The original P0
+// Minimum required fixture coverage per logical contract. The original
 // families keep the full five-category corpus; every other contract requires
 // at least a valid, an invalid, and an adversarial fixture.
 const FULL_COVERAGE = ["minimum", "full", "maximum-bound", "invalid", "adversarial"];
