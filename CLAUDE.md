@@ -30,6 +30,7 @@ mocks/           standalone Go module: contract-conformant mocks (cmd/deployment
 infra/           docker-compose.yml, fixtures, scripts (publish-event/seed-fixtures/verify-artifact),
                  Prometheus alerts/, k8s/, otel-collector.yaml
 scripts/         dependency-audit.ts (boundary gate) · naming-governance.ts (capability-naming gate)
+                 release-precheck.sh (local/release evidence + resource-budget audits)
                  acceptance.sh (full T-* suite)
 docs/            prd/ (read-only authority) · plans/ · adr/ · runbooks/ · acceptance/
                  (ADR-023: only adr/ is Git-tracked; everything else under docs/ is local-only)
@@ -128,6 +129,7 @@ bun packages/contracts-codegen/check-agent-profile.ts    # P0-Kernel Profile + c
 bun ./scripts/dependency-audit.ts               # boundary/dependency gate (AC-002/AC-018)
 bun test ./scripts/naming-governance.test.ts   # capability-naming gate: its regression suite
 bun ./scripts/naming-governance.ts             # capability-naming gate: the repository scan
+bash ./scripts/release-precheck.sh             # local/release only: Agent Service evidence + resource budgets
 
 make -C services/agent-service all              # Agent Service: format + vet + boundaries + contracts + race tests + build
 make -C services/export-worker all              # worker: vet + test + build

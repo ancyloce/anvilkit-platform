@@ -294,6 +294,16 @@ bun test scripts/naming-governance.test.ts
 bun scripts/naming-governance.ts
 ```
 
+Run the release prechecks. These are the Agent Service release-evidence and
+resource-regression audits. They read the retained local evidence ADR-023 keeps
+out of Git, so they run here rather than in hosted CI, which builds from a clean
+checkout of tracked content alone. Run them before cutting a release candidate
+and whenever the retained evidence or the approved budgets change:
+
+```bash
+bash scripts/release-precheck.sh
+```
+
 Build, vet, and test the export worker:
 
 ```bash
@@ -369,7 +379,12 @@ Platform CI includes the following jobs:
 | `worker` | Lint, vet, race-tested unit and Redis/MinIO integration suites, and build |
 | `mocks` | Race-tested contract conformance through generated clients |
 | `images` | Worker and mock container builds plus Compose, Kubernetes, and alert-rule validation |
-| `audit` | Platform/service dependency boundaries, capability-based naming governance, Agent Service release-evidence and resource-budget checks, and worker `govulncheck` |
+| `audit` | Platform/service dependency boundaries, capability-based naming governance, and worker `govulncheck` |
+
+Every hosted job runs from a clean checkout of tracked content alone. The Agent
+Service release-evidence and resource-regression audits read the retained local
+evidence ADR-023 keeps out of Git, so they are retained in full as release
+prechecks (`bash scripts/release-precheck.sh`) rather than hosted CI steps.
 
 The worker repository also runs its own CI on every pull request, including:
 

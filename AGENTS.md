@@ -14,6 +14,7 @@ This is a Go-first backend monorepo. Platform-owned production code lives in the
 - `bun packages/contracts-codegen/generate.ts` validates fixtures and regenerates the legacy export Go bindings; `generate-agent-packages.ts` (after `prepare-agent-generators.sh`) regenerates the canonical Go/TypeScript Agent packages and the agent-service intake.
 - `bun packages/contracts-codegen/check-freeze.ts` verifies the legacy export freeze; `check-agent-contracts.ts` and `check-agent-profile.ts` verify the canonical Agent contract set, P0-Kernel Profile, and lock.
 - `bun scripts/dependency-audit.ts` enforces language and dependency boundaries; `bun scripts/naming-governance.ts` enforces capability-based naming across the tracked source surface.
+- `bash scripts/release-precheck.sh` runs the Agent Service release-evidence and resource-regression audits. They read the retained local evidence ADR-023 keeps out of Git, so they are local/release prechecks rather than hosted CI steps; hosted CI runs only from tracked content.
 - `docker compose -f infra/docker-compose.yml up -d --build` starts Redis, MinIO, mocks, and the worker; `./scripts/acceptance.sh` exercises the running stack.
 
 ## Coding Style & Naming Conventions
