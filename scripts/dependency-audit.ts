@@ -119,7 +119,7 @@ if (!existsSync(agentOpenAPI)) {
 			for (const operation of Object.values(pathItem as Record<string, any>)) {
 				const operationID = typeof operation?.operationId === "string" ? operation.operationId : "";
 				if (/preview|undo|applyPage|pageApply|interactiveApply/i.test(operationID)) {
-					failures.push(`P1 preview/interactive-apply/undo operation present in P0 surface: ${pathName} ${operationID}`);
+					failures.push(`beyond-kernel preview/interactive-apply/undo operation present in the P0 surface: ${pathName} ${operationID}`);
 				}
 			}
 		}
