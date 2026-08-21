@@ -849,7 +849,7 @@ export interface components {
         };
         /**
          * ResolveDomainOperationRequest contract
-         * @description Intent-only operator recovery command governed by ADR-021. It records which authoritative outcome an escalated governed effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The resolving operator is never carried on the wire: Agent Service derives it from the verified request authority.
+         * @description Intent-only operator recovery command governed by ADR-021. It records which authoritative outcome an escalated governed effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The basis is a bounded evidence reference, never free-form prose: an operator names the authoritative record a reviewer can retrieve, so the audited decision can be recorded as immutable internal evidence without ever carrying operator-authored content. The resolving operator is never carried on the wire: Agent Service derives it from the verified request authority.
          */
         readonly ResolveDomainOperationRequest: {
             readonly basis: string;
@@ -1275,7 +1275,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Business-state or idempotency conflict. */
+            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -1440,7 +1440,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Business-state or idempotency conflict. */
+            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -1561,7 +1561,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Business-state or idempotency conflict. */
+            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -1677,7 +1677,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Business-state or idempotency conflict. */
+            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -1784,7 +1784,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Business-state or idempotency conflict. */
+            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -1896,7 +1896,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description The named operation is not the run’s current submission, the effect is already decided, or the run is not holding at the submit boundary. */
+            /** @description The named operation is not the run’s current submission, the effect is already decided, or the run is not holding at the submit boundary, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -2089,7 +2089,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Business-state or idempotency conflict. */
+            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -2205,7 +2205,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Business-state or idempotency conflict. */
+            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
