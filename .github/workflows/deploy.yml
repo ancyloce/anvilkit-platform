@@ -17,6 +17,11 @@ on:
         required: true
         type: choice
         options: [dev, staging, production]
+      service:
+        description: "Which service to promote"
+        required: true
+        type: choice
+        options: [export-worker, agent-service, all]
       image_tag:
         description: "Immutable image tag to deploy (git sha or vX.Y.Z — never latest)"
         required: true
@@ -51,8 +56,24 @@ jobs:
         run: |
           mkdir -p "$HOME/.kube"
           echo "$KUBECONFIG_B64" | base64 -d > "$HOME/.kube/config"
-      - name: Apply manifests (rolling update; SIGTERM drain does the rest)
+      - name: Apply export-worker (rolling update; SIGTERM drain does the rest)
+        if: inputs.service == 'export-worker' || inputs.service == 'all'
         run: |
           sed "s/IMAGE_TAG/${{ inputs.image_tag }}/" infra/k8s/export-worker-deployment.yaml | \
             kubectl apply -f -
           kubectl rollout status deployment/export-worker --timeout=5m
+      # The Agent Service is a StatefulSet (ADR-024): the manifest carries the
+      # headless Service and the per-instance stream-cursor claim alongside the
+      # workload, so one apply covers all three. Rollout is ordered, and each
+      # instance's ordered shutdown runs inside its 45s grace period.
+      #
+      # The ConfigMap is deliberately not applied here: the file in this
+      # repository is an example, and the deployed configuration — like the
+      # Secret beside it — comes from the environment's own configuration
+      # management per ADR-006.
+      - name: Apply agent-service (ordered rollout; retained cursor claims)
+        if: inputs.service == 'agent-service' || inputs.service == 'all'
+        run: |
+          sed "s/IMAGE_TAG/${{ inputs.image_tag }}/" infra/k8s/agent-service-statefulset.yaml | \
+            kubectl apply -f -
+          kubectl rollout status statefulset/agent-service --timeout=10m

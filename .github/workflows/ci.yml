@@ -229,6 +229,22 @@ jobs:
           submodules: recursive
       - name: Worker image (EW-K8S-001)
         run: docker build --build-arg VERSION=${{ github.sha }} -t anvilkit-export-worker:${{ github.sha }} services/export-worker
+      - name: Agent Service image
+        run: docker build --build-arg VERSION=${{ github.sha }} -t anvilkit-agent-service:${{ github.sha }} services/agent-service
+      # The image carries the pinned canonical contract material the service
+      # verifies before it serves, so a build that produced an image with the
+      # wrong contract root would start and then fail closed at every pod. The
+      # check is here rather than at rollout because it costs one container
+      # start and turns that into a build failure.
+      - name: Agent Service image resolves its pinned contract material
+        run: |
+          docker run --rm --read-only --user 65532:65532 \
+            -e ANVILKIT_ENVIRONMENT=development \
+            anvilkit-agent-service:${{ github.sha }} 2>&1 | tee /tmp/agent-service-boot.log || true
+          if grep -q "contract material verification failed" /tmp/agent-service-boot.log; then
+            echo "::error::the image cannot read its pinned contract material"
+            exit 1
+          fi
       - name: deployment-service-mock image
         run: docker build -f mocks/Dockerfile --build-arg SERVICE=deployment-service-mock -t anvilkit-deployment-service-mock:${{ github.sha }} .
       - name: asset-service-mock image
