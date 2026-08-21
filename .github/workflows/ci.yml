@@ -110,18 +110,27 @@ jobs:
       - name: Format, vet, boundaries, contract drift, race tests, and build
         working-directory: services/agent-service
         run: make ci
-      # ./cmd/agent-service is listed so the production restart matrix actually
-      # runs: those checkpoints self-skip without POSTGRES_TEST_URL, and a
-      # required proof that skips silently is indistinguishable from one that
-      # passed.
-      - name: Postgres persistence, concurrency, replay, restart-matrix, and create-latency proofs
+      - name: Postgres persistence, concurrency, replay, and create-latency proofs
         working-directory: services/agent-service
         env:
           POSTGRES_TEST_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
           DURABLE_CREATE_LOAD_TEST: "1"
           DURABLE_CREATE_LOAD_DURATION: 25s
           DURABLE_CREATE_EVIDENCE_PATH: .evidence/durable-create/create-floor.json
-        run: go test -race -count=1 -v ./internal/persistence ./internal/journal/postgres ./cmd/agent-service
+        run: go test -race -count=1 -v ./internal/persistence ./internal/journal/postgres
+      # The restart matrix runs here rather than being folded into the step
+      # above: its checkpoints self-skip without POSTGRES_TEST_URL, and a
+      # required proof that skips silently is indistinguishable from one that
+      # passed. It gets a step of its own because it creates durable-runtime
+      # schemas owned by the same database roles the persistence proof drops
+      # when it rolls its migrations back — run concurrently, the two race, and
+      # whichever loses fails for reasons that have nothing to do with the
+      # change under test.
+      - name: Production restart matrix across durable checkpoints
+        working-directory: services/agent-service
+        env:
+          POSTGRES_TEST_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
+        run: go test -race -count=1 -v ./cmd/agent-service
       - name: DBOS durable-step, wait, cancel, and two-executor proofs
         working-directory: services/agent-service
         env:
