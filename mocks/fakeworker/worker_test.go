@@ -54,11 +54,11 @@ func TestStateChangingFenceMatrix(t *testing.T) {
 func TestAllAttemptUsageNoUndercountAndDeduplication(t *testing.T) {
 	w := fakeworker.New(fence(2, 3, 4, "winning"))
 	cases := []fakeworker.Usage{
-		{ProviderRequestID: "p1", ObservationID: "o1", PhysicalAttemptID: "winning", Units: 10, Final: true},
-		{ProviderRequestID: "p2", ObservationID: "o2", PhysicalAttemptID: "losing", Units: 7, Final: true},
-		{ProviderRequestID: "p3", ObservationID: "o3", PhysicalAttemptID: "stale", Units: 5, Final: false},
-		{ProviderRequestID: "p4", ObservationID: "o4", PhysicalAttemptID: "pre-restore", Units: 3, Final: true},
-		{ProviderRequestID: "p5", ObservationID: "o5", PhysicalAttemptID: "fallback", Units: 11, Final: true},
+		{ProviderRequestID: "provider-1", ObservationID: "o1", PhysicalAttemptID: "winning", Units: 10, Final: true},
+		{ProviderRequestID: "provider-2", ObservationID: "o2", PhysicalAttemptID: "losing", Units: 7, Final: true},
+		{ProviderRequestID: "provider-3", ObservationID: "o3", PhysicalAttemptID: "stale", Units: 5, Final: false},
+		{ProviderRequestID: "provider-4", ObservationID: "o4", PhysicalAttemptID: "pre-restore", Units: 3, Final: true},
+		{ProviderRequestID: "provider-5", ObservationID: "o5", PhysicalAttemptID: "fallback", Units: 11, Final: true},
 	}
 	for _, usage := range cases {
 		if err := w.ObserveUsage(usage); err != nil {

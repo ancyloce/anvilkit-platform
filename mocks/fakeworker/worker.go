@@ -1,4 +1,4 @@
-// Package fakeworker is deterministic PLAN-0003 M6 test infrastructure. It
+// Package fakeworker is deterministic test infrastructure. It
 // models worker fencing, all-attempt usage, artifact lifecycle, idempotency,
 // event sequencing, and trace propagation; it is not a production worker.
 package fakeworker

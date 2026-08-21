@@ -2,7 +2,7 @@
 // (the §8.3 runtime HTTP contract: bearer auth + X-AnvilKit-* pinning
 // headers → version-pinned HTML). The REAL render-origin is hosted by
 // anvilkit-studio and joins local/E2E loops once BD-007/ADR-007 is confirmed
-// with the studio owners (M5 cross-repo E2E, EW-XREPO-002); this mock keeps
+// with the studio owners (cross-repo E2E, EW-XREPO-002); this mock keeps
 // the pipeline loop reproducible until then and never contains render code —
 // it serves canned bytes behind the contract.
 //
