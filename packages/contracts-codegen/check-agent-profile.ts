@@ -37,7 +37,8 @@ const PUBLIC_EVENT_TYPES = [
 // ADR-022 transport-neutral runtime boundary).
 const EXPECTED_CONTRACTS = [
   "AgentArtifact", "AgentBudget", "AgentDefinition", "AgentEvent", "AgentEvidence",
-  "AgentRun", "AgentStreamDelta", "AgentTask", "ApplyAuthorization", "ApprovalRequest",
+  "AgentRun", "AgentRunSnapshot", "AgentStreamDelta", "AgentTask", "ApplyAuthorization",
+  "ApprovalRequest",
   "CompiledContext", "ComponentPackageSpec", "ContractBom", "ContractRevocationSnapshot",
   "ContractRuntimeRequest", "ContractRuntimeResult", "ContractSignatureStatement",
   "ContractTrustRoot", "CreateAgentRunRequest", "ImageOperationPlan", "InputRequest",

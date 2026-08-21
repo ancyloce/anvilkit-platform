@@ -205,6 +205,26 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/snapshot": {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path: {
+                readonly runId: components["parameters"]["RunId"];
+                readonly workspaceId: components["parameters"]["WorkspaceId"];
+            };
+            readonly cookie?: never;
+        };
+        /** Read the current run snapshot and the durable cursor an expired event stream resumes from. */
+        readonly get: operations["getAgentRunSnapshot"];
+        readonly put?: never;
+        readonly post?: never;
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
     readonly "/workspaces/{workspaceId}/artifacts/{artifactId}": {
         readonly parameters: {
             readonly query?: never;
@@ -424,6 +444,23 @@ export interface components {
             readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
             readonly updatedAt: components["schemas"]["SharedPrimitivesTimestamp"];
             readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
+        };
+        /**
+         * AgentRunSnapshot contract
+         * @description Bounded AgentRunSnapshot recovery contract: the authoritative run resource, its governed artifact projections, and the durable public AgentEvent cursor a client resumes the event stream from after EVENT_CURSOR_EXPIRED.
+         */
+        readonly AgentRunSnapshot: {
+            readonly artifacts: readonly {
+                readonly artifactId: components["schemas"]["SharedPrimitivesArtifactId"];
+                readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly securityGeneration: number;
+                /** @enum {unknown} */
+                readonly state: "pending" | "scanning" | "valid" | "finalized" | "committed" | "quarantined" | "expired" | "deleted";
+            }[];
+            readonly cursor?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            /** @constant */
+            readonly kind: "AgentRunSnapshot";
+            readonly run: components["schemas"]["AgentRun"];
         };
         /**
          * AgentStreamDelta contract
@@ -1995,9 +2032,11 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Cursor is older than the retention window; retrieve a current snapshot. */
+            /** @description Cursor is older than the retention window. The Link header names the tenant- and run-scoped snapshot recovery operation; fetch it and resume from its cursor. */
             readonly 410: {
                 headers: {
+                    /** @description RFC 8288 link to the snapshot recovery operation for this workspace and run, with relation type urn:anvilkit:relation:run-snapshot. */
+                    readonly Link: string;
                     readonly [name: string]: unknown;
                 };
                 content: {
@@ -2225,6 +2264,67 @@ export interface operations {
             };
             /** @description Missing required If-Match precondition. */
             readonly 428: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    readonly getAgentRunSnapshot: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header: {
+                readonly traceparent: components["parameters"]["Traceparent"];
+            };
+            readonly path: {
+                readonly runId: components["parameters"]["RunId"];
+                readonly workspaceId: components["parameters"]["WorkspaceId"];
+            };
+            readonly cookie?: never;
+        };
+        readonly requestBody?: never;
+        readonly responses: {
+            /** @description Current run resource, governed artifact projections, and the durable public AgentEvent cursor to resume from. */
+            readonly 200: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/json": components["schemas"]["AgentRunSnapshot"];
+                };
+            };
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
                 headers: {
                     readonly [name: string]: unknown;
                 };

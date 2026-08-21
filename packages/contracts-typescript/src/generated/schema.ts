@@ -15,6 +15,7 @@ AgentBudget?: AgentBudgetContract
 AgentDefinition?: AgentDefinitionContract
 AgentEvent?: AgentEventContract
 AgentEvidence?: AgentEvidenceContract
+AgentRunSnapshot?: AgentRunSnapshotContract
 AgentRun?: AgentRunContract
 AgentStreamDelta?: AgentStreamDeltaContract
 AgentTask?: AgentTaskContract
@@ -249,6 +250,24 @@ traceContext: SharedPrimitivesTraceContext
 turnId?: SharedPrimitivesActorId
 workflowId?: SharedPrimitivesActorId
 workspaceId: SharedPrimitivesActorId
+}
+/**
+ * Bounded AgentRunSnapshot recovery contract: the authoritative run resource, its governed artifact projections, and the durable public AgentEvent cursor a client resumes the event stream from after EVENT_CURSOR_EXPIRED.
+ */
+export interface AgentRunSnapshotContract {
+/**
+ * @minItems 0
+ * @maxItems 256
+ */
+artifacts: {
+artifactId: SharedPrimitivesActorId
+digest: SharedPrimitivesDigest
+securityGeneration: number
+state: ("pending" | "scanning" | "valid" | "finalized" | "committed" | "quarantined" | "expired" | "deleted")
+}[]
+cursor?: SharedPrimitivesActorId
+kind: "AgentRunSnapshot"
+run: AgentRunContract
 }
 /**
  * Bounded AgentRun wire contract governed by PRD 0012.

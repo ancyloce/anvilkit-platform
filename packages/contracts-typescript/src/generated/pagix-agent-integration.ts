@@ -336,6 +336,23 @@ export interface components {
             readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
         };
         /**
+         * AgentRunSnapshot contract
+         * @description Bounded AgentRunSnapshot recovery contract: the authoritative run resource, its governed artifact projections, and the durable public AgentEvent cursor a client resumes the event stream from after EVENT_CURSOR_EXPIRED.
+         */
+        readonly AgentRunSnapshot: {
+            readonly artifacts: readonly {
+                readonly artifactId: components["schemas"]["SharedPrimitivesArtifactId"];
+                readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly securityGeneration: number;
+                /** @enum {unknown} */
+                readonly state: "pending" | "scanning" | "valid" | "finalized" | "committed" | "quarantined" | "expired" | "deleted";
+            }[];
+            readonly cursor?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            /** @constant */
+            readonly kind: "AgentRunSnapshot";
+            readonly run: components["schemas"]["AgentRun"];
+        };
+        /**
          * AgentStreamDelta contract
          * @description Provisional streaming transport shape governed by ADR-020. Deltas are not AgentEvent, carry no public sequence, may be dropped, combined, sampled, or rate-limited, and can never satisfy a Validator, approval, or final-state reconstruction.
          */
