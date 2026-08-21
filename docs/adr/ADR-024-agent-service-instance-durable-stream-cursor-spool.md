@@ -93,7 +93,10 @@ values. This ADR does not resolve the topology and autoscaling questions design
   a successor process once the store is reachable (proved in the spool unit
   suite and against real storage in the persistence integration suite);
 - configuration that composes the agent API without a declared spool directory
-  is refused at startup.
+  is refused at startup;
+- the built image starts non-root against a read-only root filesystem with only
+  the spool volume mounted, resolves its pinned contract material, and serves
+  `/healthz` and `/readyz`.
 
 ## Consequences
 
@@ -110,8 +113,9 @@ values. This ADR does not resolve the topology and autoscaling questions design
 - The Agent Service gains stable pod identity and ordered rollout semantics.
 - Retained claims are an operator responsibility: a permanently removed replica
   leaves a claim whose records must be drained or consciously discarded.
-- A container image and rollout path for the Agent Service do not yet exist; the
-  manifest names an immutable tag per ADR-008 and is validated, not deployed.
+- The image carries the pinned canonical contract material the service verifies
+  before it serves, so the contract root is part of the image contract: CI starts
+  the built image and fails the build if that material cannot be resolved.
 
 ## References
 

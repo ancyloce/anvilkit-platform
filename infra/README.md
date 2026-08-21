@@ -87,8 +87,11 @@ docker compose -f infra/docker-compose.yml logs -f otel-collector   # span summa
   survives restart and rescheduling and is drained by the reconciler once the store is
   reachable. Includes the headless Service the StatefulSet requires; external routing is
   a separate decision. `agent-service-config.example.yaml` carries the non-secret
-  configuration. Both are kubeconform-validated in CI. No Agent Service image is built
-  yet, so the manifest is validated rather than deployed.
+  configuration. Both are kubeconform-validated in CI. The image is built from
+  `services/agent-service/Dockerfile` (distroless non-root; the pinned canonical
+  contract material is baked in at `/opt/anvilkit/contracts`, which is what
+  `ANVILKIT_CONTRACT_ROOT` names), and `deploy.yml` promotes it — pick `agent-service`
+  or `all` for the `service` input.
 
 ## Queue retention and replay (EW-QUEUE-009, ADR-011 — ops sign-off pending, OQ-2/AC-031)
 
