@@ -5510,8 +5510,11 @@ func (j *ProviderContinuation) UnmarshalJSON(value []byte) error {
 // Intent-only operator recovery command governed by ADR-021. It records which
 // authoritative outcome an escalated governed effect actually had, bound to the
 // exact domain operation the operator reviewed and to the evidence the decision
-// rests on. The resolving operator is never carried on the wire: Agent Service
-// derives it from the verified request authority.
+// rests on. The basis is a bounded evidence reference, never free-form prose: an
+// operator names the authoritative record a reviewer can retrieve, so the audited
+// decision can be recorded as immutable internal evidence without ever carrying
+// operator-authored content. The resolving operator is never carried on the wire:
+// Agent Service derives it from the verified request authority.
 type ResolveDomainOperationRequest struct {
 	// Basis corresponds to the JSON schema field "basis".
 	Basis string `json:"basis" yaml:"basis" mapstructure:"basis"`
@@ -5587,11 +5590,14 @@ func (j *ResolveDomainOperationRequest) UnmarshalJSON(value []byte) error {
 	if err := json.Unmarshal(value, &plain); err != nil {
 		return err
 	}
-	if utf8.RuneCountInString(string(plain.Basis)) < 1 {
-		return fmt.Errorf("field %s length: must be >= %d", "basis", 1)
+	if matched, _ := regexp.MatchString(`^anvilkit://evidence/[a-z0-9][a-z0-9-]{1,31}/[A-Za-z0-9][A-Za-z0-9._-]{0,127}$`, string(plain.Basis)); !matched {
+		return fmt.Errorf("field %s pattern match: must match %s", "Basis", `^anvilkit://evidence/[a-z0-9][a-z0-9-]{1,31}/[A-Za-z0-9][A-Za-z0-9._-]{0,127}$`)
 	}
-	if utf8.RuneCountInString(string(plain.Basis)) > 1024 {
-		return fmt.Errorf("field %s length: must be <= %d", "basis", 1024)
+	if utf8.RuneCountInString(string(plain.Basis)) < 24 {
+		return fmt.Errorf("field %s length: must be >= %d", "basis", 24)
+	}
+	if utf8.RuneCountInString(string(plain.Basis)) > 256 {
+		return fmt.Errorf("field %s length: must be <= %d", "basis", 256)
 	}
 	if utf8.RuneCountInString(string(plain.OperationId)) < 1 {
 		return fmt.Errorf("field %s length: must be >= %d", "operationId", 1)

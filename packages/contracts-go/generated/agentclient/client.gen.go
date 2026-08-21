@@ -182,7 +182,7 @@ type ProblemDetails struct {
 	TraceId      *string                `json:"traceId,omitempty"`
 }
 
-// ResolveDomainOperationRequest Intent-only operator recovery command governed by ADR-021. It records which authoritative outcome an escalated governed effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The resolving operator is never carried on the wire: Agent Service derives it from the verified request authority.
+// ResolveDomainOperationRequest Intent-only operator recovery command governed by ADR-021. It records which authoritative outcome an escalated governed effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The basis is a bounded evidence reference, never free-form prose: an operator names the authoritative record a reviewer can retrieve, so the audited decision can be recorded as immutable internal evidence without ever carrying operator-authored content. The resolving operator is never carried on the wire: Agent Service derives it from the verified request authority.
 type ResolveDomainOperationRequest struct {
 	Basis       string      `json:"basis"`
 	Kind        interface{} `json:"kind"`
