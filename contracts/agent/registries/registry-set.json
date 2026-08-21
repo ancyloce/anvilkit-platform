@@ -1326,6 +1326,14 @@
           "replacement": null
         },
         {
+          "wireValue": "anvilkit.contract.schema.agent-run-snapshot",
+          "meaning": "AgentRunSnapshot authoritative schema component.",
+          "owner": "Agent Service owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
           "wireValue": "anvilkit.contract.schema.tool-definition",
           "meaning": "ToolDefinition authoritative schema component.",
           "owner": "Platform Tool and Policy Registry owner",

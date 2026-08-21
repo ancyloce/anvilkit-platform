@@ -186,6 +186,7 @@
       "anvilkit.contract.schema.shared-primitives",
       "anvilkit.contract.schema.agent-definition",
       "anvilkit.contract.schema.agent-run",
+      "anvilkit.contract.schema.agent-run-snapshot",
       "anvilkit.contract.schema.tool-definition",
       "anvilkit.contract.schema.agent-task",
       "anvilkit.contract.schema.worker-lease",

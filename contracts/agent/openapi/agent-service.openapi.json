@@ -448,11 +448,32 @@
             }
           },
           "410": {
-            "description": "Cursor is older than the retention window; retrieve a current snapshot.",
+            "description": "Cursor is older than the retention window. The Link header names the tenant- and run-scoped snapshot recovery operation; fetch it and resume from its cursor.",
+            "headers": {
+              "Link": {
+                "description": "RFC 8288 link to the snapshot recovery operation for this workspace and run, with relation type urn:anvilkit:relation:run-snapshot.",
+                "required": true,
+                "schema": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                }
+              }
+            },
             "content": {
               "application/problem+json": {
                 "schema": {
                   "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            },
+            "links": {
+              "runSnapshot": {
+                "operationId": "getAgentRunSnapshot",
+                "description": "Recover the current run snapshot and resume the stream from its cursor.",
+                "parameters": {
+                  "workspaceId": "$request.path.workspaceId",
+                  "runId": "$request.path.runId"
                 }
               }
             }
@@ -472,8 +493,84 @@
           "durableFrame": "AgentEvent",
           "provisionalFrame": "AgentStreamDelta",
           "cursor": "public AgentEvent sequence",
-          "expiredCursor": "410 with a current snapshot link",
+          "expiredCursor": "410 with a Link header naming the tenant- and run-scoped snapshot recovery operation",
           "slowConsumer": "disconnect after recording the last successfully sent durable cursor"
+        }
+      }
+    },
+    "/workspaces/{workspaceId}/agent-runs/{runId}/snapshot": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/WorkspaceId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "get": {
+        "operationId": "getAgentRunSnapshot",
+        "summary": "Read the current run snapshot and the durable cursor an expired event stream resumes from.",
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current run resource, governed artifact projections, and the durable public AgentEvent cursor to resume from.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/agent-run-snapshot?digest=sha256:a75079baf5ecfa347ef501e113ac96abaedb8bdbcf0c06a1cfe568e065ac55db"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -1867,6 +1964,9 @@
       "AgentRun": {
         "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
       },
+      "AgentRunSnapshot": {
+        "$ref": "anvilkit://schema/agent-run-snapshot?digest=sha256:a75079baf5ecfa347ef501e113ac96abaedb8bdbcf0c06a1cfe568e065ac55db"
+      },
       "AgentStreamDelta": {
         "$ref": "anvilkit://schema/agent-stream-delta?digest=sha256:0d64114cedd078202f1046fbadd7291544a590b9019422af77ce2f8c4cb8f590"
       },
@@ -1875,6 +1975,9 @@
       },
       "ApprovalRequest": {
         "$ref": "anvilkit://schema/approval-request?digest=sha256:0c12c96f59986ac18d9d689f0051aa6c74023ccf4ac7746436ffc90a3cdfeec8"
+      },
+      "BoundedResponse": {
+        "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
       },
       "CompiledContext": {
         "$ref": "anvilkit://schema/compiled-context?digest=sha256:e535dd923ac156840b06932f5a54aa7e70ea6dcc6f0bce8314a6e562ad784c33"
@@ -1908,9 +2011,6 @@
       },
       "ToolDefinition": {
         "$ref": "anvilkit://schema/tool-definition?digest=sha256:61e67b664f0d67945f9c7ee33dc371dd11e78095576b7642d905c51558f7803e"
-      },
-      "BoundedResponse": {
-        "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
       }
     }
   }
