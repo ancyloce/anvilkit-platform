@@ -22,7 +22,12 @@ metadata:
 data:
   ANVILKIT_ENVIRONMENT: "staging"
   ANVILKIT_HTTP_ADDRESS: ":8080"
-  ANVILKIT_CONTRACT_ROOT: "/contracts"
+  # The directory that *contains* `contracts/`: the runtime appends the
+  # subdirectory itself. The image places the pinned canonical material at
+  # /opt/anvilkit/contracts, so the root is /opt/anvilkit. The image already
+  # sets this; it is restated here so the deployed value is visible where the
+  # rest of the configuration is read.
+  ANVILKIT_CONTRACT_ROOT: "/opt/anvilkit"
   ANVILKIT_MIGRATION_MODE: "validate"
   # Authentication and current-authority material (ADR-002, ADR-016).
   ANVILKIT_AUTH_TRUST_SNAPSHOT: "/etc/anvilkit/trust.json"
