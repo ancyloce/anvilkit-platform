@@ -246,6 +246,9 @@ jobs:
           sed 's/IMAGE_TAG/ci-validation/' infra/k8s/export-worker-deployment.yaml | \
             $(go env GOPATH)/bin/kubeconform -strict -summary -
           $(go env GOPATH)/bin/kubeconform -strict -summary infra/k8s/export-worker-config.example.yaml
+          sed 's/IMAGE_TAG/ci-validation/' infra/k8s/agent-service-statefulset.yaml | \
+            $(go env GOPATH)/bin/kubeconform -strict -summary -
+          $(go env GOPATH)/bin/kubeconform -strict -summary infra/k8s/agent-service-config.example.yaml
       - name: Alert rules validation (promtool)
         run: |
           docker run --rm -v "$PWD/infra/alerts:/rules:ro" --entrypoint promtool \
