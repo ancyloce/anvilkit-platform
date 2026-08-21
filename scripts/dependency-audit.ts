@@ -84,7 +84,7 @@ for (const rel of files) {
 		failures.push(`nested agent-service module extraction is forbidden: ${rel}`);
 	}
 	if (/^services\/agent-service\/cmd\/[^/]*(?:worker|preview|undo)[^/]*\//i.test(rel)) {
-		failures.push(`P0 agent-service production command inventory contains excluded behavior: ${rel}`);
+		failures.push(`the canonical agent-service production command inventory contains excluded behavior: ${rel}`);
 	}
 }
 
@@ -119,7 +119,7 @@ if (!existsSync(agentOpenAPI)) {
 			for (const operation of Object.values(pathItem as Record<string, any>)) {
 				const operationID = typeof operation?.operationId === "string" ? operation.operationId : "";
 				if (/preview|undo|applyPage|pageApply|interactiveApply/i.test(operationID)) {
-					failures.push(`beyond-kernel preview/interactive-apply/undo operation present in the P0 surface: ${pathName} ${operationID}`);
+					failures.push(`beyond-kernel preview/interactive-apply/undo operation present in the canonical surface: ${pathName} ${operationID}`);
 				}
 			}
 		}

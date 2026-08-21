@@ -1,11 +1,26 @@
 // Validates the pre-entry release evidence map and release classification.
 // This checker deliberately rejects premature readiness claims while entry gates are open.
+//
+// Its inputs are the retained local evidence ADR-023 keeps out of Git, so it is
+// a local and release precheck (scripts/release-precheck.sh) rather than a step
+// in ordinary hosted CI, which runs from a clean checkout of tracked content
+// alone. A missing input is reported as exactly that -- never silently skipped,
+// and never a reason to commit the evidence to make a hosted job pass.
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = join(import.meta.dir, "..");
-const readJSON = (path: string): any => JSON.parse(readFileSync(join(root, path), "utf8"));
+const readJSON = (path: string): any => {
+  const absolute = join(root, path);
+  if (!existsSync(absolute)) {
+    console.error(`release evidence audit FAILED: ${path} is missing.`);
+    console.error("  This audit reads the retained local evidence ADR-023 keeps out of Git.");
+    console.error("  Run it from a checkout that has that evidence: bash scripts/release-precheck.sh");
+    process.exit(1);
+  }
+  return JSON.parse(readFileSync(absolute, "utf8"));
+};
 const failures: string[] = [];
 
 const evidencePath = "docs/acceptance/agent-service/release-entry/evidence-index.json";
@@ -123,7 +138,7 @@ if (budgetResult.policyVersion !== budgetPolicy.policyVersion || budgetResult.ca
 for (const name of ["createP95Milliseconds", "startupMilliseconds", "peakRSSKiB", "releaseBinaryBytes", "dependencyComponents"]) {
   if (budgetResult.measurements?.[name] > budgetPolicy.limits?.[name]) failures.push(`the retained local resource budget exceeds ${name}`);
 }
-if (budgetResult.measurements?.phase0ThroughputPerSecond < budgetPolicy.limits?.minimumPhase0ThroughputPerSecond) failures.push("the retained local throughput is below policy");
+if (budgetResult.measurements?.baselineArrivalThroughputPerSecond < budgetPolicy.limits?.minimumBaselineArrivalThroughputPerSecond) failures.push("the retained local throughput is below policy");
 
 if (failures.length > 0) {
   console.error("release evidence audit FAILED:");

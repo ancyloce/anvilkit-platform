@@ -1,16 +1,33 @@
-// Enforces the owner-approved resource-regression policy against the current P0 artifact.
+// Enforces the owner-approved resource-regression policy against the current
+// canonical Agent Service artifact.
 // Final release evidence still requires the committed release candidate and approved topology.
+//
+// Its inputs are the retained local evidence ADR-023 keeps out of Git, so it is
+// a local and release precheck (scripts/release-precheck.sh) rather than a step
+// in ordinary hosted CI, which runs from a clean checkout of tracked content
+// alone. A missing input is reported as exactly that -- never silently skipped,
+// and never a reason to commit the evidence to make a hosted job pass.
 
-import { mkdtempSync, readFileSync, rmSync, statSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const root = join(import.meta.dir, "..");
 const service = join(root, "services", "agent-service");
-const policy = JSON.parse(readFileSync(join(root, "docs/acceptance/agent-service/release-entry/budget-policy.json"), "utf8"));
-const baseline = JSON.parse(readFileSync(join(root, "docs/acceptance/agent-service/governance-baseline/benchmark-results.json"), "utf8"));
-const createBenchmark = JSON.parse(readFileSync(join(root, "docs/acceptance/agent-service/create-latency/create-benchmark-results.json"), "utf8"));
+const readJSON = (path: string): any => {
+  const absolute = join(root, path);
+  if (!existsSync(absolute)) {
+    console.error(`resource budget check FAILED: ${path} is missing.`);
+    console.error("  This check reads the retained local evidence ADR-023 keeps out of Git.");
+    console.error("  Run it from a checkout that has that evidence: bash scripts/release-precheck.sh");
+    process.exit(1);
+  }
+  return JSON.parse(readFileSync(absolute, "utf8"));
+};
+const policy = readJSON("docs/acceptance/agent-service/release-entry/budget-policy.json");
+const baseline = readJSON("docs/acceptance/agent-service/governance-baseline/benchmark-results.json");
+const createBenchmark = readJSON("docs/acceptance/agent-service/create-latency/create-benchmark-results.json");
 const failures: string[] = [];
 
 if (policy.schemaVersion !== 1 || policy.policyVersion !== "agent-service-resource-budget-v1" || policy.status !== "approved-input-from-governance-baseline" || policy.loadModelRevision !== "agent-service-load-model-v1" || policy.regressionRules?.postHocRelaxationAllowed !== false || policy.regressionRules?.revisionRequiresVersionedApproval !== true) {
@@ -25,7 +42,7 @@ const expected = {
 for (const [name, value] of Object.entries(expected)) {
   if (policy.limits?.[name] !== value) failures.push(`${name} limit was relaxed without a policy revision`);
 }
-if (policy.limits?.createP95Milliseconds !== 300 || policy.limits?.minimumPhase0ThroughputPerSecond !== 20) {
+if (policy.limits?.createP95Milliseconds !== 300 || policy.limits?.minimumBaselineArrivalThroughputPerSecond !== 20) {
   failures.push("binding create latency or throughput limit drifted from the approved load model");
 }
 
@@ -56,17 +73,21 @@ try {
   const startupMilliseconds = match ? Number(match[1]) * 1000 : Number.MAX_SAFE_INTEGER;
   const peakRSSKiB = match ? Number(match[2]) : Number.MAX_SAFE_INTEGER;
 
-  const kernelPhase = baseline.dbosLoad?.find((candidate: any) => candidate.phase === "phase0");
+  // The baseline arrival profile is the load model's lowest arrival rate,
+  // selected by what it measures rather than by the stage label the recorded
+  // benchmark happens to carry: a label bound to a delivery schedule stops
+  // being true the moment the schedule moves.
+  const baselineArrival = [...(baseline.dbosLoad ?? [])].sort((left: any, right: any) => left.arrivalRatePerSecond - right.arrivalRatePerSecond)[0];
   const measurements = {
     createP95Milliseconds: createBenchmark.p95Milliseconds,
-    phase0ThroughputPerSecond: kernelPhase?.throughputPerSecond,
+    baselineArrivalThroughputPerSecond: baselineArrival?.throughputPerSecond,
     startupMilliseconds,
     peakRSSKiB,
     releaseBinaryBytes: binaryBytes,
     dependencyComponents: modules.size,
   };
   if (createBenchmark.loadModelRevision !== policy.loadModelRevision || createBenchmark.passed !== true || measurements.createP95Milliseconds > policy.limits.createP95Milliseconds) failures.push("the create P95 input failed or drifted from the approved load model");
-  if (baseline.loadModel !== policy.loadModelRevision || measurements.phase0ThroughputPerSecond < policy.limits.minimumPhase0ThroughputPerSecond) failures.push("the kernel-phase throughput input failed");
+  if (baseline.loadModel !== policy.loadModelRevision || measurements.baselineArrivalThroughputPerSecond < policy.limits.minimumBaselineArrivalThroughputPerSecond) failures.push("the baseline-arrival throughput input failed");
   for (const name of ["startupMilliseconds", "peakRSSKiB", "releaseBinaryBytes", "dependencyComponents"] as const) {
     if (measurements[name] > policy.limits[name]) failures.push(`${name} budget exceeded: ${measurements[name]} > ${policy.limits[name]}`);
   }

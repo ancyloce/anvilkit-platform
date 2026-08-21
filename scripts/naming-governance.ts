@@ -12,8 +12,10 @@
 // non-ADR half of it local-only in any case. The Agent Service submodule
 // carries the same scan in its own boundary check, over its own tree.
 //
-// Exceptions are exact names, never directories or files -- see
-// governedPathNames and governedContentNames below.
+// Exceptions are exact names at exact paths -- see canonicalScopeNames and
+// governedLocations below. There is no allowance that applies to the tree as a
+// whole, because a name readable everywhere is not an exception, it is a
+// second vocabulary.
 
 import { existsSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -54,27 +56,69 @@ const deliveryCamel = new RegExp("([a-z0-9])" + CAPITAL_LABELS + "([^a-z0-9]|$)"
 // YAML, which this pattern is never applied to.
 const deliveryIdentifier = new RegExp("(^|[^A-Za-z0-9])" + LABELS + "([^a-z0-9]|$)", "g");
 
-// governedPathNames are the exact names permitted in a file or directory name:
-// the canonical contract profile ADR-018 names, and the directory its scope
-// owns. Keeping this tier separate from the content tier is what stops the
-// allowlist becoming a licence to create new delivery-labelled files.
-export const governedPathNames = ["p0-kernel-profile", "p0-kernel", "P0-Kernel"];
+// measurementNames are not delivery labels. They are the latency percentiles a
+// metric reports under -- measurement vocabulary with a fixed meaning no
+// schedule can move -- so they are readable anywhere, exactly as written.
+export const measurementNames = ["p999", "p99", "p95", "p90", "p50"];
 
-// governedContentNames are additionally readable inside file contents. Each is
-// a name this repository is not free to rename:
-//   P0        the profile scope identity ADR-018 established, quoted throughout
-//             the canonical contract descriptions it governs;
-//   Phase0    the same scope under the name the approved load model records it
-//             by, which the retained benchmark evidence is keyed on;
-//   p50..p999 the latency percentiles a metric reports under;
-//   P1-001    a product requirement identifier frozen inside the ADR-001
-//   P1-008    export artifact contract and the alert rules that cite the PRD
-//             backlog. PRDs are read-only product authority, so these are
-//             identifiers this repository records rather than names it owns.
-// Every entry is an exact string matched verbatim -- not a directory prefix and
-// not a file bypass -- so an entry excuses the name it spells and nothing else.
-// Adding one is a governance decision, not a way past a failure.
-export const governedContentNames = [...governedPathNames, "P0", "Phase0", "p999", "p99", "p95", "p90", "p50", "P1-001", "P1-008"];
+// canonicalScopeNames are the exact names ADR-018 established for the canonical
+// contract profile and the scope it governs. This repository does not own the
+// freedom to rename them: they are the profile artifact's own name, the scope
+// identity quoted throughout the canonical contract descriptions it governs,
+// and the accepted ADR that established both.
+//
+// They are readable only at the exact paths governedLocations names. That path
+// scoping is the whole point: a bare allowance for these names would let any
+// file anywhere spell a delivery label and call it canonical, which is exactly
+// the bypass this gate exists to close.
+export const canonicalScopeNames = ["p0-kernel-profile", "p0-kernel", "P0-Kernel", "P0"];
+
+// requirementNames are product requirement identifiers frozen inside released
+// artifacts: PRDs are read-only product authority, so these are identifiers
+// this repository records rather than names it owns. They are readable only at
+// the exact released artifacts that already carry them.
+const requirementNames = ["P1-001", "P1-008"];
+
+// canonicalLockPath is the ADR-018 lock's own repository-relative path. The
+// lock is the authority on what the canonical contract set is, so the contract
+// half of the location set is derived from it rather than listed by hand: a
+// hand-kept list drifts, and a directory prefix would readmit the bypass.
+const canonicalLockPath = "contracts/agent/lock/contracts.lock.json";
+
+// governedLocations maps an exact repository-relative path to the exact
+// governed names that path may spell, in its own name or in its contents.
+//
+// Everything outside the derived contract set is spelled out here with its
+// reason, because each one is a governance decision rather than a way past a
+// failure. A missing or unreadable lock yields no contract locations at all,
+// so the scan gets stricter when the authority is absent, never looser.
+export function governedLocations(repositoryRoot: string = root): Map<string, string[]> {
+  const locations = new Map<string, string[]>([
+    // The accepted ADR that established the canonical profile. Accepted ADRs
+    // are not renamed.
+    ["docs/adr/ADR-018-canonical-agent-contract-refactor-and-p0-kernel-profile.md", canonicalScopeNames],
+    // The generator that writes the profile artifact and the linter that
+    // enforces its stability vocabulary: both necessarily spell the canonical
+    // names they produce and validate.
+    ["packages/contracts-codegen/check-agent-profile.ts", canonicalScopeNames],
+    ["packages/contracts-codegen/source-lint.ts", canonicalScopeNames],
+    // This gate itself, which cannot define the allowance without spelling it.
+    ["scripts/naming-governance.ts", [...canonicalScopeNames, ...requirementNames]],
+    // Released artifacts frozen under ADR-001 that cite a PRD requirement.
+    ["contracts/artifact/v1/artifact-manifest.schema.json", requirementNames],
+    ["infra/alerts/export-worker-rules.yaml", requirementNames],
+  ]);
+  let lock: any;
+  try {
+    lock = JSON.parse(readFileSync(join(repositoryRoot, canonicalLockPath), "utf8"));
+  } catch {
+    return locations;
+  }
+  locations.set(canonicalLockPath, canonicalScopeNames);
+  if (typeof lock?.profile?.path === "string") locations.set(lock.profile.path, canonicalScopeNames);
+  for (const source of Object.keys(lock?.sources ?? {})) locations.set(source, canonicalScopeNames);
+  return locations;
+}
 
 function allowlist(names: string[]): RegExp {
   const ordered = [...names].sort((left, right) => right.length - left.length);
@@ -82,8 +126,23 @@ function allowlist(names: string[]): RegExp {
   return new RegExp("(" + quoted.join("|") + ")", "gi");
 }
 
-const pathAllowlist = allowlist(governedPathNames);
-const contentAllowlist = allowlist(governedContentNames);
+const ordinaryAllowlist = allowlist(measurementNames);
+const allowlistCache = new Map<string, RegExp>();
+
+// allowlistFor returns the allowlist one path is judged under: measurement
+// vocabulary everywhere, plus the exact governed names a governance-owned path
+// is entitled to spell.
+export function allowlistFor(file: string, locations: Map<string, string[]>): RegExp {
+  const governed = locations.get(file);
+  if (!governed) return ordinaryAllowlist;
+  const key = governed.join(" ");
+  let cached = allowlistCache.get(key);
+  if (!cached) {
+    cached = allowlist([...measurementNames, ...governed]);
+    allowlistCache.set(key, cached);
+  }
+  return cached;
+}
 
 // findLabel reports the first delivery label the allowlist does not account
 // for. A label is excused only when it lies wholly inside an occurrence of a
@@ -101,16 +160,16 @@ export function findLabel(text: string, governed: RegExp, marker: RegExp = deliv
   return "";
 }
 
-export const pathScan = (value: string): string => findLabel(value, pathAllowlist);
-export const contentScan = (value: string): string => findLabel(value, contentAllowlist);
+export const pathScan = (value: string, governed: RegExp = ordinaryAllowlist): string => findLabel(value, governed);
+export const contentScan = (value: string, governed: RegExp = ordinaryAllowlist): string => findLabel(value, governed);
 
 // sourceScan adds the camel-case pass. It is reserved for source files because
 // signed contract material and dependency digests live in JSON and YAML, and a
 // random run of base64 can carry a capital where an identifier carries a hump.
-export const sourceScan = (value: string): string =>
-  contentScan(value)
-  || findLabel(value, contentAllowlist, deliveryIdentifier)
-  || findLabel(value, contentAllowlist, deliveryCamel);
+export const sourceScan = (value: string, governed: RegExp = ordinaryAllowlist): string =>
+  findLabel(value, governed)
+  || findLabel(value, governed, deliveryIdentifier)
+  || findLabel(value, governed, deliveryCamel);
 
 // Code and configuration carry names; prose carries authority. Only the former
 // is content-scanned.
@@ -127,9 +186,11 @@ function main(): number {
   // what keeps ADR-023's local-only documentation out of scope.
   const listed = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], { cwd: root, encoding: "utf8" });
   const files = [...new Set(listed.split(/\r?\n/).filter(Boolean))].filter((file) => existsSync(join(root, file))).sort();
+  const locations = governedLocations();
   const failures: string[] = [];
   for (const file of files) {
-    const named = pathScan(file);
+    const governed = allowlistFor(file, locations);
+    const named = pathScan(file, governed);
     if (named !== "") failures.push(`${file}: delivery-stage naming is forbidden in the path (${named})`);
     if (!SCANNED_CONTENT.test(file) || GENERATED.test(file)) continue;
     let body: string;
@@ -141,7 +202,7 @@ function main(): number {
     const scan = SOURCE.test(file) ? sourceScan : contentScan;
     const lines = body.split(/\r?\n/);
     for (let index = 0; index < lines.length; index++) {
-      const found = scan(lines[index]);
+      const found = scan(lines[index], governed);
       if (found !== "") failures.push(`${file}:${index + 1}: delivery-stage naming is forbidden (${found})`);
     }
   }
