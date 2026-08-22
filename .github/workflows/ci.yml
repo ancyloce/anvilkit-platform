@@ -265,6 +265,8 @@ jobs:
           sed 's/IMAGE_TAG/ci-validation/' infra/k8s/agent-service-statefulset.yaml | \
             $(go env GOPATH)/bin/kubeconform -strict -summary -
           $(go env GOPATH)/bin/kubeconform -strict -summary infra/k8s/agent-service-config.example.yaml
+          sed 's/IMAGE_TAG/ci-validation/' infra/k8s/agent-service-protected-audit-provisioning.yaml | \
+            $(go env GOPATH)/bin/kubeconform -strict -summary -
       - name: Alert rules validation (promtool)
         run: |
           docker run --rm -v "$PWD/infra/alerts:/rules:ro" --entrypoint promtool \
@@ -291,6 +293,18 @@ jobs:
         run: |
           bun test scripts/naming-governance.test.ts
           bun scripts/naming-governance.ts
+      # A declared operation with no production handler is a contract the
+      # service does not honour, and nothing used to notice: every other gate
+      # checked the description against itself. This compares the canonical
+      # description with the router's own routing manifest in both directions.
+      - name: Operation-to-handler conformance
+        run: bun scripts/operation-conformance.ts
+      # The credential that owns the protected audit table must reach the
+      # one-shot provisioning workload and nothing else. A long-running process
+      # configured with it owns the account of its own security decisions for
+      # as long as it runs, whether it uses the credential or not.
+      - name: Protected-audit privilege separation
+        run: bun scripts/privilege-separation-audit.ts
       # The Agent Service release-evidence and resource-regression audits are
       # deliberately absent here and run as local/release prechecks instead
       # (scripts/release-precheck.sh). Their inputs are the retained local
