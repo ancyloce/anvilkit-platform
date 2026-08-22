@@ -16,6 +16,13 @@
 # credentials. The ConfigMap carries the non-secret configuration
 # (see agent-service-config.example.yaml).
 #
+# Neither of them carries a protected-audit administrative credential, and
+# that absence is the control rather than an omission: the audit is
+# established by agent-service-protected-audit-provisioning.yaml, a one-shot
+# Job that exits, and this workload is left with a login that can only add to
+# the chain. Run that Job before this StatefulSet on first install; the service
+# refuses to start against an audit nothing has established.
+#
 # Sizing below is a proposed default, not a validated one: design 0005 leaves
 # topology, replicas, and autoscaling evidence-driven, so these values are
 # re-profiled in staging before launch review exactly as ADR-012 requires of

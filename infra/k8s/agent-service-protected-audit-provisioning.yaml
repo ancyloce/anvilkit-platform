@@ -1,0 +1,79 @@
+# Protected-audit provisioning — a one-shot workload that establishes the
+# Agent Service's tamper-evident security audit and then exits.
+#
+# Why this is a separate workload rather than a step inside the service:
+#
+# Establishing the audit needs a credential that owns the table, its triggers,
+# and the grants on it. Appending to the audit needs a credential that can do
+# neither. Those were once the same startup path in one process, which meant
+# the running service was configured with an administrative credential for its
+# entire lifetime — and a process holding the standing to drop the append-only
+# trigger owns the account of its own security decisions, whether it ever
+# exercises that standing or not. Every barrier below it was decoration.
+#
+# So the administrative credential is delivered here and nowhere else. It is
+# never in anvilkit-agent-service-config or anvilkit-agent-service-secrets, and
+# the service refuses to start against an audit this Job has not established
+# rather than creating one it would then own.
+#
+# Run this before the StatefulSet on first install and after any change to the
+# audit schema. Running it again is safe: the schema, barriers, and grant
+# converge, and the proofs are taken again on what is actually there.
+#
+# The referenced Secret carries ANVILKIT_PROTECTED_AUDIT_ADMIN_URL, which
+# embeds the administrative credential and arrives through the
+# secret-management mechanism per ADR-006 — never from this repository.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: anvilkit-agent-service-protected-audit-provisioning
+  labels:
+    app.kubernetes.io/name: agent-service-protected-audit-provisioning
+    app.kubernetes.io/part-of: anvilkit-platform
+spec:
+  # One attempt, then a bounded number of retries. Provisioning is a handful of
+  # statements against one database; a Job that keeps retrying forever hides a
+  # database that is not going to answer.
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: agent-service-protected-audit-provisioning
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+      containers:
+        - name: protected-audit-provisioner
+          # The same immutable image the service runs from, so the audit is
+          # established by exactly the code the service was built with.
+          image: ghcr.io/ancyloce/anvilkit-agent-service:IMAGE_TAG # immutable tag (ADR-008); never :latest
+          command: ["/usr/local/bin/protected-audit-provisioner"]
+          env:
+            - name: ANVILKIT_ENVIRONMENT
+              value: "staging"
+            # The login role the service connects as. It is named as a role
+            # rather than as a connection string on purpose: this workload
+            # holds nothing the service connects with, exactly as the service
+            # holds nothing this workload administers with.
+            - name: ANVILKIT_PROTECTED_AUDIT_RUNTIME_LOGIN
+              value: "agent_protected_audit_login"
+          envFrom:
+            # Carries ANVILKIT_PROTECTED_AUDIT_ADMIN_URL and nothing the
+            # service's own Secret carries.
+            - secretRef:
+                name: anvilkit-agent-service-protected-audit-admin
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

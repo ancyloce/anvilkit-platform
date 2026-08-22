@@ -45,8 +45,34 @@ data:
   ANVILKIT_OBJECT_STORE_URL: "https://object-store.internal"
   ANVILKIT_RECEIPT_JOURNAL_URL: "https://journal.internal"
   ANVILKIT_RECOVERY_REGISTER_URL: "https://register.internal"
+  # The time authority signs its answers, and the service verifies them against
+  # operator-distributed trust material. The trust root is distributed
+  # separately from the endpoint on purpose: material that authenticates a
+  # source must never be fetched from that source.
   ANVILKIT_AUTHORITATIVE_TIME_URL: "https://time.internal"
+  ANVILKIT_AUTHORITATIVE_TIME_TRUST_REF: "urn:anvilkit:issuer:time-authority"
+  ANVILKIT_AUTHORITATIVE_TIME_TRUST_ROOT: "/etc/anvilkit/time-trust-root.json"
+  # The service's only protected-audit credential, and it is the narrow one:
+  # the login behind this endpoint may append to the chain and read it, and
+  # may do nothing else to it.
+  #
+  # There is deliberately no administrative audit credential in this ConfigMap
+  # or in this workload's Secret. Establishing the table, its barriers, and
+  # that grant is the job of the protected-audit provisioner
+  # (agent-service-protected-audit-provisioning.yaml), which runs before the
+  # service and exits. A long-running process configured with a credential
+  # that owns the audit table owns the account of its own security decisions
+  # for as long as it runs, whether it ever uses that credential or not, and
+  # every barrier on the table is then one the process could remove.
   ANVILKIT_PROTECTED_AUDIT_URL: "https://audit.internal"
+  # What an agent's tools may reach, and how much untrusted content one of
+  # them may place in a run's memory. The allowlist is the whole policy: a
+  # destination not named here is not reachable, and a deployment that names
+  # none has an agent that reaches nothing outside.
+  ANVILKIT_EGRESS_ALLOWLIST: ""
+  ANVILKIT_EGRESS_MAXIMUM_BYTES: "1048576"
+  ANVILKIT_EGRESS_TIMEOUT: "5s"
+  ANVILKIT_MEMORY_ADMISSION_BYTES: "65536"
   # Event stream and durable public cursor semantics (ADR-020).
   ANVILKIT_EVENT_RETENTION: "720h"
   ANVILKIT_SSE_HEARTBEAT: "15s"
