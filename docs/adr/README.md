@@ -4,7 +4,7 @@ ADR IDs follow the backlog in `docs/plans/0001-export-worker-implementation-road
 
 ## Agent platform governance precedence
 
-For the controlled Agent platform, accepted ADR-016 and ADR-018 through ADR-022 have the highest architecture-governance priority. ADR-018 supersedes ADR-017. Those accepted ADRs take precedence over design 0001; design 0001 takes precedence over reconciled implementation designs 0002 through 0010; plans, runbooks, status and acceptance reports, and prior machine-readable governance evidence remain lower. A lower-authority artifact cannot restore first-party release generations, compatibility paths, migrations, or fallbacks rejected by the accepted ADRs. Existing Agent completion evidence is historical until regenerated against the canonical profile.
+For the controlled Agent platform, accepted ADR-016 and ADR-018 through ADR-024 have the highest architecture-governance priority. Within that set, ADR-023 governs which documentation is tracked and how the local-only corpus is anchored, and ADR-024 decides only the Agent Service's instance-state shape — its boundary with ADR-022's evidence-driven topology rule is recorded as an amendment in both ADRs, and neither reopens the other. ADR-018 supersedes ADR-017. Those accepted ADRs take precedence over design 0001; design 0001 takes precedence over reconciled implementation designs 0002 through 0010; plans, runbooks, status and acceptance reports, and prior machine-readable governance evidence remain lower. A lower-authority artifact cannot restore first-party release generations, compatibility paths, migrations, or fallbacks rejected by the accepted ADRs. Existing Agent completion evidence is historical until regenerated against the canonical profile.
 
 This precedence is scoped to the Agent platform. ADR-001 remains the governing decision for the already-frozen export-worker outbound contracts until a separate decision changes that boundary.
 
@@ -33,14 +33,14 @@ This precedence is scoped to the Agent platform. ADR-001 remains the governing d
 | [ADR-019](ADR-019-dbos-go-pin-and-agentrunworkflow-runtime-boundary.md) | DBOS Go dependency pin and `AgentRunWorkflow` runtime boundary | **Accepted** |
 | [ADR-020](ADR-020-public-agent-events-and-internal-evidence.md) | Separate stable public Agent Events from detailed internal Evidence | **Accepted** |
 | [ADR-021](ADR-021-agent-api-command-envelopes-and-concurrency.md) | Intent-only command envelopes, authorization carrier, and concurrency rules | **Accepted** |
-| [ADR-022](ADR-022-contract-runtime-boundary-and-topology-decision.md) | Contract Runtime security boundary and evidence-driven topology decision | **Accepted** — topology selection remains evidence-driven at P0-Integration |
+| [ADR-022](ADR-022-contract-runtime-boundary-and-topology-decision.md) | Contract Runtime security boundary and evidence-driven topology decision | **Accepted** — amended 2026-08-22 with the ADR-024 boundary; Contract Runtime topology selection remains evidence-driven at P0-Integration |
 | [ADR-010](ADR-010-demo-guard-mechanism.md) | Demo guard: `ENVIRONMENT`-driven strictness + hostname/loopback denylist; also gates `WORKER_DRY_RUN` | **Accepted** — implemented + T-demo-guard (M2) |
 | [ADR-011](ADR-011-queue-retention-and-replay.md) | Queue retention floors (24 h/72 h/7 d) + manual DLQ replay procedure | Proposed — ops sign-off pending (AC-031; before broad rollout) |
 | [ADR-012](ADR-012-kubernetes-sizing-and-scaling.md) | K8s sizing: 2 replicas, §18 starting resources; manual scaling MVP, HPA evaluated after staging profiling | **Accepted as proposed defaults** — staging validation pending |
 | [ADR-014](ADR-014-load-testing-driver.md) | Load driver: custom Go driver (`mocks/cmd/load-driver`) over k6 | **Accepted** — implemented + exercised (see docs/acceptance/load-test-report.md) |
 | [ADR-013](ADR-013-rate-limiting-and-guardrails.md) | Broad-rollout guardrail: basic per-site in-flight cap (delay-not-fail, reuses the pending semantics); global-only rejected | Proposed — Product confirmation + implementation pending (**broad-rollout gate**) |
 | [ADR-023](ADR-023-local-only-documentation-and-freeze-anchoring.md) | Local-only documentation policy: only `docs/adr/` is Git-tracked; other governance documents are local-only and anchored by SHA-256 freeze manifests | **Accepted** |
-| [ADR-024](ADR-024-agent-service-instance-durable-stream-cursor-spool.md) | Agent Service deploys as a StatefulSet with a per-instance retained claim so a refused stream-disconnect cursor record survives restart and rescheduling | **Accepted** — replicas and sizing remain evidence-driven |
+| [ADR-024](ADR-024-agent-service-instance-durable-stream-cursor-spool.md) | Agent Service deploys as a StatefulSet with a per-instance retained claim so a refused stream-disconnect cursor record survives restart and rescheduling | **Accepted** — amended 2026-08-22 with the ADR-022 boundary; decides the Agent Service's instance-state shape only, and replicas, sizing, storage class, and Contract Runtime topology remain evidence-driven |
 
 ## Preserved hard gates (source conditional baseline — PLAN-0001 §4)
 

@@ -140,8 +140,49 @@ The following do not block P0-Kernel and are selected from evidence or deploymen
 - P0-Integration cannot claim topology completion before the evidence matrix is complete.
 - Security testing must cover every serious candidate during evaluation.
 
+## Amendments
+
+### 2026-08-22 — the boundary between this decision and ADR-024
+
+ADR-024 decides that the Agent Service is deployed as a StatefulSet with a
+per-instance retained claim. That is a statement about a workload kind, and §6
+above says topology is not frozen at P0-Kernel, so the two have to be read
+together rather than left to be reconciled by whoever reads them next.
+
+They do not overlap, and the reason is what each is about.
+
+§6 defers **product and sizing choices that evidence should decide**: which
+topology the *Contract Runtime* is deployed in, how many replicas run, how they
+scale, and which cache, object-store, and messaging products are used. Nothing
+in the kernel's behavior depends on those answers, so choosing them early would
+be choosing without the evidence that should decide them.
+
+ADR-024 decides the one thing evidence cannot defer: **where instance-owned
+durable state lives**. Design 0001 requires that a slow consumer is
+disconnected only after the last durable cursor is recorded, and that the
+record survives. A record held on an instance that can be rescheduled without
+its storage is a record that does not survive, so the requirement itself picks
+the workload kind — not a preference about it. Deferring that would leave a
+governed durability requirement unmet while appearing to defer a product
+choice.
+
+So the rule stands as written, with its subject made explicit:
+
+- topology, replicas, autoscaling, storage class, and every product named in §6
+  remain evidence-driven, including for the Agent Service — ADR-024 §5 says so
+  in its own terms;
+- the Agent Service's workload kind and claim retention are decided by ADR-024
+  because a governed durability requirement forces them, and they are the only
+  deployment facts P0-Kernel freezes;
+- the Contract Runtime's topology is untouched by ADR-024 and remains open
+  under §4 and §6.
+
+An Agent Service deployment that meets the durability requirement another way
+would need an amendment to ADR-024, not an appeal to this section.
+
 ## References
 
 - `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-0808.md`
 - ADR-018: Canonical Agent Contract Refactor and P0-Kernel Profile
+- ADR-024: Agent Service Instance Topology and the Durable Stream-Cursor Spool
 - Root `AGENTS.md` and `CLAUDE.md` production-language and repository-boundary rules

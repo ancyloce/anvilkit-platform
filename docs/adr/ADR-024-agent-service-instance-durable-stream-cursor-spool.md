@@ -4,8 +4,9 @@
 | --- | --- |
 | Status | Accepted |
 | Date | 2026-08-21 |
-| Scope | P0-Kernel |
-| Related ADR | ADR-006, ADR-008, ADR-012, ADR-020 |
+| Amended | 2026-08-22 — governance precedence and topology boundary made explicit |
+| Scope | P0-Kernel, Agent Service instance state only |
+| Related ADR | ADR-006, ADR-008, ADR-012, ADR-020, ADR-022 |
 
 ## Context
 
@@ -85,6 +86,37 @@ in staging before launch review — the same standing ADR-012 gives the worker's
 values. This ADR does not resolve the topology and autoscaling questions design
 0005 leaves open beyond the instance-state shape decided above.
 
+### 6. This decision is subordinate to ADR-018 through ADR-022
+
+ADR-016 and ADR-018 through ADR-022 hold the highest architecture-governance
+priority, and this ADR does not change that. It decides one thing inside the
+boundary those ADRs draw, and it is bounded so that nothing in it can be read
+as reopening them.
+
+What this ADR decides:
+
+- the Agent Service's workload kind, because a governed durability requirement
+  in design 0001 forces it;
+- that per-instance claims are retained rather than reclaimed, for the same
+  reason;
+- that the spool path is declared beside its mount and required at startup.
+
+What this ADR does not decide, and what continues to be governed elsewhere:
+
+- **Contract Runtime topology** — open under ADR-022 §4 and §6, and untouched
+  here. This ADR is about the Agent Service; the two are different subjects.
+- **Replicas, autoscaling, storage class, and every product** ADR-022 §6 names
+  — evidence-driven, including for the Agent Service, as §5 above already says.
+- **Numerical SLOs** — approved only on the terms design 0001 sets.
+- **Contract governance** — ADR-018's canonical, non-versioned, no-compatibility
+  rules are unaffected: nothing here introduces a release generation, a
+  migration path, a dual system, or a fallback.
+
+If a deployment can meet the "record before disconnect" requirement without
+instance-owned durable state, that is an amendment to this ADR rather than an
+appeal to ADR-022 §6: §6 defers choices evidence should make, and this is not
+one of them.
+
 ## Acceptance evidence
 
 - the manifest and its ConfigMap example validate under the repository's
@@ -122,4 +154,5 @@ values. This ADR does not resolve the topology and autoscaling questions design
 - `docs/design/0001-anvilkit-controlled-agent-platform-product-technical-design-0808.md`
 - `docs/design/0005-agent-service-development-design-0808.md`
 - ADR-020: Public Agent Events and Internal Evidence
+- ADR-022: Contract Runtime Boundary and Evidence-Driven Topology Decision
 - ADR-012: Kubernetes Resource Sizing and Scaling
