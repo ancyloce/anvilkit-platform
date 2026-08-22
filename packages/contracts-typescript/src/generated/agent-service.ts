@@ -245,6 +245,29 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
+    readonly "/workspaces/{workspaceId}/artifacts/{artifactId}/custody": {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path: {
+                readonly artifactId: components["parameters"]["ArtifactId"];
+                readonly workspaceId: components["parameters"]["WorkspaceId"];
+            };
+            readonly cookie?: never;
+        };
+        readonly get?: never;
+        readonly put?: never;
+        /**
+         * Record the audited custody decision an authorized custodian made about one immutable artifact.
+         * @description Artifact custody is the authority to decide whether an immutable artifact survives: placing or lifting the legal hold that makes it undeletable, and destroying it. The acting custodian is derived from the verified request authority and is never carried on the wire, and neither is the workspace or project the decision is made in — the command states what is being decided, never who decides it or where. Agent Service re-reads current authority on every call and requires the caller to be admitted under the artifact-custodian role in this workspace and project, to hold the custody capability for this exact operation, to hold a clearance for the data class artifact content is governed under, and to hold authority over this artifact that has not been revoked. Every decision is written to the protected audit before anything is changed and again after, so a decision that cannot be audited is not made at all. If-Match pins the artifact revision the custodian observed, which is what the decision identity is built from: a retry converges on the outcome that revision already produced rather than opening a second decision over it.
+         */
+        readonly post: operations["decideAgentArtifactCustody"];
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -784,6 +807,19 @@ export interface components {
             readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
         };
         /**
+         * DecideArtifactCustodyRequest contract
+         * @description Intent-only artifact custody command. It states which custody decision an authorized custodian made about one immutable artifact: placing or lifting the legal hold that decides whether the artifact may be destroyed, or destroying it. The basis is a bounded evidence reference rather than free-form prose, and the ticket names the change record the decision answers to, so the protected audit record can be reconstructed without ever carrying custodian-authored content. No identity is carried on the wire: the acting custodian, the workspace, and the project are derived by Agent Service from the verified request authority and the current authority register.
+         */
+        readonly DecideArtifactCustodyRequest: {
+            readonly artifactId: string;
+            readonly basis: string;
+            /** @enum {unknown} */
+            readonly decision: "legal-hold-placed" | "legal-hold-lifted" | "deleted";
+            /** @constant */
+            readonly kind: "DecideArtifactCustodyRequest";
+            readonly ticket: string;
+        };
+        /**
          * ImageOperationPlan contract
          * @description Bounded ImageOperationPlan wire contract governed by PRD 0012.
          */
@@ -1161,6 +1197,8 @@ export interface components {
         readonly IdempotencyKey: string;
         /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
         readonly IfMatch: string;
+        /** @description Strong ETag "<artifactId>:v<resourceRevision>". Missing returns 428; stale returns 412. */
+        readonly IfMatchArtifact: string;
         readonly OperationId: string;
         readonly RequestDigest: string;
         readonly RequestId: string;
@@ -2386,6 +2424,124 @@ export interface operations {
             };
             /** @description Absent resource, or existence hidden by anti-enumeration policy. */
             readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stable internal problem without sensitive detail. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    readonly decideAgentArtifactCustody: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header: {
+                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                /** @description Strong ETag "<artifactId>:v<resourceRevision>". Missing returns 428; stale returns 412. */
+                readonly "If-Match": components["parameters"]["IfMatchArtifact"];
+                readonly traceparent: components["parameters"]["Traceparent"];
+                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
+            };
+            readonly path: {
+                readonly artifactId: components["parameters"]["ArtifactId"];
+                readonly workspaceId: components["parameters"]["WorkspaceId"];
+            };
+            readonly cookie?: never;
+        };
+        readonly requestBody: {
+            readonly content: {
+                readonly "application/json": components["schemas"]["DecideArtifactCustodyRequest"];
+            };
+        };
+        readonly responses: {
+            /** @description The custody decision is recorded and applied. The decision changes what may be done to the artifact rather than producing a representation of it, so the new resource revision is returned in ETag and the artifact metadata is read from its own operation. */
+            readonly 204: {
+                headers: {
+                    /** @description Strong resource revision: "<artifactId>:v<resourceRevision>". */
+                    readonly ETag?: string;
+                    /** @description true when a recorded custody decision is replayed. */
+                    readonly "Idempotency-Replayed"?: boolean;
+                    /** @description Canonical request digest accepted for the operation. */
+                    readonly "X-AnvilKit-Request-Digest"?: string;
+                    readonly [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Stable contract problem. */
+            readonly 400: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated without the custody scope, or current authority does not admit the caller as an artifact custodian holding this capability, this clearance, and unrevoked authority over the artifact. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description The artifact's destruction is already owned by another custody decision, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
+            readonly 409: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Stale If-Match resource revision. */
+            readonly 412: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Structurally valid command failing domain validation. */
+            readonly 422: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Missing required If-Match precondition. */
+            readonly 428: {
                 headers: {
                     readonly [name: string]: unknown;
                 };

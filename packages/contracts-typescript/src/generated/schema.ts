@@ -30,6 +30,7 @@ ContractRuntimeResult?: ContractRuntimeResultContract
 ContractSignatureStatement?: ContractSignatureStatementContract
 ContractTrustRoot?: ContractTrustRootContract
 CreateAgentRunRequest?: CreateAgentRunRequestContract
+DecideArtifactCustodyRequest?: DecideArtifactCustodyRequestContract
 ImageOperationPlan?: ImageOperationPlanContract
 InputRequest?: InputRequestContract
 IssueApplyAuthorizationRequest?: IssueApplyAuthorizationRequestContract
@@ -699,6 +700,16 @@ kind: "CreateAgentRunRequest"
 labels?: SharedPrimitivesBoundedStringMap
 operation: ("page-change" | "artifact-validation" | "image-operation" | "component-package")
 target: SharedPrimitivesTargetReference
+}
+/**
+ * Intent-only artifact custody command. It states which custody decision an authorized custodian made about one immutable artifact: placing or lifting the legal hold that decides whether the artifact may be destroyed, or destroying it. The basis is a bounded evidence reference rather than free-form prose, and the ticket names the change record the decision answers to, so the protected audit record can be reconstructed without ever carrying custodian-authored content. No identity is carried on the wire: the acting custodian, the workspace, and the project are derived by Agent Service from the verified request authority and the current authority register.
+ */
+export interface DecideArtifactCustodyRequestContract {
+artifactId: string
+basis: string
+decision: ("legal-hold-placed" | "legal-hold-lifted" | "deleted")
+kind: "DecideArtifactCustodyRequest"
+ticket: string
 }
 /**
  * Bounded ImageOperationPlan wire contract governed by PRD 0012.
