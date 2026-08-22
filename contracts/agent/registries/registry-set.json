@@ -1566,6 +1566,14 @@
           "replacement": null
         },
         {
+          "wireValue": "anvilkit.contract.schema.decide-artifact-custody-request",
+          "meaning": "DecideArtifactCustodyRequest authoritative schema component.",
+          "owner": "Agent Service Metadata owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
           "wireValue": "anvilkit.contract.schema.contract-runtime-request",
           "meaning": "ContractRuntimeRequest transport-neutral runtime boundary schema component.",
           "owner": "Contract Runtime owner",

@@ -804,6 +804,46 @@
       "synthetic": true
     },
     {
+      "id": "adversarial-decide-artifact-custody-request.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/decide-artifact-custody-request.unknown-field.json",
+      "bytesSha256": "sha256:3bd09b57ceffeccd14a1ce9a3c395af609525d8fb6eda9a6f7e0a158ce2eff07",
+      "bytesLength": 291,
+      "schema": {
+        "logicalId": "DecideArtifactCustodyRequest",
+        "path": "contracts/agent/schemas/decide-artifact-custody-request.schema.json",
+        "logicalUri": "anvilkit://schema/decide-artifact-custody-request?digest=sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03",
+        "digest": "sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "adversarial-image-operation-plan.unknown-field",
       "path": "contracts/agent/fixtures/adversarial/image-operation-plan.unknown-field.json",
       "bytesSha256": "sha256:8ceed506bac0793909752fff28b9bbebb7d78d3b2b2fd7b100ed78ae449c0e4a",
@@ -2864,6 +2904,126 @@
       "synthetic": true
     },
     {
+      "id": "invalid-decide-artifact-custody-request.caller-owned-custodian",
+      "path": "contracts/agent/fixtures/invalid/decide-artifact-custody-request.caller-owned-custodian.json",
+      "bytesSha256": "sha256:939e4ff157173e91a65cf1678b6920b911be4ff05735d50836f9b52a1dbfd9da",
+      "bytesLength": 284,
+      "schema": {
+        "logicalId": "DecideArtifactCustodyRequest",
+        "path": "contracts/agent/schemas/decide-artifact-custody-request.schema.json",
+        "logicalUri": "anvilkit://schema/decide-artifact-custody-request?digest=sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03",
+        "digest": "sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-decide-artifact-custody-request.caller-owned-workspace",
+      "path": "contracts/agent/fixtures/invalid/decide-artifact-custody-request.caller-owned-workspace.json",
+      "bytesSha256": "sha256:d3ff9fbace7d77e6d44f2ddf0e0a41af4691eddf5e87f8566d5c021de180b697",
+      "bytesLength": 284,
+      "schema": {
+        "logicalId": "DecideArtifactCustodyRequest",
+        "path": "contracts/agent/schemas/decide-artifact-custody-request.schema.json",
+        "logicalUri": "anvilkit://schema/decide-artifact-custody-request?digest=sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03",
+        "digest": "sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-decide-artifact-custody-request.missing-basis",
+      "path": "contracts/agent/fixtures/invalid/decide-artifact-custody-request.missing-basis.json",
+      "bytesSha256": "sha256:d4b4905265ccf01420d198050c7630492de729cc5b113fa9c2330676164cefd6",
+      "bytesLength": 155,
+      "schema": {
+        "logicalId": "DecideArtifactCustodyRequest",
+        "path": "contracts/agent/schemas/decide-artifact-custody-request.schema.json",
+        "logicalUri": "anvilkit://schema/decide-artifact-custody-request?digest=sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03",
+        "digest": "sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "invalid-image-operation-plan.missing-limits",
       "path": "contracts/agent/fixtures/invalid/image-operation-plan.missing-limits.json",
       "bytesSha256": "sha256:9406ec4e7298102b6f905c80f8343d77fa1ae331e6b18acf4d0d6414c4cf8d34",
@@ -4821,6 +4981,35 @@
       "synthetic": true
     },
     {
+      "id": "valid-decide-artifact-custody-request.minimum",
+      "path": "contracts/agent/fixtures/valid/decide-artifact-custody-request.minimum.json",
+      "bytesSha256": "sha256:78f8c806f3bdd57ac5ef19a1b75856ad7f115eb5d82f27c10ee49bfa734608a9",
+      "bytesLength": 251,
+      "schema": {
+        "logicalId": "DecideArtifactCustodyRequest",
+        "path": "contracts/agent/schemas/decide-artifact-custody-request.schema.json",
+        "logicalUri": "anvilkit://schema/decide-artifact-custody-request?digest=sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03",
+        "digest": "sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "valid-image-operation-plan.minimum",
       "path": "contracts/agent/fixtures/valid/image-operation-plan.minimum.json",
       "bytesSha256": "sha256:8a4f660ce16c9c3dc45cc58d116e86e85c6dbdaf37cab32371a410891a40da2c",
@@ -5171,13 +5360,13 @@
     {
       "id": "valid-registry-values.full",
       "path": "contracts/agent/fixtures/valid/registry-values.full.json",
-      "bytesSha256": "sha256:ce8ae0106f05082425790b020570d60eefb1585971928dd362edfee3c6e6c292",
-      "bytesLength": 5768,
+      "bytesSha256": "sha256:01ad4fe540b8da1752045b7d437f75083c08d7bee06e6714499ebd92c20feedb",
+      "bytesLength": 5834,
       "schema": {
         "logicalId": "RegistrySetValues",
         "path": "contracts/agent/registries/registry-set.json",
-        "logicalUri": "anvilkit://registry/registry-set?digest=sha256:4d1bb539e2bf8a476fa75c4cd5319f703da48465c2d49f41393f7aa900bfbb8d",
-        "digest": "sha256:4d1bb539e2bf8a476fa75c4cd5319f703da48465c2d49f41393f7aa900bfbb8d"
+        "logicalUri": "anvilkit://registry/registry-set?digest=sha256:9e91822737ec692e3c4e5fd115cf8ea87625b1dbfdbe62b55c4432b5c1060d19",
+        "digest": "sha256:9e91822737ec692e3c4e5fd115cf8ea87625b1dbfdbe62b55c4432b5c1060d19"
       },
       "category": "full",
       "tags": [
@@ -5841,7 +6030,9 @@
         "invalid-create-agent-run-request.caller-owned-status",
         "invalid-create-agent-run-request.caller-owned-workspace",
         "invalid-issue-apply-authorization-request.caller-owned-issuer",
-        "invalid-issue-apply-authorization-request.caller-owned-expiry"
+        "invalid-issue-apply-authorization-request.caller-owned-expiry",
+        "invalid-decide-artifact-custody-request.caller-owned-custodian",
+        "invalid-decide-artifact-custody-request.caller-owned-workspace"
       ],
       "expected": "reject"
     },

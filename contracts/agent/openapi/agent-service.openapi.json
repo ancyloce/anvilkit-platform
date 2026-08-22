@@ -1835,6 +1835,179 @@
           }
         }
       }
+    },
+    "/workspaces/{workspaceId}/artifacts/{artifactId}/custody": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/WorkspaceId"
+        },
+        {
+          "$ref": "#/components/parameters/ArtifactId"
+        }
+      ],
+      "post": {
+        "operationId": "decideAgentArtifactCustody",
+        "summary": "Record the audited custody decision an authorized custodian made about one immutable artifact.",
+        "description": "Artifact custody is the authority to decide whether an immutable artifact survives: placing or lifting the legal hold that makes it undeletable, and destroying it. The acting custodian is derived from the verified request authority and is never carried on the wire, and neither is the workspace or project the decision is made in — the command states what is being decided, never who decides it or where. Agent Service re-reads current authority on every call and requires the caller to be admitted under the artifact-custodian role in this workspace and project, to hold the custody capability for this exact operation, to hold a clearance for the data class artifact content is governed under, and to hold authority over this artifact that has not been revoked. Every decision is written to the protected audit before anything is changed and again after, so a decision that cannot be audited is not made at all. If-Match pins the artifact revision the custodian observed, which is what the decision identity is built from: a retry converges on the outcome that revision already produced rather than opening a second decision over it.",
+        "security": [
+          {
+            "oauth2": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          },
+          {
+            "$ref": "#/components/parameters/IfMatchArtifact"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/decide-artifact-custody-request?digest=sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "The custody decision is recorded and applied. The decision changes what may be done to the artifact rather than producing a representation of it, so the new resource revision is returned in ETag and the artifact metadata is read from its own operation.",
+            "headers": {
+              "ETag": {
+                "description": "Strong resource revision: \"<artifactId>:v<resourceRevision>\".",
+                "schema": {
+                  "type": "string",
+                  "minLength": 6,
+                  "maxLength": 256
+                }
+              },
+              "Idempotency-Replayed": {
+                "description": "true when a recorded custody decision is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated without the custody scope, or current authority does not admit the caller as an artifact custodian holding this capability, this clearance, and unrevoked authority over the artifact.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The artifact's destruction is already owned by another custody decision, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stale If-Match resource revision.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Missing required If-Match precondition.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-artifact",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
+        },
+        "x-anvilkit-custody": {
+          "custodianIdentity": "derived-from-verified-request-authority",
+          "authorization": "role-capability-clearance-and-revocation-re-read-on-every-request",
+          "audit": "protected-audit-recorded-before-and-after-every-decision",
+          "idempotency": "decision-identity-is-the-observed-artifact-revision"
+        }
+      }
     }
   },
   "components": {
@@ -1946,6 +2119,17 @@
           "minLength": 8,
           "maxLength": 256
         }
+      },
+      "IfMatchArtifact": {
+        "name": "If-Match",
+        "in": "header",
+        "required": true,
+        "description": "Strong ETag \"<artifactId>:v<resourceRevision>\". Missing returns 428; stale returns 412.",
+        "schema": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 256
+        }
       }
     },
     "schemas": {
@@ -1984,6 +2168,9 @@
       },
       "CreateAgentRunRequest": {
         "$ref": "anvilkit://schema/create-agent-run-request?digest=sha256:ae244db518fe7b181990406994ff42623cfebe97756e4b073fc9ea3df83b8fb0"
+      },
+      "DecideArtifactCustodyRequest": {
+        "$ref": "anvilkit://schema/decide-artifact-custody-request?digest=sha256:cb7411664588d1527de0ab3cb68f5f2e966fc2c2f466adfeb30dfa0c12e96c03"
       },
       "InputRequest": {
         "$ref": "anvilkit://schema/input-request?digest=sha256:b24bd0e89eeb408e7b5aac779676e790af60d089584a0ec2808273a3326a3d53"

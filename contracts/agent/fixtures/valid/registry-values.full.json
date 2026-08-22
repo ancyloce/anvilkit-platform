@@ -216,6 +216,7 @@
       "anvilkit.contract.schema.submit-input-response-request",
       "anvilkit.contract.schema.submit-approval-decision-request",
       "anvilkit.contract.schema.resolve-domain-operation-request",
+      "anvilkit.contract.schema.decide-artifact-custody-request",
       "anvilkit.contract.schema.contract-runtime-request",
       "anvilkit.contract.schema.contract-runtime-result",
       "anvilkit.contract.registry-set",

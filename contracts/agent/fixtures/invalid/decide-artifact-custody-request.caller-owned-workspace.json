@@ -1,0 +1,8 @@
+{
+  "kind": "DecideArtifactCustodyRequest",
+  "artifactId": "artifact.0123456789abcdef0123456789abcdef",
+  "decision": "deleted",
+  "basis": "anvilkit://evidence/records-retention-review/LEGAL-114-hold-instruction",
+  "ticket": "CHG-2291",
+  "workspaceId": "workspace.attacker.001"
+}

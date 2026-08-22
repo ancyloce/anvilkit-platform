@@ -1,0 +1,6 @@
+{
+  "kind": "DecideArtifactCustodyRequest",
+  "artifactId": "artifact.0123456789abcdef0123456789abcdef",
+  "decision": "deleted",
+  "ticket": "CHG-2291"
+}

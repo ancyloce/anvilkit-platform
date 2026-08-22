@@ -1,0 +1,8 @@
+{
+  "kind": "DecideArtifactCustodyRequest",
+  "artifactId": "artifact.0123456789abcdef0123456789abcdef",
+  "decision": "legal-hold-lifted",
+  "basis": "anvilkit://evidence/records-retention-review/LEGAL-114-hold-released",
+  "ticket": "CHG-2291",
+  "actorRole": "agent-artifact-custodian"
+}

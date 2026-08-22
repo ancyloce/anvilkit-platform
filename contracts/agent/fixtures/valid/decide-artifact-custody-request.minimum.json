@@ -1,0 +1,7 @@
+{
+  "kind": "DecideArtifactCustodyRequest",
+  "artifactId": "artifact.0123456789abcdef0123456789abcdef",
+  "decision": "legal-hold-placed",
+  "basis": "anvilkit://evidence/records-retention-review/LEGAL-114-hold-instruction",
+  "ticket": "CHG-2291"
+}
