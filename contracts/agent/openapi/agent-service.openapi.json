@@ -1780,6 +1780,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/Traceparent"
+          },
+          {
+            "$ref": "#/components/parameters/ArtifactAccessPurpose"
           }
         ],
         "responses": {
@@ -2129,6 +2132,24 @@
           "type": "string",
           "minLength": 6,
           "maxLength": 256
+        }
+      },
+      "ArtifactAccessPurpose": {
+        "name": "X-AnvilKit-Access-Purpose",
+        "in": "header",
+        "required": true,
+        "description": "Why this artifact is being read, drawn from the governed access vocabulary. It is recorded in the protected audit together with the verified accessor, the tenant, the artifact, the decision outcome, and the trace before anything is disclosed; a disclosure that cannot be recorded does not happen.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "producer",
+            "scanner",
+            "review",
+            "approval",
+            "finalization",
+            "commit",
+            "read"
+          ]
         }
       }
     },
