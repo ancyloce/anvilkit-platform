@@ -1193,6 +1193,8 @@ export interface components {
     };
     responses: never;
     parameters: {
+        /** @description Why this artifact is being read, drawn from the governed access vocabulary. It is recorded in the protected audit together with the verified accessor, the tenant, the artifact, the decision outcome, and the trace before anything is disclosed; a disclosure that cannot be recorded does not happen. */
+        readonly ArtifactAccessPurpose: "producer" | "scanner" | "review" | "approval" | "finalization" | "commit" | "read";
         readonly ArtifactId: string;
         readonly IdempotencyKey: string;
         /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
@@ -2386,6 +2388,8 @@ export interface operations {
             readonly query?: never;
             readonly header: {
                 readonly traceparent: components["parameters"]["Traceparent"];
+                /** @description Why this artifact is being read, drawn from the governed access vocabulary. It is recorded in the protected audit together with the verified accessor, the tenant, the artifact, the decision outcome, and the trace before anything is disclosed; a disclosure that cannot be recorded does not happen. */
+                readonly "X-AnvilKit-Access-Purpose": components["parameters"]["ArtifactAccessPurpose"];
             };
             readonly path: {
                 readonly artifactId: components["parameters"]["ArtifactId"];
