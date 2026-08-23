@@ -5365,8 +5365,8 @@
       "schema": {
         "logicalId": "RegistrySetValues",
         "path": "contracts/agent/registries/registry-set.json",
-        "logicalUri": "anvilkit://registry/registry-set?digest=sha256:9e91822737ec692e3c4e5fd115cf8ea87625b1dbfdbe62b55c4432b5c1060d19",
-        "digest": "sha256:9e91822737ec692e3c4e5fd115cf8ea87625b1dbfdbe62b55c4432b5c1060d19"
+        "logicalUri": "anvilkit://registry/registry-set?digest=sha256:2cd87fc7a7c0f8a1e705a267e5393d0989056bf096da9499f418d659939f5bbe",
+        "digest": "sha256:2cd87fc7a7c0f8a1e705a267e5393d0989056bf096da9499f418d659939f5bbe"
       },
       "category": "full",
       "tags": [
