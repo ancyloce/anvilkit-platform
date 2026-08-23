@@ -1,0 +1,12 @@
+# Canonical bytes are LF.
+#
+# Contract digests, the canonical lock, the P0-Kernel Profile, and the
+# governance freeze manifest are all computed over file bytes as they sit on
+# disk. Without this file a checkout made with `core.autocrlf=true` rewrites
+# those bytes, and the digests then attest the checkout rather than the
+# contract. That is not hypothetical: the canonical registry digest was once
+# recorded over CRLF and failed on every machine but the one that produced it.
+#
+# `text=auto` lets Git detect binary content and leave it alone; `eol=lf` pins
+# the working-tree ending for everything it treats as text, on every platform.
+* text=auto eol=lf
