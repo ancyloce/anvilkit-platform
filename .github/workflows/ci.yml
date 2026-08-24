@@ -98,9 +98,19 @@ jobs:
           --health-timeout 2s
           --health-retries 20
     steps:
+      # The supply-chain gate proves the committed bill of materials names
+      # a real commit of the service repository and that go.mod/go.sum have
+      # not moved since. The recorded revision is the commit whose module
+      # graph was measured, so it is deliberately older than HEAD: the
+      # default depth-1 checkout cannot resolve it and the gate fails for
+      # want of history rather than for a stale document. Full history is
+      # fetched here -- fetch-depth: 0 also drops the --depth passed to the
+      # submodule update, which is the history the gate actually reads --
+      # instead of relaxing the check.
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
           go-version-file: services/agent-service/go.mod
