@@ -1,0 +1,16 @@
+{
+  "kind": "ComponentDesignSpec",
+  "intent": {
+    "summary": "synthetic component",
+    "rationale": "synthetic rationale"
+  },
+  "props": [],
+  "variants": [],
+  "stateModel": [],
+  "composition": [],
+  "designTokenUsage": [],
+  "accessibilityRequirements": [],
+  "approvedAssetNeeds": [],
+  "previewScenarios": [],
+  "unresolvedDecisions": []
+}

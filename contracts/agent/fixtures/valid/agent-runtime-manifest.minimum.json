@@ -1,0 +1,55 @@
+{
+  "kind": "AgentRuntimeManifest",
+  "runtimeUnitId": "agent.synthetic.001",
+  "definition": {
+    "definitionId": "definition.synthetic.001",
+    "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "image": {
+    "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "sourceCommit": "0000000000000000000000000000000000000000",
+    "provenanceDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "signatureDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "protocol": {
+    "invocationProtocolDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "contractBomReference": {
+      "repository": "anvilkit/contracts",
+      "bomDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "ociManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "evidenceManifestDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  },
+  "workload": {
+    "workloadIdentity": "urn:anvilkit:workload:agent-synthetic-001",
+    "audience": "urn:anvilkit:audience:agent-runtime",
+    "allowedControlPlaneEndpoints": [
+      "/v1/model-gateway"
+    ],
+    "networkPolicy": "deny-all-except-allowed-endpoints"
+  },
+  "execution": {
+    "taskChannel": "anvilkit.agent.task.agent-synthetic-001",
+    "maxConcurrency": 1,
+    "timeoutMilliseconds": 1000,
+    "resourceClass": "interactive-cpu",
+    "cpuMillis": 1,
+    "memoryBytes": 1048576
+  },
+  "scaling": {
+    "minReplicas": 0,
+    "maxReplicas": 1,
+    "targetConcurrency": 1
+  },
+  "telemetry": {
+    "namespace": "anvilkit_agent_runtime_synthetic",
+    "healthPath": "/healthz",
+    "readinessPath": "/readyz"
+  },
+  "release": {
+    "owner": "Agent Runtime Release owner",
+    "rolloutPolicy": "new-runs-only",
+    "drainSeconds": 0,
+    "rollbackTarget": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  }
+}

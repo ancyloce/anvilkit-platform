@@ -1,0 +1,16 @@
+{
+  "kind": "CatalogSnapshot",
+  "catalogRevision": "catalog.synthetic.001",
+  "catalogDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "puckRuntime": {
+    "schemaRevision": "1.0.0",
+    "runtimeRevision": "1.0.0"
+  },
+  "allowedComponents": [],
+  "forbiddenComponents": [],
+  "designTokens": [],
+  "approvedAssets": [],
+  "approvedFonts": [],
+  "capturedAt": "2026-08-24T00:00:00.000Z",
+  "allowAnyComponent": true
+}

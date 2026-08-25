@@ -1,0 +1,23 @@
+{
+  "kind": "PagixCommitReceipt",
+  "redeemedAuthorizationId": "auth.synthetic.001",
+  "previousRevision": "revision.synthetic.000",
+  "newRevision": "revision.synthetic.001",
+  "committedPageDataDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "candidateDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "outboxId": "outbox.synthetic.001",
+  "actorId": "actor.synthetic.001",
+  "permissionDecision": {
+    "decision": "denied",
+    "policy": {
+      "policyId": "policy.page-commit",
+      "version": "1",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "idempotencyOutcome": "committed",
+  "committedAt": "2026-08-24T00:00:00.000Z",
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  }
+}

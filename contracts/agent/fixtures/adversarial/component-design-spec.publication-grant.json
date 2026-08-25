@@ -1,0 +1,24 @@
+{
+  "kind": "ComponentDesignSpec",
+  "intent": {
+    "summary": "synthetic component",
+    "rationale": "synthetic rationale"
+  },
+  "namespace": {
+    "namespace": "anvilkit.synthetic",
+    "componentName": "Synthetic"
+  },
+  "props": [],
+  "variants": [],
+  "stateModel": [],
+  "composition": [],
+  "designTokenUsage": [],
+  "accessibilityRequirements": [],
+  "approvedAssetNeeds": [],
+  "previewScenarios": [],
+  "unresolvedDecisions": [],
+  "publicationGrant": {
+    "registry": "npm",
+    "token": "synthetic"
+  }
+}

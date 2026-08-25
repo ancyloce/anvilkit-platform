@@ -1,0 +1,56 @@
+{
+  "kind": "AgentRuntimeManifest",
+  "runtimeUnitId": "page-manager.001",
+  "definition": {
+    "definitionId": "definition.page-manager.001",
+    "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "image": {
+    "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "sourceCommit": "0000000000000000000000000000000000000000",
+    "provenanceDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "signatureDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "protocol": {
+    "invocationProtocolDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "contractBomReference": {
+      "repository": "anvilkit/contracts",
+      "bomDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "ociManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "evidenceManifestDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  },
+  "workload": {
+    "workloadIdentity": "urn:anvilkit:workload:page-manager-001",
+    "audience": "urn:anvilkit:audience:agent-runtime",
+    "allowedControlPlaneEndpoints": [
+      "/v1/model-gateway",
+      "/v1/workspaces/{workspaceId}/artifacts/{artifactId}"
+    ],
+    "networkPolicy": "deny-all-except-allowed-endpoints"
+  },
+  "execution": {
+    "taskChannel": "anvilkit.agent.task.page-manager-001",
+    "maxConcurrency": 8,
+    "timeoutMilliseconds": 120000,
+    "resourceClass": "interactive-cpu",
+    "cpuMillis": 2000,
+    "memoryBytes": 536870912
+  },
+  "scaling": {
+    "minReplicas": 1,
+    "maxReplicas": 8,
+    "targetConcurrency": 4
+  },
+  "telemetry": {
+    "namespace": "anvilkit_agent_runtime_page_manager",
+    "healthPath": "/healthz",
+    "readinessPath": "/readyz"
+  },
+  "release": {
+    "owner": "Agent Runtime Release owner",
+    "rolloutPolicy": "new-runs-only",
+    "drainSeconds": 30,
+    "rollbackTarget": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "kind": "PersistAuthorizedPageRequest",
+  "authorization": {
+    "kind": "IssuedApplyAuthorization",
+    "authorization": {
+      "kind": "ApplyAuthorization",
+      "authorizationId": "authorization.synthetic.001",
+      "keyId": "urn:anvilkit:key:agent-service:synthetic",
+      "issuer": "urn:anvilkit:issuer:agent-service",
+      "audience": "urn:anvilkit:audience:pagix",
+      "issuedAt": "2026-08-18T12:00:00.000Z",
+      "notBefore": "2026-08-18T12:00:00.000Z",
+      "expiresAt": "2026-08-18T12:05:00.000Z",
+      "runId": "run.synthetic.001",
+      "actionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "artifactDigest": "sha256:9581f6d444452a8f7dbdafa848272f907400f62a7432aaef9817976ee4e436c8",
+      "target": {
+        "targetType": "page",
+        "targetId": "page.synthetic.001",
+        "workspaceId": "workspace.synthetic.001",
+        "projectId": "project.synthetic.001"
+      },
+      "baseRevision": "revision.synthetic.001",
+      "actorId": "actor.synthetic.001",
+      "workspaceId": "workspace.synthetic.001",
+      "approvalVersion": 1,
+      "contractBomDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "catalogDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "policyDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "compactJws": "eyJhbGciOiJFZERTQSIsImtpZCI6InVybjphbnZpbGtpdDprZXk6YWdlbnQtc2VydmljZTpzeW50aGV0aWMiLCJ0eXAiOiJhbnZpbGtpdC1hcHBseS1hdXRob3JpemF0aW9uK2p3cyJ9.eyJzeW50aGV0aWMiOnRydWV9.c3ludGhldGljLXNpZ25hdHVyZS1ieXRlcw"
+  },
+  "pageCandidate": "{\"kind\":\"PageCandidate\",\"target\":{\"targetType\":\"pagix-page\",\"targetId\":\"page.synthetic.001\",\"workspaceId\":\"workspace.synthetic.001\",\"projectId\":\"project.synthetic.001\"},\"baseRevision\":\"revision.synthetic.001\",\"pageData\":{\"artifactId\":\"artifact.pagedata.001\",\"digest\":\"sha256:057d94007a6ead541269416394fbc5d8c8387b5cf6d049537d73f8de6cae73cd\",\"mediaType\":\"application/json\",\"sizeBytes\":90},\"digests\":{\"targetDigest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"catalogDigest\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"contractBomDigest\":\"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"definitionDigest\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"policyDigest\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\"},\"candidateDigest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"validationReceipts\":[],\"preview\":{\"taskId\":\"task.synthetic.001\",\"resultArtifact\":{\"artifactId\":\"artifact.preview.001\",\"digest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"mediaType\":\"application/json\",\"sizeBytes\":128}},\"generation\":{\"summary\":\"synthetic candidate\",\"assumptions\":[]},\"references\":{\"modelInvocations\":[],\"toolInvocations\":[],\"delegations\":[],\"evidence\":[]},\"warnings\":[]}",
+  "pageDocument": "{\"root\":{\"props\":{\"title\":\"Pricing\"}},\"content\":[{\"type\":\"Hero\",\"props\":{\"id\":\"hero-1\"}}]}",
+  "pageDocumentDigest": "sha256:057d94007a6ead541269416394fbc5d8c8387b5cf6d049537d73f8de6cae73cd",
+  "candidateDigest": "sha256:9581f6d444452a8f7dbdafa848272f907400f62a7432aaef9817976ee4e436c8"
+}

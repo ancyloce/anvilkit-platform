@@ -6,7 +6,12 @@
       "target-snapshot",
       "agent-plan",
       "worker-result",
-      "validation-report"
+      "validation-report",
+      "catalog-snapshot",
+      "page-candidate",
+      "page-preview-task",
+      "page-preview-result",
+      "component-design-spec"
     ],
     "artifact-lifecycle": [
       "pending",
@@ -106,13 +111,15 @@
     "domain": [
       "platform-agent",
       "pagix-page",
-      "contract-runtime"
+      "contract-runtime",
+      "pagix-component"
     ],
     "operation": [
       "page-change",
       "artifact-validation",
       "image-operation",
-      "component-package"
+      "component-package",
+      "component-design"
     ],
     "tool-capability": [
       "provider.invoke",
@@ -189,9 +196,13 @@
       "anvilkit.contract.schema.agent-run-snapshot",
       "anvilkit.contract.schema.tool-definition",
       "anvilkit.contract.schema.agent-task",
+      "anvilkit.contract.schema.agent-runtime-manifest",
+      "anvilkit.contract.schema.agent-runtime-result",
       "anvilkit.contract.schema.worker-lease",
       "anvilkit.contract.schema.worker-result",
       "anvilkit.contract.schema.agent-artifact",
+      "anvilkit.contract.schema.artifact-content-grant",
+      "anvilkit.contract.schema.issue-artifact-content-grant-request",
       "anvilkit.contract.schema.agent-budget",
       "anvilkit.contract.schema.usage-observation",
       "anvilkit.contract.schema.input-request",
@@ -207,6 +218,13 @@
       "anvilkit.contract.schema.problem-details",
       "anvilkit.contract.schema.image-operation-plan",
       "anvilkit.contract.schema.component-package-spec",
+      "anvilkit.contract.schema.catalog-snapshot",
+      "anvilkit.contract.schema.page-candidate",
+      "anvilkit.contract.schema.page-preview-task",
+      "anvilkit.contract.schema.page-preview-result",
+      "anvilkit.contract.schema.component-design-spec",
+      "anvilkit.contract.schema.pagix-commit-receipt",
+      "anvilkit.contract.schema.persist-authorized-page-request",
       "anvilkit.contract.schema.contract-revocation-snapshot",
       "anvilkit.contract.schema.contract-signature-statement",
       "anvilkit.contract.schema.contract-trust-root",

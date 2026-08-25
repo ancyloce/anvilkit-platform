@@ -1,0 +1,67 @@
+{
+  "kind": "PagePreviewTask",
+  "candidate": {
+    "artifactId": "artifact.candidate.007",
+    "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "mediaType": "application/json",
+    "sizeBytes": 8192
+  },
+  "candidateDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "resolved": {
+    "catalogSnapshot": {
+      "artifactId": "artifact.catalog.007",
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "mediaType": "application/json",
+      "sizeBytes": 65536
+    },
+    "approvedAssets": [
+      {
+        "artifactId": "artifact.asset.001",
+        "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "mediaType": "application/json",
+        "sizeBytes": 4096
+      }
+    ],
+    "puckSchemaRevision": "2.1.0",
+    "puckRuntimeRevision": "2.1.0"
+  },
+  "matrix": [
+    {
+      "viewportWidth": 390,
+      "viewportHeight": 844,
+      "locale": "en-US",
+      "theme": "light"
+    },
+    {
+      "viewportWidth": 1280,
+      "viewportHeight": 720,
+      "locale": "en-US",
+      "theme": "dark"
+    },
+    {
+      "viewportWidth": 1920,
+      "viewportHeight": 1080,
+      "locale": "fr-FR",
+      "theme": "light"
+    }
+  ],
+  "runtimeProfile": {
+    "deterministicSeed": 42,
+    "timezone": "America/New_York",
+    "reducedMotion": true,
+    "networkPolicy": "deny-all"
+  },
+  "deadlineAt": "2026-08-24T00:00:00.000Z",
+  "limits": {
+    "timeoutMilliseconds": 60000,
+    "memoryBytes": 67108864,
+    "cpuMillis": 60000,
+    "gpuMillis": 0,
+    "outputBytes": 1048576
+  },
+  "expected": {
+    "contractBomDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "catalogDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "runtimeDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  }
+}

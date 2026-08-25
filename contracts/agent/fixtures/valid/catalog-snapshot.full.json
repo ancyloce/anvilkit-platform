@@ -1,0 +1,81 @@
+{
+  "kind": "CatalogSnapshot",
+  "catalogRevision": "catalog.page.001",
+  "catalogDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "puckRuntime": {
+    "schemaRevision": "1.0.0",
+    "runtimeRevision": "1.0.0"
+  },
+  "allowedComponents": [
+    {
+      "componentId": "Hero",
+      "packageRevision": "2.1.0",
+      "propSchema": {
+        "componentName": "anvilkit.contract.schema.problem-details",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "defaults": {
+        "align": "center"
+      },
+      "slots": [
+        {
+          "slotName": "body",
+          "allowedComponentIds": [
+            "Text",
+            "Image"
+          ],
+          "maxChildren": 8
+        }
+      ],
+      "maxNestingDepth": 4
+    },
+    {
+      "componentId": "Text",
+      "packageRevision": "2.1.0",
+      "propSchema": {
+        "componentName": "anvilkit.contract.schema.problem-details",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "defaults": {},
+      "slots": [],
+      "maxNestingDepth": 0
+    }
+  ],
+  "forbiddenComponents": [
+    {
+      "componentId": "LegacyBanner",
+      "reason": "deprecated",
+      "replacementComponentId": "Hero"
+    },
+    {
+      "componentId": "RawHtml",
+      "reason": "forbidden",
+      "replacementComponentId": ""
+    }
+  ],
+  "designTokens": [
+    {
+      "artifactId": "artifact.tokens.001",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mediaType": "application/json",
+      "sizeBytes": 128
+    }
+  ],
+  "approvedAssets": [
+    {
+      "artifactId": "artifact.asset.001",
+      "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "mediaType": "application/json",
+      "sizeBytes": 4096
+    }
+  ],
+  "approvedFonts": [
+    {
+      "artifactId": "artifact.font.001",
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "mediaType": "application/json",
+      "sizeBytes": 20480
+    }
+  ],
+  "capturedAt": "2026-08-24T00:00:00.000Z"
+}

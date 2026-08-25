@@ -1,0 +1,28 @@
+{
+  "kind": "PagePreviewResult",
+  "candidateDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "screenshots": [],
+  "viewportStatuses": [
+    {
+      "viewportIndex": 0,
+      "status": "rendered"
+    }
+  ],
+  "componentResolution": [],
+  "policyViolations": [],
+  "accessibilityFindings": [],
+  "resourceUsage": {
+    "durationMilliseconds": 0,
+    "peakMemoryBytes": 0,
+    "cpuMillis": 0
+  },
+  "workerEnvironment": {
+    "imageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "environmentDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  },
+  "evidence": [],
+  "approved": true
+}

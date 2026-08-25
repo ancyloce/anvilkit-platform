@@ -1,0 +1,95 @@
+{
+  "kind": "ComponentDesignSpec",
+  "intent": {
+    "summary": "A pricing callout block.",
+    "rationale": "Marketing needs a reusable pricing callout across landing pages."
+  },
+  "namespace": {
+    "namespace": "anvilkit.marketing",
+    "componentName": "PricingCallout"
+  },
+  "props": [
+    {
+      "name": "headline",
+      "valueKind": "string",
+      "required": true,
+      "defaultValue": "",
+      "description": "Primary headline."
+    },
+    {
+      "name": "emphasis",
+      "valueKind": "enum",
+      "required": false,
+      "defaultValue": "none",
+      "description": "Visual emphasis level."
+    }
+  ],
+  "variants": [
+    {
+      "name": "compact",
+      "description": "Reduced padding for dense pages."
+    }
+  ],
+  "stateModel": [
+    {
+      "state": "default",
+      "trigger": "mount",
+      "description": "Initial render."
+    },
+    {
+      "state": "hovered",
+      "trigger": "pointerEnter",
+      "description": "Pointer over the callout."
+    }
+  ],
+  "composition": [
+    {
+      "slotName": "footnote",
+      "allowedComponentIds": [
+        "Text"
+      ],
+      "maxChildren": 1
+    }
+  ],
+  "designTokenUsage": [
+    {
+      "tokenName": "color.surface.raised",
+      "usage": "Callout background."
+    }
+  ],
+  "accessibilityRequirements": [
+    {
+      "requirement": "Headline must be a single h2 within the section.",
+      "criterion": "WCAG2.1-1.3.1"
+    }
+  ],
+  "approvedAssetNeeds": [
+    {
+      "purpose": "Optional decorative background.",
+      "assetReference": {
+        "artifactId": "artifact.asset.001",
+        "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "mediaType": "application/json",
+        "sizeBytes": 4096
+      }
+    }
+  ],
+  "previewScenarios": [
+    {
+      "name": "default",
+      "description": "Headline only.",
+      "propValues": {
+        "headline": "Simple pricing"
+      }
+    }
+  ],
+  "unresolvedDecisions": [
+    {
+      "question": "Should emphasis default to none or subtle?",
+      "options": [
+        "none",
+        "subtle"
+      ]
+    }
+  ]
+}

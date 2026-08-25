@@ -1,0 +1,73 @@
+{
+  "kind": "PageCandidate",
+  "target": {
+    "targetType": "pagix-page",
+    "targetId": "page.synthetic.001",
+    "workspaceId": "workspace.synthetic.001",
+    "projectId": "project.synthetic.001"
+  },
+  "baseRevision": "revision.page.007",
+  "pageData": {
+    "artifactId": "artifact.pagedata.007",
+    "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "mediaType": "application/json",
+    "sizeBytes": 8192
+  },
+  "digests": {
+    "targetDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "catalogDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "contractBomDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "policyDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "candidateDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "validationReceipts": [
+    {
+      "artifactId": "artifact.receipt.001",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mediaType": "application/json",
+      "sizeBytes": 128
+    }
+  ],
+  "preview": {
+    "taskId": "task.page.007",
+    "resultArtifact": {
+      "artifactId": "artifact.preview.007",
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "mediaType": "application/json",
+      "sizeBytes": 65536
+    }
+  },
+  "generation": {
+    "summary": "Composed a hero and two text blocks from the pinned catalog.",
+    "assumptions": [
+      "Assumed the existing headline copy should be preserved."
+    ]
+  },
+  "references": {
+    "modelInvocations": [
+      "model.001"
+    ],
+    "toolInvocations": [
+      "tool.001"
+    ],
+    "delegations": [
+      "delegation.001"
+    ],
+    "evidence": [
+      "evidence.001"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "CATALOG_COMPONENT_SUBSTITUTED",
+      "detail": "LegacyBanner replaced with Hero"
+    }
+  ],
+  "pageIr": {
+    "artifactId": "artifact.pageir.007",
+    "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "mediaType": "application/json",
+    "sizeBytes": 4096
+  }
+}

@@ -23,7 +23,7 @@
   ],
   "security": [
     {
-      "oauth2": []
+      "bearerAuth": []
     }
   ],
   "paths": {
@@ -38,7 +38,7 @@
         "summary": "Create an idempotent Agent run from an intent-only command.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -186,7 +186,7 @@
         "summary": "List workspace runs with bounded pagination.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -300,7 +300,7 @@
         "summary": "Read the authoritative run resource and its strong ETag.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -386,7 +386,7 @@
         "summary": "Stream durable public AgentEvent frames with Last-Event-ID recovery.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -512,7 +512,7 @@
         "summary": "Read the current run snapshot and the durable cursor an expired event stream resumes from.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -588,7 +588,7 @@
         "summary": "Request reconciled cancellation.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -745,7 +745,7 @@
         "summary": "Explicitly retry a failed run under current authority.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -902,7 +902,7 @@
         "summary": "Discard an eligible reviewed artifact and terminate the run.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -1062,7 +1062,7 @@
         "summary": "Submit a bounded response to the current input request revision.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -1242,7 +1242,7 @@
         "summary": "Record a governed approval decision bound to the exact action digest.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -1423,7 +1423,7 @@
         "description": "Operator recovery for a run holding at the submit boundary whose governed effect is durably escalated. The command states which authoritative outcome the effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The resolving operator is derived from the verified request authority and is never carried on the wire. Agent Service re-reads current authority on every call and requires the caller to be admitted under the operator role in this workspace and project; the durable resolution is a compare-and-set on the escalated state, so racing operators produce exactly one audited decision and a replayed decision converges on the recorded one. Nothing here contacts the domain owner and nothing is resubmitted.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -1601,7 +1601,7 @@
         "summary": "Issue a server-owned single-use Apply Authorization from an intent-only command.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -1657,7 +1657,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/issued-apply-authorization?digest=sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf"
+                  "$ref": "anvilkit://schema/issued-apply-authorization?digest=sha256:c9a436fa08c5e1c43c1bbfda5ad87e0b7aa4c1d2ada620929284028fbb7b3b5e"
                 }
               }
             }
@@ -1774,7 +1774,7 @@
         "summary": "Read immutable artifact metadata under its governed lifecycle.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -1854,7 +1854,7 @@
         "description": "Artifact custody is the authority to decide whether an immutable artifact survives: placing or lifting the legal hold that makes it undeletable, and destroying it. The acting custodian is derived from the verified request authority and is never carried on the wire, and neither is the workspace or project the decision is made in — the command states what is being decided, never who decides it or where. Agent Service re-reads current authority on every call and requires the caller to be admitted under the artifact-custodian role in this workspace and project, to hold the custody capability for this exact operation, to hold a clearance for the data class artifact content is governed under, and to hold authority over this artifact that has not been revoked. Every decision is written to the protected audit before anything is changed and again after, so a decision that cannot be audited is not made at all. If-Match pins the artifact revision the custodian observed, which is what the decision identity is built from: a retry converges on the outcome that revision already produced rather than opening a second decision over it.",
         "security": [
           {
-            "oauth2": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -2011,22 +2011,181 @@
           "idempotency": "decision-identity-is-the-observed-artifact-revision"
         }
       }
+    },
+    "/workspaces/{workspaceId}/artifacts/{artifactId}/content-grant": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/WorkspaceId"
+        },
+        {
+          "$ref": "#/components/parameters/ArtifactId"
+        }
+      ],
+      "post": {
+        "operationId": "issueAgentArtifactContentGrant",
+        "summary": "Issue a bounded, expiring grant to read one artifact's bytes.",
+        "description": "Content is disclosed through a grant rather than from the metadata route, so reading bytes is always a recorded, time-boxed decision. The declared access purpose is audited with the verified accessor, the tenant, the artifact, and the trace before any grant is issued.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/RequestDigest"
+          },
+          {
+            "$ref": "#/components/parameters/Traceparent"
+          },
+          {
+            "$ref": "#/components/parameters/IfMatchArtifact"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "anvilkit://schema/issue-artifact-content-grant-request?digest=sha256:2270580ea7b2e0226b8450130e4ee7312db2b101650fc012ea2f90823892c0b1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A bounded grant scoped to one artifact, actor, purpose, and expiry.",
+            "headers": {
+              "Idempotency-Replayed": {
+                "description": "true when a recorded semantic outcome is replayed.",
+                "schema": {
+                  "type": "boolean"
+                }
+              },
+              "X-AnvilKit-Request-Digest": {
+                "description": "Canonical request digest accepted for the operation.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/artifact-content-grant?digest=sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Stable contract problem.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not authorized to read this artifact for this purpose.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Absent resource, or existence hidden by anti-enumeration policy.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The artifact is not in a state whose content may be disclosed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Stale If-Match resource revision.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Structurally valid command failing domain validation.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Missing required If-Match precondition.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Stable internal problem without sensitive detail.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"
+                }
+              }
+            }
+          }
+        },
+        "x-anvilkit-idempotency": {
+          "scope": "workspace-and-artifact",
+          "sameKeySameDigest": "return-recorded-outcome",
+          "sameKeyDifferentBytes": "IDEMPOTENCY_KEY_REUSED"
+        }
+      }
     }
   },
   "components": {
     "securitySchemes": {
-      "oauth2": {
-        "type": "oauth2",
-        "description": "Authenticated workspace actor.",
-        "flows": {
-          "clientCredentials": {
-            "tokenUrl": "https://auth.anvilkit.dev/oauth/token",
-            "scopes": {
-              "agent:read": "Read Agent state.",
-              "agent:write": "Create and control Agent runs."
-            }
-          }
-        }
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Authenticated workspace actor. The service reads a compact JWS from the Authorization: Bearer header and verifies it against the configured trust snapshot and issuer set; browser-sourced claims are rejected. No token-issuing endpoint is advertised here because the Agent Service does not implement one."
       },
       "workloadIdentity": {
         "type": "mutualTLS",
@@ -2176,10 +2335,13 @@
         "$ref": "anvilkit://schema/agent-stream-delta?digest=sha256:0d64114cedd078202f1046fbadd7291544a590b9019422af77ce2f8c4cb8f590"
       },
       "ApplyAuthorization": {
-        "$ref": "anvilkit://schema/apply-authorization?digest=sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b"
+        "$ref": "anvilkit://schema/apply-authorization?digest=sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8"
       },
       "ApprovalRequest": {
         "$ref": "anvilkit://schema/approval-request?digest=sha256:0c12c96f59986ac18d9d689f0051aa6c74023ccf4ac7746436ffc90a3cdfeec8"
+      },
+      "ArtifactContentGrant": {
+        "$ref": "anvilkit://schema/artifact-content-grant?digest=sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c"
       },
       "BoundedResponse": {
         "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
@@ -2200,7 +2362,7 @@
         "$ref": "anvilkit://schema/issue-apply-authorization-request?digest=sha256:653d8dba345b8e1fae093dd491321a6cb4b5b7b56b896efe88c38739be0e8bca"
       },
       "IssuedApplyAuthorization": {
-        "$ref": "anvilkit://schema/issued-apply-authorization?digest=sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf"
+        "$ref": "anvilkit://schema/issued-apply-authorization?digest=sha256:c9a436fa08c5e1c43c1bbfda5ad87e0b7aa4c1d2ada620929284028fbb7b3b5e"
       },
       "ProblemDetails": {
         "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"

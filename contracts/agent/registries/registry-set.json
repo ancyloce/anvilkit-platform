@@ -45,6 +45,46 @@
           "status": "active",
           "aliases": [],
           "replacement": null
+        },
+        {
+          "wireValue": "catalog-snapshot",
+          "meaning": "Immutable component-catalog snapshot pinned by a page-generation run.",
+          "owner": "Pagix Catalog owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "page-candidate",
+          "meaning": "Reviewable page-generation candidate carrying canonical Puck Data and its binding digests.",
+          "owner": "Platform Page Generation owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "page-preview-task",
+          "meaning": "Immutable bounded input payload pinned for one deterministic page-preview render.",
+          "owner": "Page Preview Worker owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "page-preview-result",
+          "meaning": "Immutable render evidence returned by one deterministic page-preview render.",
+          "owner": "Page Preview Worker owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "component-design-spec",
+          "meaning": "Immutable design-only component specification produced for review; never a build or publication authorization.",
+          "owner": "Platform Component Design owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
         }
       ]
     },
@@ -832,6 +872,14 @@
           "status": "active",
           "aliases": [],
           "replacement": null
+        },
+        {
+          "wireValue": "pagix-component",
+          "meaning": "Pagix-owned component lifecycle and design domain.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
         }
       ]
     },
@@ -867,6 +915,14 @@
           "wireValue": "component-package",
           "meaning": "Produce a constrained component package specification; execution begins after P0.",
           "owner": "Platform Plan owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "component-design",
+          "meaning": "Produce a constrained component design specification for review; authorizes design work only, never build, execution, or publication.",
+          "owner": "Platform Contracts owner",
           "status": "active",
           "aliases": [],
           "replacement": null
@@ -1350,6 +1406,22 @@
           "replacement": null
         },
         {
+          "wireValue": "anvilkit.contract.schema.agent-runtime-manifest",
+          "meaning": "Immutable binding of one Agent Runtime Unit to the single AgentDefinition, image, protocol, identity, and operational profile it is released with.",
+          "owner": "Agent Runtime Release owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.agent-runtime-result",
+          "meaning": "Signed bounded result returned by one Agent Runtime Unit for exactly one AgentTask attempt.",
+          "owner": "Agent Service Scheduler owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
           "wireValue": "anvilkit.contract.schema.worker-lease",
           "meaning": "WorkerLease authoritative schema component.",
           "owner": "Agent Service Scheduler owner",
@@ -1368,6 +1440,22 @@
         {
           "wireValue": "anvilkit.contract.schema.agent-artifact",
           "meaning": "AgentArtifact authoritative schema component.",
+          "owner": "Agent Service Metadata owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.artifact-content-grant",
+          "meaning": "Bounded expiring permission to read one artifact's bytes, scoped to one actor, digest, purpose, and security generation.",
+          "owner": "Agent Service Metadata owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.issue-artifact-content-grant-request",
+          "meaning": "IssueArtifactContentGrantRequest intent-only artifact content access command component.",
           "owner": "Agent Service Metadata owner",
           "status": "active",
           "aliases": [],
@@ -1489,6 +1577,62 @@
           "wireValue": "anvilkit.contract.schema.component-package-spec",
           "meaning": "ComponentPackageSpec authoritative shape-only P0 schema component.",
           "owner": "Platform Plan owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.catalog-snapshot",
+          "meaning": "Immutable snapshot of the component catalog, Puck runtime revisions, and approved assets a page-generation run may compose from.",
+          "owner": "Pagix Catalog owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.page-candidate",
+          "meaning": "Reviewable page-generation proposal binding canonical Puck Data to the exact target, catalog, contract, definition, and policy digests that produced it.",
+          "owner": "Platform Page Generation owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.page-preview-task",
+          "meaning": "Bounded input payload for one deterministic page-preview render, carried on the canonical worker lease envelope.",
+          "owner": "Page Preview Worker owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.page-preview-result",
+          "meaning": "Bounded render-evidence payload returned by one deterministic page-preview render.",
+          "owner": "Page Preview Worker owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.component-design-spec",
+          "meaning": "Design-only component proposal carrying intent, props, variants, composition, tokens, accessibility, and open decisions, and no build or publication grant.",
+          "owner": "Platform Component Design owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.pagix-commit-receipt",
+          "meaning": "Domain result returned by Pagix for one atomic page commit, naming the redeemed authorization, revisions, digests, and durable outbox identifier.",
+          "owner": "Pagix Page Domain owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.persist-authorized-page-request",
+          "meaning": "Complete page-commit command carrying the issued Apply Authorization and the page document it permits applying.",
+          "owner": "Pagix Page Domain owner",
           "status": "active",
           "aliases": [],
           "replacement": null

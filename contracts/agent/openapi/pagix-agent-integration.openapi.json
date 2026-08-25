@@ -993,14 +993,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "anvilkit://schema/issued-apply-authorization?digest=sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf"
+                "$ref": "anvilkit://schema/persist-authorized-page-request?digest=sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Authoritative domain outcome; a revision conflict consumes the authorization.",
+            "description": "Authoritative domain outcome as a PagixCommitReceipt; a revision conflict consumes the authorization.",
             "headers": {
               "Idempotency-Replayed": {
                 "description": "true when a recorded semantic outcome is replayed.",
@@ -1019,7 +1019,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/shared-primitives?digest=sha256:49d3142e660e7835a4b99a2e9479c4b21709a197829279f5191daa247fcc6576#/$defs/BoundedStringMap"
+                  "$ref": "anvilkit://schema/pagix-commit-receipt?digest=sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2"
                 }
               }
             }
@@ -1148,10 +1148,16 @@
         "$ref": "anvilkit://schema/agent-budget?digest=sha256:e2942efa249ebe3c79c105b3356d50a8cc3c99e8b544616a6ed10fb44a0b8467"
       },
       "ApplyAuthorization": {
-        "$ref": "anvilkit://schema/apply-authorization?digest=sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b"
+        "$ref": "anvilkit://schema/apply-authorization?digest=sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8"
       },
       "IssuedApplyAuthorization": {
-        "$ref": "anvilkit://schema/issued-apply-authorization?digest=sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf"
+        "$ref": "anvilkit://schema/issued-apply-authorization?digest=sha256:c9a436fa08c5e1c43c1bbfda5ad87e0b7aa4c1d2ada620929284028fbb7b3b5e"
+      },
+      "PagixCommitReceipt": {
+        "$ref": "anvilkit://schema/pagix-commit-receipt?digest=sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2"
+      },
+      "PersistAuthorizedPageRequest": {
+        "$ref": "anvilkit://schema/persist-authorized-page-request?digest=sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6"
       },
       "ProblemDetails": {
         "$ref": "anvilkit://schema/problem-details?digest=sha256:d42f44ad527b3a165aca0c56ab00b2b01ea28e3f7bb8346850a5334a7f438087"

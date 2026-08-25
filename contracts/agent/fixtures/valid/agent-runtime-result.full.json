@@ -1,0 +1,47 @@
+{
+  "kind": "AgentRuntimeResult",
+  "taskId": "task.page.001",
+  "runId": "run.page.001",
+  "rootRunId": "run.page.001",
+  "physicalAttemptId": "attempt.page.001",
+  "executionGeneration": 2,
+  "selected": {
+    "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "imageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "turnDecision": {
+    "decision": "final",
+    "payload": {
+      "summary": "synthetic"
+    },
+    "artifactOutputs": [
+      {
+        "artifactId": "artifact.synthetic.001",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mediaType": "application/json",
+        "sizeBytes": 128
+      }
+    ]
+  },
+  "usage": {
+    "inputTokens": 1200,
+    "outputTokens": 340,
+    "durationMilliseconds": 8400
+  },
+  "diagnostics": [
+    {
+      "code": "CATALOG_COMPONENT_SUBSTITUTED",
+      "detail": "synthetic diagnostic"
+    }
+  ],
+  "provenance": {
+    "signatureAlgorithm": "dsse-ed25519-v1",
+    "signatureDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "statementDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  }
+}

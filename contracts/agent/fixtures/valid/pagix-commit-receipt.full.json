@@ -1,0 +1,23 @@
+{
+  "kind": "PagixCommitReceipt",
+  "redeemedAuthorizationId": "auth.page.007",
+  "previousRevision": "revision.page.006",
+  "newRevision": "revision.page.007",
+  "committedPageDataDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "candidateDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "outboxId": "outbox.page.007",
+  "actorId": "actor.page.007",
+  "permissionDecision": {
+    "decision": "allowed",
+    "policy": {
+      "policyId": "policy.page-commit",
+      "version": "1",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "idempotencyOutcome": "replayed",
+  "committedAt": "2026-08-24T00:00:00.000Z",
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  }
+}

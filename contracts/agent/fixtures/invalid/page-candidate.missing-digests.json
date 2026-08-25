@@ -1,0 +1,38 @@
+{
+  "kind": "PageCandidate",
+  "target": {
+    "targetType": "pagix-page",
+    "targetId": "page.synthetic.001",
+    "workspaceId": "workspace.synthetic.001",
+    "projectId": "project.synthetic.001"
+  },
+  "baseRevision": "revision.synthetic.001",
+  "pageData": {
+    "artifactId": "artifact.pagedata.001",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mediaType": "application/json",
+    "sizeBytes": 128
+  },
+  "candidateDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "validationReceipts": [],
+  "preview": {
+    "taskId": "task.synthetic.001",
+    "resultArtifact": {
+      "artifactId": "artifact.preview.001",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mediaType": "application/json",
+      "sizeBytes": 128
+    }
+  },
+  "generation": {
+    "summary": "synthetic candidate",
+    "assumptions": []
+  },
+  "references": {
+    "modelInvocations": [],
+    "toolInvocations": [],
+    "delegations": [],
+    "evidence": []
+  },
+  "warnings": []
+}

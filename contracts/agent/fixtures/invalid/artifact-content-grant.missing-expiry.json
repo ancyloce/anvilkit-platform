@@ -1,0 +1,9 @@
+{
+  "kind": "ArtifactContentGrant",
+  "artifactId": "artifact.synthetic.001",
+  "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "securityGeneration": 0,
+  "purpose": "read",
+  "actorId": "actor.synthetic.001",
+  "url": "https://artifacts.example/synthetic"
+}

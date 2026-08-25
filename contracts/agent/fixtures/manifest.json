@@ -304,6 +304,86 @@
       "synthetic": true
     },
     {
+      "id": "adversarial-agent-runtime-manifest.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/agent-runtime-manifest.unknown-field.json",
+      "bytesSha256": "sha256:95a7c77208449a543e8744750a42d1a4c5546b274999d9b65a34391b844006a1",
+      "bytesLength": 2138,
+      "schema": {
+        "logicalId": "AgentRuntimeManifest",
+        "path": "contracts/agent/schemas/agent-runtime-manifest.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-manifest?digest=sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136",
+        "digest": "sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "adversarial-agent-runtime-result.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/agent-runtime-result.unknown-field.json",
+      "bytesSha256": "sha256:1edd85bf58e13e4d8a1959bb3422cf4daae14154983595914bc06a5a39a19003",
+      "bytesLength": 1247,
+      "schema": {
+        "logicalId": "AgentRuntimeResult",
+        "path": "contracts/agent/schemas/agent-runtime-result.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-result?digest=sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1",
+        "digest": "sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "adversarial-agent-stream-delta.unknown-field",
       "path": "contracts/agent/fixtures/adversarial/agent-stream-delta.unknown-field.json",
       "bytesSha256": "sha256:632cdc00c81d2cb9f694313004d6542c29a28594c89b24b98cde3cabaf60e90e",
@@ -381,13 +461,13 @@
     {
       "id": "adversarial-apply-authorization.unknown-field",
       "path": "contracts/agent/fixtures/adversarial/apply-authorization.unknown-field.json",
-      "bytesSha256": "sha256:c945fbfb7e728ae2d25e59478ffb0d2b1fad9078d8982fbffbd637cabf82274e",
-      "bytesLength": 1231,
+      "bytesSha256": "sha256:e2a1fde8e5138f702e4e5c66221d0d6766eb9a7e0bb76e4972f6897ac680b467",
+      "bytesLength": 1325,
       "schema": {
         "logicalId": "ApplyAuthorization",
         "path": "contracts/agent/schemas/apply-authorization.schema.json",
-        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b",
-        "digest": "sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b"
+        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8",
+        "digest": "sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8"
       },
       "category": "adversarial",
       "tags": [
@@ -459,6 +539,86 @@
       "synthetic": true
     },
     {
+      "id": "adversarial-artifact-content-grant.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/artifact-content-grant.unknown-field.json",
+      "bytesSha256": "sha256:b7648477471ec30f30509d43093cd83ab5c6607d057f8e1c603f71f783dbb421",
+      "bytesLength": 377,
+      "schema": {
+        "logicalId": "ArtifactContentGrant",
+        "path": "contracts/agent/schemas/artifact-content-grant.schema.json",
+        "logicalUri": "anvilkit://schema/artifact-content-grant?digest=sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c",
+        "digest": "sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "adversarial-catalog-snapshot.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/catalog-snapshot.unknown-field.json",
+      "bytesSha256": "sha256:9304ec4143b60bc76ea160b076d5bf3f1fbe43a671f83fb1a69de6ea71f8e73d",
+      "bytesLength": 456,
+      "schema": {
+        "logicalId": "CatalogSnapshot",
+        "path": "contracts/agent/schemas/catalog-snapshot.schema.json",
+        "logicalUri": "anvilkit://schema/catalog-snapshot?digest=sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573",
+        "digest": "sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "adversarial-compiled-context.unknown-field",
       "path": "contracts/agent/fixtures/adversarial/compiled-context.unknown-field.json",
       "bytesSha256": "sha256:295d24b2f4d46c301cb14344345dada94f2b860d82c50d98611155d74f49c18c",
@@ -468,6 +628,86 @@
         "path": "contracts/agent/schemas/compiled-context.schema.json",
         "logicalUri": "anvilkit://schema/compiled-context?digest=sha256:e535dd923ac156840b06932f5a54aa7e70ea6dcc6f0bce8314a6e562ad784c33",
         "digest": "sha256:e535dd923ac156840b06932f5a54aa7e70ea6dcc6f0bce8314a6e562ad784c33"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "adversarial-component-design-spec.publication-grant",
+      "path": "contracts/agent/fixtures/adversarial/component-design-spec.publication-grant.json",
+      "bytesSha256": "sha256:be542872f7b981bf5865c95a3d360f212f48b9f28c32ea4a4f9684843c0d0875",
+      "bytesLength": 521,
+      "schema": {
+        "logicalId": "ComponentDesignSpec",
+        "path": "contracts/agent/schemas/component-design-spec.schema.json",
+        "logicalUri": "anvilkit://schema/component-design-spec?digest=sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236",
+        "digest": "sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "adversarial-component-design-spec.source-bundle",
+      "path": "contracts/agent/fixtures/adversarial/component-design-spec.source-bundle.json",
+      "bytesSha256": "sha256:1c47cbf3cf51c9a1879918139a8c0e57c6a2b20e0fa6b941aadd180159137a0c",
+      "bytesLength": 657,
+      "schema": {
+        "logicalId": "ComponentDesignSpec",
+        "path": "contracts/agent/schemas/component-design-spec.schema.json",
+        "logicalUri": "anvilkit://schema/component-design-spec?digest=sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236",
+        "digest": "sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236"
       },
       "category": "adversarial",
       "tags": [
@@ -1049,15 +1289,250 @@
       "synthetic": true
     },
     {
+      "id": "adversarial-issue-artifact-content-grant-request.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/issue-artifact-content-grant-request.unknown-field.json",
+      "bytesSha256": "sha256:1e32d27be1f2e5070033d33a76cb5debfcbcf308baaba8fa7465b5ccbb9fd394",
+      "bytesLength": 153,
+      "schema": {
+        "logicalId": "IssueArtifactContentGrantRequest",
+        "path": "contracts/agent/schemas/issue-artifact-content-grant-request.schema.json",
+        "logicalUri": "anvilkit://schema/issue-artifact-content-grant-request?digest=sha256:2270580ea7b2e0226b8450130e4ee7312db2b101650fc012ea2f90823892c0b1",
+        "digest": "sha256:2270580ea7b2e0226b8450130e4ee7312db2b101650fc012ea2f90823892c0b1"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "adversarial-issued-apply-authorization.unknown-field",
       "path": "contracts/agent/fixtures/adversarial/issued-apply-authorization.unknown-field.json",
-      "bytesSha256": "sha256:a8624c47b0eb5c394b3d176f99a016c94fec86e26ffdea4e8983ef320e00a715",
-      "bytesLength": 1548,
+      "bytesSha256": "sha256:9b7953075f9d9371709b86562ae0396479fec77b3982b98df027d3fabe1767a3",
+      "bytesLength": 1644,
       "schema": {
         "logicalId": "IssuedApplyAuthorization",
         "path": "contracts/agent/schemas/issued-apply-authorization.schema.json",
-        "logicalUri": "anvilkit://schema/issued-apply-authorization?digest=sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf",
-        "digest": "sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf"
+        "logicalUri": "anvilkit://schema/issued-apply-authorization?digest=sha256:c9a436fa08c5e1c43c1bbfda5ad87e0b7aa4c1d2ada620929284028fbb7b3b5e",
+        "digest": "sha256:c9a436fa08c5e1c43c1bbfda5ad87e0b7aa4c1d2ada620929284028fbb7b3b5e"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "adversarial-page-candidate.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/page-candidate.unknown-field.json",
+      "bytesSha256": "sha256:acb95aff82a362500534301ff0ceaa3ba93eca78e8fdc95acda7d5f08f4bcfd3",
+      "bytesLength": 1642,
+      "schema": {
+        "logicalId": "PageCandidate",
+        "path": "contracts/agent/schemas/page-candidate.schema.json",
+        "logicalUri": "anvilkit://schema/page-candidate?digest=sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69",
+        "digest": "sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "adversarial-page-preview-result.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/page-preview-result.unknown-field.json",
+      "bytesSha256": "sha256:e5d09b052e3fc5d58e437b84e593d52bc78b45a8fccb0beaa5ec8723810fd67f",
+      "bytesLength": 796,
+      "schema": {
+        "logicalId": "PagePreviewResult",
+        "path": "contracts/agent/schemas/page-preview-result.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-result?digest=sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7",
+        "digest": "sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "adversarial-page-preview-task.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/page-preview-task.unknown-field.json",
+      "bytesSha256": "sha256:74cfdd01807ffeb1ec0ac55d393bebe7726ec2347ea6b183a5c6a5fea687c3b5",
+      "bytesLength": 1532,
+      "schema": {
+        "logicalId": "PagePreviewTask",
+        "path": "contracts/agent/schemas/page-preview-task.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-task?digest=sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2",
+        "digest": "sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "adversarial-pagix-commit-receipt.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/pagix-commit-receipt.unknown-field.json",
+      "bytesSha256": "sha256:c4694cd349a66b1dedcfd0f8686b79357605936a713a15c4722eb8ec55d0d8d2",
+      "bytesLength": 897,
+      "schema": {
+        "logicalId": "PagixCommitReceipt",
+        "path": "contracts/agent/schemas/pagix-commit-receipt.schema.json",
+        "logicalUri": "anvilkit://schema/pagix-commit-receipt?digest=sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2",
+        "digest": "sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2"
+      },
+      "category": "adversarial",
+      "tags": [
+        "adversarial"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/additionalProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/maxProperties"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "adversarial-persist-authorized-page-request.unknown-field",
+      "path": "contracts/agent/fixtures/adversarial/persist-authorized-page-request.unknown-field.json",
+      "bytesSha256": "sha256:2065855840e66b3599140773d1533b9aa4d885bb259a630f2bc054477023e83b",
+      "bytesLength": 3534,
+      "schema": {
+        "logicalId": "PersistAuthorizedPageRequest",
+        "path": "contracts/agent/schemas/persist-authorized-page-request.schema.json",
+        "logicalUri": "anvilkit://schema/persist-authorized-page-request?digest=sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6",
+        "digest": "sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6"
       },
       "category": "adversarial",
       "tags": [
@@ -2184,6 +2659,86 @@
       "synthetic": true
     },
     {
+      "id": "invalid-agent-runtime-manifest.missing-workload",
+      "path": "contracts/agent/fixtures/invalid/agent-runtime-manifest.missing-workload.json",
+      "bytesSha256": "sha256:14dc7ea065bba15eb00bd2da0bcd53492c11e433db469477a1421c109094d164",
+      "bytesLength": 1805,
+      "schema": {
+        "logicalId": "AgentRuntimeManifest",
+        "path": "contracts/agent/schemas/agent-runtime-manifest.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-manifest?digest=sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136",
+        "digest": "sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-agent-runtime-result.missing-provenance",
+      "path": "contracts/agent/fixtures/invalid/agent-runtime-result.missing-provenance.json",
+      "bytesSha256": "sha256:f2b48e91364c6122c5f3f5420ab5bf1caf7ecdb34703a0eb6742417ee7b060a3",
+      "bytesLength": 951,
+      "schema": {
+        "logicalId": "AgentRuntimeResult",
+        "path": "contracts/agent/schemas/agent-runtime-result.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-result?digest=sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1",
+        "digest": "sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "invalid-agent-stream-delta.not-provisional",
       "path": "contracts/agent/fixtures/invalid/agent-stream-delta.not-provisional.json",
       "bytesSha256": "sha256:5dd3534709f2d7f889f5744578ca8ec7d4ebe508baf1380523a9158748d0d4c6",
@@ -2296,13 +2851,13 @@
     {
       "id": "invalid-apply-authorization.cross-workspace",
       "path": "contracts/agent/fixtures/invalid/apply-authorization.cross-workspace.json",
-      "bytesSha256": "sha256:a5146ab67ac8c8091d64456f22bebdccab4193db1b30fb84f42aed4c42b8fe59",
-      "bytesLength": 1194,
+      "bytesSha256": "sha256:17722fc4ce156d1289626b4aa5625ef944910cce1784969d8b7064f666d6c22d",
+      "bytesLength": 1288,
       "schema": {
         "logicalId": "ApplyAuthorization",
         "path": "contracts/agent/schemas/apply-authorization.schema.json",
-        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b",
-        "digest": "sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b"
+        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8",
+        "digest": "sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8"
       },
       "category": "invalid",
       "tags": [
@@ -2331,13 +2886,13 @@
     {
       "id": "invalid-apply-authorization.missing-authorizationId",
       "path": "contracts/agent/fixtures/invalid/apply-authorization.missing-authorizationId.json",
-      "bytesSha256": "sha256:0f5b04ccb78d876cff7acdd5f69720737eda5caa16f8e12788449e69a68442e5",
-      "bytesLength": 1138,
+      "bytesSha256": "sha256:5ef17a33b275ae4df0f67a7fe37087573e9ca3ecd30482ca1dce514c6ac93a3f",
+      "bytesLength": 1232,
       "schema": {
         "logicalId": "ApplyAuthorization",
         "path": "contracts/agent/schemas/apply-authorization.schema.json",
-        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b",
-        "digest": "sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b"
+        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8",
+        "digest": "sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8"
       },
       "category": "invalid",
       "tags": [
@@ -2409,6 +2964,121 @@
       "synthetic": true
     },
     {
+      "id": "invalid-artifact-content-grant.missing-expiry",
+      "path": "contracts/agent/fixtures/invalid/artifact-content-grant.missing-expiry.json",
+      "bytesSha256": "sha256:603ac85d9d77f31b92451a80bc6c363d511a6c1b566a279925977ed3347056dc",
+      "bytesLength": 298,
+      "schema": {
+        "logicalId": "ArtifactContentGrant",
+        "path": "contracts/agent/schemas/artifact-content-grant.schema.json",
+        "logicalUri": "anvilkit://schema/artifact-content-grant?digest=sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c",
+        "digest": "sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-artifact-content-grant.ungoverned-purpose",
+      "path": "contracts/agent/fixtures/invalid/artifact-content-grant.ungoverned-purpose.json",
+      "bytesSha256": "sha256:ecdaab5ab27ce92836db6e0775bf270b6a462e6c093827084a4cc8589b88a902",
+      "bytesLength": 342,
+      "schema": {
+        "logicalId": "ArtifactContentGrant",
+        "path": "contracts/agent/schemas/artifact-content-grant.schema.json",
+        "logicalUri": "anvilkit://schema/artifact-content-grant?digest=sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c",
+        "digest": "sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/purpose",
+            "schemaPath": "#/properties/purpose/enum"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-catalog-snapshot.missing-puck-runtime",
+      "path": "contracts/agent/fixtures/invalid/catalog-snapshot.missing-puck-runtime.json",
+      "bytesSha256": "sha256:eb98587a8e734794b328daa6a95d7855914b541905478929947d8b163770f5f1",
+      "bytesLength": 341,
+      "schema": {
+        "logicalId": "CatalogSnapshot",
+        "path": "contracts/agent/schemas/catalog-snapshot.schema.json",
+        "logicalUri": "anvilkit://schema/catalog-snapshot?digest=sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573",
+        "digest": "sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "invalid-compiled-context.missing-orderedTrustLayers",
       "path": "contracts/agent/fixtures/invalid/compiled-context.missing-orderedTrustLayers.json",
       "bytesSha256": "sha256:7dc723137d6ccb4ee3228a5edea7a2640426b409e66574673fd275a137e414e1",
@@ -2418,6 +3088,46 @@
         "path": "contracts/agent/schemas/compiled-context.schema.json",
         "logicalUri": "anvilkit://schema/compiled-context?digest=sha256:e535dd923ac156840b06932f5a54aa7e70ea6dcc6f0bce8314a6e562ad784c33",
         "digest": "sha256:e535dd923ac156840b06932f5a54aa7e70ea6dcc6f0bce8314a6e562ad784c33"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-component-design-spec.missing-namespace",
+      "path": "contracts/agent/fixtures/invalid/component-design-spec.missing-namespace.json",
+      "bytesSha256": "sha256:59941fca7cf4cf5b960c6da941d9f76a156bc9e65a947b6f80d990c99851ba6a",
+      "bytesLength": 350,
+      "schema": {
+        "logicalId": "ComponentDesignSpec",
+        "path": "contracts/agent/schemas/component-design-spec.schema.json",
+        "logicalUri": "anvilkit://schema/component-design-spec?digest=sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236",
+        "digest": "sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236"
       },
       "category": "invalid",
       "tags": [
@@ -3224,15 +3934,325 @@
       "synthetic": true
     },
     {
+      "id": "invalid-issue-artifact-content-grant-request.missing-purpose",
+      "path": "contracts/agent/fixtures/invalid/issue-artifact-content-grant-request.missing-purpose.json",
+      "bytesSha256": "sha256:bf555aede6422a58a7ffa550c01e0d88c6756ea8eb463ca2db5ed1d2b821a680",
+      "bytesLength": 95,
+      "schema": {
+        "logicalId": "IssueArtifactContentGrantRequest",
+        "path": "contracts/agent/schemas/issue-artifact-content-grant-request.schema.json",
+        "logicalUri": "anvilkit://schema/issue-artifact-content-grant-request?digest=sha256:2270580ea7b2e0226b8450130e4ee7312db2b101650fc012ea2f90823892c0b1",
+        "digest": "sha256:2270580ea7b2e0226b8450130e4ee7312db2b101650fc012ea2f90823892c0b1"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-issue-artifact-content-grant-request.ungoverned-purpose",
+      "path": "contracts/agent/fixtures/invalid/issue-artifact-content-grant-request.ungoverned-purpose.json",
+      "bytesSha256": "sha256:055fb6db216b5f0787f1b7084e5ea74c47a53103a045e49497cd35ce0de5ec0a",
+      "bytesLength": 118,
+      "schema": {
+        "logicalId": "IssueArtifactContentGrantRequest",
+        "path": "contracts/agent/schemas/issue-artifact-content-grant-request.schema.json",
+        "logicalUri": "anvilkit://schema/issue-artifact-content-grant-request?digest=sha256:2270580ea7b2e0226b8450130e4ee7312db2b101650fc012ea2f90823892c0b1",
+        "digest": "sha256:2270580ea7b2e0226b8450130e4ee7312db2b101650fc012ea2f90823892c0b1"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/purpose",
+            "schemaPath": "#/properties/purpose/enum"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "invalid-issued-apply-authorization.missing-compact-jws",
       "path": "contracts/agent/fixtures/invalid/issued-apply-authorization.missing-compact-jws.json",
-      "bytesSha256": "sha256:49592be40f24ca381e78f6a63ed032a66082c43107e596e5ca30ed7cd80c89ee",
-      "bytesLength": 1301,
+      "bytesSha256": "sha256:d3b70cceb99d0d4fc939681156c5e93bcd2e995d60f050531b51ba475275d517",
+      "bytesLength": 1397,
       "schema": {
         "logicalId": "IssuedApplyAuthorization",
         "path": "contracts/agent/schemas/issued-apply-authorization.schema.json",
-        "logicalUri": "anvilkit://schema/issued-apply-authorization?digest=sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf",
-        "digest": "sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf"
+        "logicalUri": "anvilkit://schema/issued-apply-authorization?digest=sha256:c9a436fa08c5e1c43c1bbfda5ad87e0b7aa4c1d2ada620929284028fbb7b3b5e",
+        "digest": "sha256:c9a436fa08c5e1c43c1bbfda5ad87e0b7aa4c1d2ada620929284028fbb7b3b5e"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-page-candidate.missing-digests",
+      "path": "contracts/agent/fixtures/invalid/page-candidate.missing-digests.json",
+      "bytesSha256": "sha256:03c2397acd0e6e461368af387f99a2d35271bcec2a883d665fe00cf0a3bc404e",
+      "bytesLength": 1089,
+      "schema": {
+        "logicalId": "PageCandidate",
+        "path": "contracts/agent/schemas/page-candidate.schema.json",
+        "logicalUri": "anvilkit://schema/page-candidate?digest=sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69",
+        "digest": "sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-page-preview-result.missing-worker-environment",
+      "path": "contracts/agent/fixtures/invalid/page-preview-result.missing-worker-environment.json",
+      "bytesSha256": "sha256:c83acd64c5f1d84a332ade4055aef903ab9ae08b6625e6de38a1c916f231b2d6",
+      "bytesLength": 553,
+      "schema": {
+        "logicalId": "PagePreviewResult",
+        "path": "contracts/agent/schemas/page-preview-result.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-result?digest=sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7",
+        "digest": "sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-page-preview-task.missing-expected",
+      "path": "contracts/agent/fixtures/invalid/page-preview-task.missing-expected.json",
+      "bytesSha256": "sha256:38f52b235d7842b6671ceb897084cb195cdea045db51be8fd15b821af6485663",
+      "bytesLength": 1156,
+      "schema": {
+        "logicalId": "PagePreviewTask",
+        "path": "contracts/agent/schemas/page-preview-task.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-task?digest=sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2",
+        "digest": "sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-pagix-commit-receipt.denied-decision",
+      "path": "contracts/agent/fixtures/invalid/pagix-commit-receipt.denied-decision.json",
+      "bytesSha256": "sha256:087535dff0258dc7651a07d860e545bf90b464e8bc97d7d6a0a097ab8d810556",
+      "bytesLength": 866,
+      "schema": {
+        "logicalId": "PagixCommitReceipt",
+        "path": "contracts/agent/schemas/pagix-commit-receipt.schema.json",
+        "logicalUri": "anvilkit://schema/pagix-commit-receipt?digest=sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2",
+        "digest": "sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/permissionDecision/decision",
+            "schemaPath": "#/properties/permissionDecision/properties/decision/enum"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-pagix-commit-receipt.missing-outbox-id",
+      "path": "contracts/agent/fixtures/invalid/pagix-commit-receipt.missing-outbox-id.json",
+      "bytesSha256": "sha256:892a015d781bd530d1fd86881b3a7f9a51cf0ded99d54c3a3fecdd03e95cfe9f",
+      "bytesLength": 829,
+      "schema": {
+        "logicalId": "PagixCommitReceipt",
+        "path": "contracts/agent/schemas/pagix-commit-receipt.schema.json",
+        "logicalUri": "anvilkit://schema/pagix-commit-receipt?digest=sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2",
+        "digest": "sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2"
+      },
+      "category": "invalid",
+      "tags": [
+        "invalid"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": false,
+        "findings": [
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/minProperties"
+          },
+          {
+            "code": "VALIDATION_FAILED",
+            "instancePath": "/",
+            "schemaPath": "#/required"
+          }
+        ],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "invalid-persist-authorized-page-request.missing-page-document-digest",
+      "path": "contracts/agent/fixtures/invalid/persist-authorized-page-request.missing-page-document-digest.json",
+      "bytesSha256": "sha256:f43be9bca8b6c1f26cf30b40393e79dc9997dd708a0068290ecbb24ca09554b0",
+      "bytesLength": 3361,
+      "schema": {
+        "logicalId": "PersistAuthorizedPageRequest",
+        "path": "contracts/agent/schemas/persist-authorized-page-request.schema.json",
+        "logicalUri": "anvilkit://schema/persist-authorized-page-request?digest=sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6",
+        "digest": "sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6"
       },
       "category": "invalid",
       "tags": [
@@ -4285,6 +5305,180 @@
       "synthetic": true
     },
     {
+      "id": "valid-agent-runtime-manifest.full",
+      "path": "contracts/agent/fixtures/valid/agent-runtime-manifest.full.json",
+      "bytesSha256": "sha256:0b637f5989188aeb8bc98d07bfc8e14f2431c04f96f894f4e28cc11acc037901",
+      "bytesLength": 2144,
+      "schema": {
+        "logicalId": "AgentRuntimeManifest",
+        "path": "contracts/agent/schemas/agent-runtime-manifest.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-manifest?digest=sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136",
+        "digest": "sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-agent-runtime-manifest.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/agent-runtime-manifest.maximum-bound.json",
+      "bytesSha256": "sha256:bc706db54e49c39f698dc962179296332c433ae97852319c324f8a08d6373645",
+      "bytesLength": 6366,
+      "schema": {
+        "logicalId": "AgentRuntimeManifest",
+        "path": "contracts/agent/schemas/agent-runtime-manifest.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-manifest?digest=sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136",
+        "digest": "sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-agent-runtime-manifest.minimum",
+      "path": "contracts/agent/fixtures/valid/agent-runtime-manifest.minimum.json",
+      "bytesSha256": "sha256:f01852f5edeef880574d516f0b207fb58bc4f789e8f38872cd170afbd4cb3261",
+      "bytesLength": 2078,
+      "schema": {
+        "logicalId": "AgentRuntimeManifest",
+        "path": "contracts/agent/schemas/agent-runtime-manifest.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-manifest?digest=sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136",
+        "digest": "sha256:de8a0324315e3f25201113a5b03dd320c1025bba2ef313cbbd25e4e910b10136"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-agent-runtime-result.full",
+      "path": "contracts/agent/fixtures/valid/agent-runtime-result.full.json",
+      "bytesSha256": "sha256:ddaa4b84a24caf4c14c294cd9ddb91acec9b37ca1d47d9b0ee112448a6bc8dc3",
+      "bytesLength": 1562,
+      "schema": {
+        "logicalId": "AgentRuntimeResult",
+        "path": "contracts/agent/schemas/agent-runtime-result.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-result?digest=sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1",
+        "digest": "sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-agent-runtime-result.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/agent-runtime-result.maximum-bound.json",
+      "bytesSha256": "sha256:9d6b7baf52ac5bdf51cb78a3f56a7ec1ae502aa2675e9c91d7c01eb0b56c51c5",
+      "bytesLength": 9440,
+      "schema": {
+        "logicalId": "AgentRuntimeResult",
+        "path": "contracts/agent/schemas/agent-runtime-result.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-result?digest=sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1",
+        "digest": "sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-agent-runtime-result.minimum",
+      "path": "contracts/agent/fixtures/valid/agent-runtime-result.minimum.json",
+      "bytesSha256": "sha256:62cb620116ae3e37bf549bafb5dab539afe4e49e0140a1cd14907dc060f8a2bf",
+      "bytesLength": 1214,
+      "schema": {
+        "logicalId": "AgentRuntimeResult",
+        "path": "contracts/agent/schemas/agent-runtime-result.schema.json",
+        "logicalUri": "anvilkit://schema/agent-runtime-result?digest=sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1",
+        "digest": "sha256:8272047727a6a468e4bddbd579cf26c7c7307fce63b5f50297c933dbda2392d1"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "valid-agent-stream-delta.full",
       "path": "contracts/agent/fixtures/valid/agent-stream-delta.full.json",
       "bytesSha256": "sha256:4314f7ea3b5050eab5b082063cebefe5c7d16c85d3f4689ef48aefdfeb6bf6de",
@@ -4432,13 +5626,13 @@
     {
       "id": "valid-apply-authorization.full",
       "path": "contracts/agent/fixtures/valid/apply-authorization.full.json",
-      "bytesSha256": "sha256:7b6f7c09da77bab885b89006e1ef9094f84289aa09460d5913a509876bc3bca1",
-      "bytesLength": 1190,
+      "bytesSha256": "sha256:da9b1a423e12fa93a947d4747bce8c45630fbcf24c02c85036fd3482051572a5",
+      "bytesLength": 1284,
       "schema": {
         "logicalId": "ApplyAuthorization",
         "path": "contracts/agent/schemas/apply-authorization.schema.json",
-        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b",
-        "digest": "sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b"
+        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8",
+        "digest": "sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8"
       },
       "category": "full",
       "tags": [
@@ -4461,13 +5655,13 @@
     {
       "id": "valid-apply-authorization.maximum-bound",
       "path": "contracts/agent/fixtures/valid/apply-authorization.maximum-bound.json",
-      "bytesSha256": "sha256:e0154a43c20b7022bd84ba64f7fea47af9b8018354c70e224085808c52e9d70c",
-      "bytesLength": 1291,
+      "bytesSha256": "sha256:2eaee69f1f2d60c1f9f170db0de57d9805d5ad1f7112fd25f6fb982074acae0f",
+      "bytesLength": 1385,
       "schema": {
         "logicalId": "ApplyAuthorization",
         "path": "contracts/agent/schemas/apply-authorization.schema.json",
-        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b",
-        "digest": "sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b"
+        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8",
+        "digest": "sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8"
       },
       "category": "maximum-bound",
       "tags": [
@@ -4490,13 +5684,13 @@
     {
       "id": "valid-apply-authorization.minimum",
       "path": "contracts/agent/fixtures/valid/apply-authorization.minimum.json",
-      "bytesSha256": "sha256:dd924fd83abc1a0a1628b3cde0746aa7199f12e1094267cb349ab0e4a963c13e",
-      "bytesLength": 1190,
+      "bytesSha256": "sha256:6ea25da1ac3a581b45d39748a3f9381edafe38193032701042c8e6cedfb858b8",
+      "bytesLength": 1284,
       "schema": {
         "logicalId": "ApplyAuthorization",
         "path": "contracts/agent/schemas/apply-authorization.schema.json",
-        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b",
-        "digest": "sha256:ad07f9d74ca750dac5b682247ee8109501c4d165aea4d1024f1fa316b92e3e1b"
+        "logicalUri": "anvilkit://schema/apply-authorization?digest=sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8",
+        "digest": "sha256:f9605d14fe8ea298ca523316c947202d5b3e43f87d6b31519cb36c1051ecd1f8"
       },
       "category": "minimum",
       "tags": [
@@ -4604,6 +5798,180 @@
       "synthetic": true
     },
     {
+      "id": "valid-artifact-content-grant.full",
+      "path": "contracts/agent/fixtures/valid/artifact-content-grant.full.json",
+      "bytesSha256": "sha256:814145977c9e1ac98d045da685e49247b63886a8a0062f9e606358d94e24dd6e",
+      "bytesLength": 358,
+      "schema": {
+        "logicalId": "ArtifactContentGrant",
+        "path": "contracts/agent/schemas/artifact-content-grant.schema.json",
+        "logicalUri": "anvilkit://schema/artifact-content-grant?digest=sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c",
+        "digest": "sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-artifact-content-grant.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/artifact-content-grant.maximum-bound.json",
+      "bytesSha256": "sha256:64e5832971372ab8576010c48dde4ea5b8b5ed576482f2e18c260da1a49ddb73",
+      "bytesLength": 4633,
+      "schema": {
+        "logicalId": "ArtifactContentGrant",
+        "path": "contracts/agent/schemas/artifact-content-grant.schema.json",
+        "logicalUri": "anvilkit://schema/artifact-content-grant?digest=sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c",
+        "digest": "sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-artifact-content-grant.minimum",
+      "path": "contracts/agent/fixtures/valid/artifact-content-grant.minimum.json",
+      "bytesSha256": "sha256:d6ec6823aaad927b3c2d3ceab928f1d773bc16dad46b8bc32582344380ba39f4",
+      "bytesLength": 341,
+      "schema": {
+        "logicalId": "ArtifactContentGrant",
+        "path": "contracts/agent/schemas/artifact-content-grant.schema.json",
+        "logicalUri": "anvilkit://schema/artifact-content-grant?digest=sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c",
+        "digest": "sha256:d4608f216d773faf2747d5350440deb844e17d93a7602e06397d0f18d1c81a3c"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-catalog-snapshot.full",
+      "path": "contracts/agent/fixtures/valid/catalog-snapshot.full.json",
+      "bytesSha256": "sha256:630ae204abb7d4ea164f849751070cb7b31c751cd0816f6abc050c9e28d5edcf",
+      "bytesLength": 2164,
+      "schema": {
+        "logicalId": "CatalogSnapshot",
+        "path": "contracts/agent/schemas/catalog-snapshot.schema.json",
+        "logicalUri": "anvilkit://schema/catalog-snapshot?digest=sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573",
+        "digest": "sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-catalog-snapshot.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/catalog-snapshot.maximum-bound.json",
+      "bytesSha256": "sha256:68ebcef13796f99142a70e188e20bfe988ee018350f65fcd6907686caed05714",
+      "bytesLength": 843542,
+      "schema": {
+        "logicalId": "CatalogSnapshot",
+        "path": "contracts/agent/schemas/catalog-snapshot.schema.json",
+        "logicalUri": "anvilkit://schema/catalog-snapshot?digest=sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573",
+        "digest": "sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-catalog-snapshot.minimum",
+      "path": "contracts/agent/fixtures/valid/catalog-snapshot.minimum.json",
+      "bytesSha256": "sha256:7938be22ca1f181b14b10a4e768a0190e6e31eb30f2c2444c55867edb2dd006c",
+      "bytesLength": 427,
+      "schema": {
+        "logicalId": "CatalogSnapshot",
+        "path": "contracts/agent/schemas/catalog-snapshot.schema.json",
+        "logicalUri": "anvilkit://schema/catalog-snapshot?digest=sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573",
+        "digest": "sha256:b5eeea33cae5a3d543ecffaf9ce39cd0401d651468963174db6414b699a12573"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "valid-compiled-context.full",
       "path": "contracts/agent/fixtures/valid/compiled-context.full.json",
       "bytesSha256": "sha256:163ac8529845c59dee9b9a3716e2667a0ac253ce3582741e7dffd34ac74043ae",
@@ -4671,6 +6039,93 @@
         "path": "contracts/agent/schemas/compiled-context.schema.json",
         "logicalUri": "anvilkit://schema/compiled-context?digest=sha256:e535dd923ac156840b06932f5a54aa7e70ea6dcc6f0bce8314a6e562ad784c33",
         "digest": "sha256:e535dd923ac156840b06932f5a54aa7e70ea6dcc6f0bce8314a6e562ad784c33"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-component-design-spec.full",
+      "path": "contracts/agent/fixtures/valid/component-design-spec.full.json",
+      "bytesSha256": "sha256:3ab07e37878e1bda94d369f2e6f9cf81e38474af055ba1ab9fdad827e68edeb1",
+      "bytesLength": 2081,
+      "schema": {
+        "logicalId": "ComponentDesignSpec",
+        "path": "contracts/agent/schemas/component-design-spec.schema.json",
+        "logicalUri": "anvilkit://schema/component-design-spec?digest=sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236",
+        "digest": "sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-component-design-spec.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/component-design-spec.maximum-bound.json",
+      "bytesSha256": "sha256:bd7269e249bb59e82e5407ef93096cd46557e3bb6f6133727c328c765ce849c4",
+      "bytesLength": 222521,
+      "schema": {
+        "logicalId": "ComponentDesignSpec",
+        "path": "contracts/agent/schemas/component-design-spec.schema.json",
+        "logicalUri": "anvilkit://schema/component-design-spec?digest=sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236",
+        "digest": "sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-component-design-spec.minimum",
+      "path": "contracts/agent/fixtures/valid/component-design-spec.minimum.json",
+      "bytesSha256": "sha256:b0da0189ce548e23d0c6f94f8f53b55d95370f78f350fe27c503052f3f9bb2c1",
+      "bytesLength": 444,
+      "schema": {
+        "logicalId": "ComponentDesignSpec",
+        "path": "contracts/agent/schemas/component-design-spec.schema.json",
+        "logicalUri": "anvilkit://schema/component-design-spec?digest=sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236",
+        "digest": "sha256:6d27019db26929dca79a2d30871952e3e2c7b902ef4e67e30e2d6520d1702236"
       },
       "category": "minimum",
       "tags": [
@@ -5155,15 +6610,479 @@
       "synthetic": true
     },
     {
+      "id": "valid-issue-artifact-content-grant-request.minimum",
+      "path": "contracts/agent/fixtures/valid/issue-artifact-content-grant-request.minimum.json",
+      "bytesSha256": "sha256:1795bf5ae5d649637451e973e40f93baae940efe96e9ca4728acf134b2e60e69",
+      "bytesLength": 118,
+      "schema": {
+        "logicalId": "IssueArtifactContentGrantRequest",
+        "path": "contracts/agent/schemas/issue-artifact-content-grant-request.schema.json",
+        "logicalUri": "anvilkit://schema/issue-artifact-content-grant-request?digest=sha256:2270580ea7b2e0226b8450130e4ee7312db2b101650fc012ea2f90823892c0b1",
+        "digest": "sha256:2270580ea7b2e0226b8450130e4ee7312db2b101650fc012ea2f90823892c0b1"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
       "id": "valid-issued-apply-authorization.minimum",
       "path": "contracts/agent/fixtures/valid/issued-apply-authorization.minimum.json",
-      "bytesSha256": "sha256:bd21f3bd030dc021bea12b07c4c6259cca9480c146b72a72bce37064b09e7062",
-      "bytesLength": 1521,
+      "bytesSha256": "sha256:823b372b254e663a02ca54c7ce35e7aa34f1fcb01eaa9465fc9618d8ce13886c",
+      "bytesLength": 1617,
       "schema": {
         "logicalId": "IssuedApplyAuthorization",
         "path": "contracts/agent/schemas/issued-apply-authorization.schema.json",
-        "logicalUri": "anvilkit://schema/issued-apply-authorization?digest=sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf",
-        "digest": "sha256:6b6daee532a781483e8d3ccdc1a152e65837ad3529ba47d2b0c01e39a354dacf"
+        "logicalUri": "anvilkit://schema/issued-apply-authorization?digest=sha256:c9a436fa08c5e1c43c1bbfda5ad87e0b7aa4c1d2ada620929284028fbb7b3b5e",
+        "digest": "sha256:c9a436fa08c5e1c43c1bbfda5ad87e0b7aa4c1d2ada620929284028fbb7b3b5e"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-page-candidate.full",
+      "path": "contracts/agent/fixtures/valid/page-candidate.full.json",
+      "bytesSha256": "sha256:7faa8e8d80e541a121ccb7b29ecbe2a15bcbb64962bbaae6e277a62e281e1d9f",
+      "bytesLength": 2327,
+      "schema": {
+        "logicalId": "PageCandidate",
+        "path": "contracts/agent/schemas/page-candidate.schema.json",
+        "logicalUri": "anvilkit://schema/page-candidate?digest=sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69",
+        "digest": "sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-page-candidate.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/page-candidate.maximum-bound.json",
+      "bytesSha256": "sha256:ce2a84e199fc74ce2cd333a77ed307d1958ae54becb588aaf1a4bfd1bfd680e2",
+      "bytesLength": 77584,
+      "schema": {
+        "logicalId": "PageCandidate",
+        "path": "contracts/agent/schemas/page-candidate.schema.json",
+        "logicalUri": "anvilkit://schema/page-candidate?digest=sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69",
+        "digest": "sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-page-candidate.minimum",
+      "path": "contracts/agent/fixtures/valid/page-candidate.minimum.json",
+      "bytesSha256": "sha256:cb2cbea975fada6dd38abbef1bffd09ad93e14fa40d1745cd637e778e1428e46",
+      "bytesLength": 1593,
+      "schema": {
+        "logicalId": "PageCandidate",
+        "path": "contracts/agent/schemas/page-candidate.schema.json",
+        "logicalUri": "anvilkit://schema/page-candidate?digest=sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69",
+        "digest": "sha256:21292ad166afb23da381528343829ea2be75d7520364839759e9bd1d05f38e69"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-page-preview-result.full",
+      "path": "contracts/agent/fixtures/valid/page-preview-result.full.json",
+      "bytesSha256": "sha256:c8648c50aa78c9bda7306158d7e6322a151ba81440f2cc5987258660c96cdd61",
+      "bytesLength": 1881,
+      "schema": {
+        "logicalId": "PagePreviewResult",
+        "path": "contracts/agent/schemas/page-preview-result.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-result?digest=sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7",
+        "digest": "sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-page-preview-result.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/page-preview-result.maximum-bound.json",
+      "bytesSha256": "sha256:42a33e5048e7f0abc5cf1fef393083ec1b2e0345cd73806cc0ee21f1bde9d6ad",
+      "bytesLength": 216710,
+      "schema": {
+        "logicalId": "PagePreviewResult",
+        "path": "contracts/agent/schemas/page-preview-result.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-result?digest=sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7",
+        "digest": "sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-page-preview-result.minimum",
+      "path": "contracts/agent/fixtures/valid/page-preview-result.minimum.json",
+      "bytesSha256": "sha256:7d5d15c9529a15ee4c0cf8238d6f60e15886f2771fcafcf4cc73b49d4455ed0f",
+      "bytesLength": 776,
+      "schema": {
+        "logicalId": "PagePreviewResult",
+        "path": "contracts/agent/schemas/page-preview-result.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-result?digest=sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7",
+        "digest": "sha256:c71851a8c237da766ba1ae3a8986277949f6c2bfb9fda5319dc2b4a3a92041c7"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-page-preview-task.full",
+      "path": "contracts/agent/fixtures/valid/page-preview-task.full.json",
+      "bytesSha256": "sha256:d3e57c3a9b765525faed832e35bbaa2850a3bbfce5e6cf954665c6b16fb9b266",
+      "bytesLength": 1949,
+      "schema": {
+        "logicalId": "PagePreviewTask",
+        "path": "contracts/agent/schemas/page-preview-task.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-task?digest=sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2",
+        "digest": "sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-page-preview-task.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/page-preview-task.maximum-bound.json",
+      "bytesSha256": "sha256:a3ab87c4240dfe0779bf0c7872ca21fedd146e5f1efa03f48f08f4f8985d4217",
+      "bytesLength": 180577,
+      "schema": {
+        "logicalId": "PagePreviewTask",
+        "path": "contracts/agent/schemas/page-preview-task.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-task?digest=sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2",
+        "digest": "sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-page-preview-task.minimum",
+      "path": "contracts/agent/fixtures/valid/page-preview-task.minimum.json",
+      "bytesSha256": "sha256:ff6f92b94d76f5af62e58b5889ecb87c4be90909f5a88052dc4d45981acbef11",
+      "bytesLength": 1468,
+      "schema": {
+        "logicalId": "PagePreviewTask",
+        "path": "contracts/agent/schemas/page-preview-task.schema.json",
+        "logicalUri": "anvilkit://schema/page-preview-task?digest=sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2",
+        "digest": "sha256:e3e10aac6800a116f1a9e61154a97f41d0b3a749fdfdacccbf1ee506ad8fc1e2"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-pagix-commit-receipt.full",
+      "path": "contracts/agent/fixtures/valid/pagix-commit-receipt.full.json",
+      "bytesSha256": "sha256:563df0685debb9a077f10f2abfb21605dc44e6afb7efac29acd0199a17ddb4ca",
+      "bytesLength": 841,
+      "schema": {
+        "logicalId": "PagixCommitReceipt",
+        "path": "contracts/agent/schemas/pagix-commit-receipt.schema.json",
+        "logicalUri": "anvilkit://schema/pagix-commit-receipt?digest=sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2",
+        "digest": "sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-pagix-commit-receipt.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/pagix-commit-receipt.maximum-bound.json",
+      "bytesSha256": "sha256:669cdf9d4a66f11b0abb397e0a67fb5588055c81dbcc7d418d6b4689bfe13012",
+      "bytesLength": 1579,
+      "schema": {
+        "logicalId": "PagixCommitReceipt",
+        "path": "contracts/agent/schemas/pagix-commit-receipt.schema.json",
+        "logicalUri": "anvilkit://schema/pagix-commit-receipt?digest=sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2",
+        "digest": "sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-pagix-commit-receipt.minimum",
+      "path": "contracts/agent/fixtures/valid/pagix-commit-receipt.minimum.json",
+      "bytesSha256": "sha256:072825503cc7f5a9b77ed762970f66e7b3cd16acb4eb0087a0eb80251fdefdf0",
+      "bytesLength": 867,
+      "schema": {
+        "logicalId": "PagixCommitReceipt",
+        "path": "contracts/agent/schemas/pagix-commit-receipt.schema.json",
+        "logicalUri": "anvilkit://schema/pagix-commit-receipt?digest=sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2",
+        "digest": "sha256:cd7684170789b89099f2fb7fea40530414e4d40107341434bfec7b6e566ff9a2"
+      },
+      "category": "minimum",
+      "tags": [
+        "minimum"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-persist-authorized-page-request.full",
+      "path": "contracts/agent/fixtures/valid/persist-authorized-page-request.full.json",
+      "bytesSha256": "sha256:dd52a911f9aa9e4bdc901a1710e15572a97e1b11ff50418871c1454b2544978b",
+      "bytesLength": 3569,
+      "schema": {
+        "logicalId": "PersistAuthorizedPageRequest",
+        "path": "contracts/agent/schemas/persist-authorized-page-request.schema.json",
+        "logicalUri": "anvilkit://schema/persist-authorized-page-request?digest=sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6",
+        "digest": "sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6"
+      },
+      "category": "full",
+      "tags": [
+        "full"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-persist-authorized-page-request.maximum-bound",
+      "path": "contracts/agent/fixtures/valid/persist-authorized-page-request.maximum-bound.json",
+      "bytesSha256": "sha256:dbf565a374ba3a3df128ccc767373387b4080eb2bc5b1ce61f8fc10656d82f35",
+      "bytesLength": 1025990,
+      "schema": {
+        "logicalId": "PersistAuthorizedPageRequest",
+        "path": "contracts/agent/schemas/persist-authorized-page-request.schema.json",
+        "logicalUri": "anvilkit://schema/persist-authorized-page-request?digest=sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6",
+        "digest": "sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6"
+      },
+      "category": "maximum-bound",
+      "tags": [
+        "maximum-bound"
+      ],
+      "expected": {
+        "parse": "accepted",
+        "valid": true,
+        "findings": [],
+        "canonicalization": "jcs",
+        "signature": "not-applicable"
+      },
+      "applicableLanguages": [
+        "tooling",
+        "go",
+        "typescript"
+      ],
+      "synthetic": true
+    },
+    {
+      "id": "valid-persist-authorized-page-request.minimum",
+      "path": "contracts/agent/fixtures/valid/persist-authorized-page-request.minimum.json",
+      "bytesSha256": "sha256:746da6c793640b2a20296894e02bf26a2d41aac28b1727057e563c78582a60bd",
+      "bytesLength": 3460,
+      "schema": {
+        "logicalId": "PersistAuthorizedPageRequest",
+        "path": "contracts/agent/schemas/persist-authorized-page-request.schema.json",
+        "logicalUri": "anvilkit://schema/persist-authorized-page-request?digest=sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6",
+        "digest": "sha256:cf5c0112f9781b881023c475657e7048e189bbdca7b399f001d963ae50d3eaa6"
       },
       "category": "minimum",
       "tags": [
@@ -5360,13 +7279,13 @@
     {
       "id": "valid-registry-values.full",
       "path": "contracts/agent/fixtures/valid/registry-values.full.json",
-      "bytesSha256": "sha256:01ad4fe540b8da1752045b7d437f75083c08d7bee06e6714499ebd92c20feedb",
-      "bytesLength": 5834,
+      "bytesSha256": "sha256:e018e23bbeb1923ba6bfb7144eb5bb3d89ef477f3a55fd8b6a7517dafd6411bb",
+      "bytesLength": 6645,
       "schema": {
         "logicalId": "RegistrySetValues",
         "path": "contracts/agent/registries/registry-set.json",
-        "logicalUri": "anvilkit://registry/registry-set?digest=sha256:2cd87fc7a7c0f8a1e705a267e5393d0989056bf096da9499f418d659939f5bbe",
-        "digest": "sha256:2cd87fc7a7c0f8a1e705a267e5393d0989056bf096da9499f418d659939f5bbe"
+        "logicalUri": "anvilkit://registry/registry-set?digest=sha256:353896b7d7b600bb07c373e329f9c5aa3fd419ff6236d77bcd2c0d61f52acce6",
+        "digest": "sha256:353896b7d7b600bb07c373e329f9c5aa3fd419ff6236d77bcd2c0d61f52acce6"
       },
       "category": "full",
       "tags": [

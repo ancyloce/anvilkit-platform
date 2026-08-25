@@ -1,0 +1,75 @@
+{
+  "kind": "PagePreviewResult",
+  "candidateDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "screenshots": [
+    {
+      "viewportIndex": 0,
+      "artifact": {
+        "artifactId": "artifact.shot.000",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mediaType": "application/json",
+        "sizeBytes": 20480
+      }
+    },
+    {
+      "viewportIndex": 1,
+      "artifact": {
+        "artifactId": "artifact.shot.001",
+        "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "mediaType": "application/json",
+        "sizeBytes": 20480
+      }
+    }
+  ],
+  "viewportStatuses": [
+    {
+      "viewportIndex": 0,
+      "status": "rendered"
+    },
+    {
+      "viewportIndex": 1,
+      "status": "timed-out"
+    }
+  ],
+  "componentResolution": [
+    {
+      "componentId": "Hero",
+      "status": "resolved",
+      "detail": "resolved from pinned catalog"
+    },
+    {
+      "componentId": "LegacyBanner",
+      "status": "substituted",
+      "detail": "replaced with Hero"
+    }
+  ],
+  "policyViolations": [
+    {
+      "channel": "network",
+      "severity": "error",
+      "detail": "blocked request to an external host"
+    }
+  ],
+  "accessibilityFindings": [
+    {
+      "ruleId": "color-contrast",
+      "impact": "serious",
+      "nodeCount": 3
+    }
+  ],
+  "resourceUsage": {
+    "durationMilliseconds": 8400,
+    "peakMemoryBytes": 402653184,
+    "cpuMillis": 6100
+  },
+  "workerEnvironment": {
+    "imageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "environmentDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  },
+  "evidence": [
+    "evidence.001"
+  ]
+}

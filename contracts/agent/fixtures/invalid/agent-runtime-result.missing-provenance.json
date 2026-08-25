@@ -1,0 +1,28 @@
+{
+  "kind": "AgentRuntimeResult",
+  "taskId": "task.synthetic.001",
+  "runId": "run.synthetic.001",
+  "rootRunId": "run.synthetic.001",
+  "physicalAttemptId": "attempt.synthetic.001",
+  "executionGeneration": 0,
+  "selected": {
+    "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "imageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "turnDecision": {
+    "decision": "continue",
+    "payload": {},
+    "artifactOutputs": []
+  },
+  "usage": {
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "durationMilliseconds": 0
+  },
+  "diagnostics": [],
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  }
+}

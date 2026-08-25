@@ -1,0 +1,10 @@
+{
+  "kind": "ArtifactContentGrant",
+  "artifactId": "artifact.page.007",
+  "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "securityGeneration": 3,
+  "purpose": "review",
+  "actorId": "actor.page.007",
+  "url": "https://artifacts.example/page-007?token=synthetic&expires=1",
+  "expiresAt": "2026-08-24T00:00:00.000Z"
+}
