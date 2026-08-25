@@ -17,11 +17,16 @@ AgentEvent?: AgentEventContract
 AgentEvidence?: AgentEvidenceContract
 AgentRunSnapshot?: AgentRunSnapshotContract
 AgentRun?: AgentRunContract
+AgentRuntimeManifest?: AgentRuntimeManifestContract
+AgentRuntimeResult?: AgentRuntimeResultContract
 AgentStreamDelta?: AgentStreamDeltaContract
 AgentTask?: AgentTaskContract
 ApplyAuthorization?: ApplyAuthorizationContract
 ApprovalRequest?: ApprovalRequestContract
+ArtifactContentGrant?: ArtifactContentGrantContract
+CatalogSnapshot?: CatalogSnapshotContract
 CompiledContext?: CompiledContextContract
+ComponentDesignSpec?: ComponentDesignSpecContract
 ComponentPackageSpec?: ComponentPackageSpecContract
 ContractBom?: ContractBomContract
 ContractRevocationSnapshot?: ContractRevocationSnapshotContract
@@ -34,7 +39,13 @@ DecideArtifactCustodyRequest?: DecideArtifactCustodyRequestContract
 ImageOperationPlan?: ImageOperationPlanContract
 InputRequest?: InputRequestContract
 IssueApplyAuthorizationRequest?: IssueApplyAuthorizationRequestContract
+IssueArtifactContentGrantRequest?: IssueArtifactContentGrantRequestContract
 IssuedApplyAuthorization?: IssuedApplyAuthorizationContract
+PageCandidate?: PageCandidateContract
+PagePreviewResult?: PagePreviewResultContract
+PagePreviewTask?: PagePreviewTaskContract
+PagixCommitReceipt?: PagixCommitReceiptContract
+PersistAuthorizedPageRequest?: PersistAuthorizedPageRequestContract
 ProblemDetails?: ProblemDetailsContract
 ProviderContinuation?: ProviderContinuationContract
 ResolveDomainOperationRequest?: ResolveDomainOperationRequestContract
@@ -333,6 +344,508 @@ targetType: string
 workspaceId: SharedPrimitivesActorId
 }
 /**
+ * Immutable binding between one Agent Runtime Unit and the single AgentDefinition it is permitted to execute. It pins the image, provenance, and invocation protocol the unit was released with, the workload identity and the closed set of control-plane endpoints it may reach, and the queue, concurrency, resource, scaling, telemetry, drain, and rollback profile it is operated under. It carries execution-plane binding only: it never confers AgentRun, workflow, Tool, budget, approval, artifact, or business authority, and a runtime unit cannot reach another Agent Runtime Unit through it.
+ */
+export interface AgentRuntimeManifestContract {
+definition: SharedPrimitivesDefinitionReference
+execution: {
+cpuMillis: number
+maxConcurrency: number
+memoryBytes: number
+resourceClass: ("interactive-cpu" | "batch-cpu" | "interactive-gpu" | "batch-gpu")
+taskChannel: string
+timeoutMilliseconds: number
+}
+image: {
+imageDigest: SharedPrimitivesDigest
+provenanceDigest: SharedPrimitivesDigest
+signatureDigest: SharedPrimitivesDigest
+sourceCommit: string
+}
+kind: "AgentRuntimeManifest"
+protocol: {
+contractBomReference: SharedPrimitivesContractBomReference
+invocationProtocolDigest: SharedPrimitivesDigest
+}
+release: {
+drainSeconds: number
+owner: string
+rollbackTarget: SharedPrimitivesDigest
+rolloutPolicy: "new-runs-only"
+}
+runtimeUnitId: SharedPrimitivesActorId
+scaling: {
+maxReplicas: number
+minReplicas: number
+targetConcurrency: number
+}
+telemetry: {
+healthPath: string
+namespace: string
+readinessPath: string
+}
+workload: {
+/**
+ * @minItems 1
+ * @maxItems 16
+ */
+allowedControlPlaneEndpoints: [string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+audience: string
+networkPolicy: "deny-all-except-allowed-endpoints"
+workloadIdentity: string
+}
+}
+/**
+ * Signed, bounded result returned by one Agent Runtime Unit for exactly one AgentTask attempt. It reports which definition, runtime manifest, invocation protocol, and image digests actually served the attempt, the physical attempt identity and execution generation it belongs to, the metered usage it consumed, one bounded TurnDecision, safe coded diagnostics, and its signature and provenance references. It is a proposal that Agent Service validates and may reject: it never carries authoritative workflow state, never commits, approves, or publishes, and never names another Agent Runtime Unit to call.
+ */
+export interface AgentRuntimeResultContract {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+diagnostics: []|[{
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]|[{
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}, {
+code: string
+detail: string
+}]
+executionGeneration: number
+kind: "AgentRuntimeResult"
+physicalAttemptId: SharedPrimitivesActorId
+provenance: {
+signatureAlgorithm: ("dsse-ed25519-v1" | "jws-eddsa-v1")
+signatureDigest: SharedPrimitivesDigest
+statementDigest: SharedPrimitivesDigest
+}
+rootRunId: SharedPrimitivesActorId
+runId: SharedPrimitivesActorId
+selected: {
+definitionDigest: SharedPrimitivesDigest
+imageDigest: SharedPrimitivesDigest
+invocationProtocolDigest: SharedPrimitivesDigest
+runtimeManifestDigest: SharedPrimitivesDigest
+}
+taskId: SharedPrimitivesActorId
+traceContext: SharedPrimitivesTraceContext
+turnDecision: {
+/**
+ * @minItems 0
+ * @maxItems 8
+ */
+artifactOutputs: []|[SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]
+decision: ("continue" | "tool_call" | "delegate_agent" | "need_input" | "final" | "refuse")
+payload: SharedPrimitivesBoundedStringMap
+}
+usage: {
+durationMilliseconds: number
+inputTokens: number
+outputTokens: number
+}
+}
+/**
  * Provisional streaming transport shape governed by ADR-020. Deltas are not AgentEvent, carry no public sequence, may be dropped, combined, sampled, or rate-limited, and can never satisfy a Validator, approval, or final-state reconstruction.
  */
 export interface AgentStreamDeltaContract {
@@ -390,6 +903,7 @@ artifactDigest: SharedPrimitivesDigest
 audience: "urn:anvilkit:audience:pagix"
 authorizationId: SharedPrimitivesActorId
 baseRevision: SharedPrimitivesActorId
+catalogDigest: SharedPrimitivesDigest
 contractBomDigest: SharedPrimitivesDigest
 definitionDigest: SharedPrimitivesDigest
 expiresAt: SharedPrimitivesTimestamp
@@ -434,6 +948,86 @@ requestId: SharedPrimitivesActorId
 resumeState: ("created" | "preparing" | "planning" | "awaiting_input" | "executing" | "validating" | "awaiting_review" | "awaiting_approval" | "committing" | "awaiting_domain_confirmation" | "conflict" | "cancelling" | "failed" | "completed" | "cancelled" | "refused" | "discarded")
 reviewerPolicy: SharedPrimitivesPolicyReference
 runId: SharedPrimitivesActorId
+}
+/**
+ * Bounded, expiring permission to read one artifact's bytes.
+ * 
+ * The governed metadata route describes an artifact; it never returns content. This grant is the separate, explicitly governed channel content travels on, so a disclosure of bytes is always a decision that was made, recorded, and time-boxed rather than a side effect of reading metadata.
+ * 
+ * A grant is scoped to one artifact at one content digest, for one actor, for one declared purpose from the governed access vocabulary, and it expires. `securityGeneration` pins the generation the grant was issued under: an artifact whose access is revoked advances its generation, and a grant issued before that no longer matches, so revocation takes effect on grants already in flight rather than only on new ones.
+ * 
+ * `url` is a capability. Anyone holding it holds the access it names for as long as it lives, so it is bounded, short-lived, and never logged. The grant conveys read access to bytes and nothing else: it approves nothing, finalizes nothing, and cannot change an artifact's custody or lifecycle.
+ */
+export interface ArtifactContentGrantContract {
+actorId: SharedPrimitivesActorId
+artifactId: SharedPrimitivesActorId
+digest: SharedPrimitivesDigest
+expiresAt: SharedPrimitivesTimestamp
+kind: "ArtifactContentGrant"
+purpose: ("producer" | "scanner" | "review" | "approval" | "finalization" | "commit" | "read")
+securityGeneration: number
+url: string
+}
+/**
+ * Immutable snapshot of the component catalog a page-generation run is permitted to compose from. It freezes the catalog revision and digest, the exact Puck schema and runtime revisions, every allowed component with its package revision, prop schema, defaults, slot rules, and nesting bound, the components that are forbidden or deprecated with their replacements, and the approved design-token, asset, and font references. It is produced by the catalog authority rather than by an editor client, and its digest is the value carried by TargetSnapshot's catalogDigest so that admission, candidate validation, preview, and apply all resolve the same catalog bytes. It confers no authority: it states what may be composed, never who may compose or commit it.
+ */
+export interface CatalogSnapshotContract {
+/**
+ * @minItems 0
+ * @maxItems 512
+ */
+allowedComponents: {
+componentId: string
+defaults: SharedPrimitivesBoundedStringMap
+maxNestingDepth: number
+packageRevision: string
+propSchema: SharedPrimitivesSchemaReference
+/**
+ * @minItems 0
+ * @maxItems 32
+ */
+slots: {
+/**
+ * @minItems 0
+ * @maxItems 256
+ */
+allowedComponentIds: string[]
+maxChildren: number
+slotName: string
+}[]
+}[]
+/**
+ * @minItems 0
+ * @maxItems 512
+ */
+approvedAssets: SharedPrimitivesArtifactReference[]
+/**
+ * @minItems 0
+ * @maxItems 64
+ */
+approvedFonts: SharedPrimitivesArtifactReference[]
+capturedAt: SharedPrimitivesTimestamp
+catalogDigest: SharedPrimitivesDigest
+catalogRevision: SharedPrimitivesActorId
+/**
+ * @minItems 0
+ * @maxItems 64
+ */
+designTokens: SharedPrimitivesArtifactReference[]
+/**
+ * @minItems 0
+ * @maxItems 512
+ */
+forbiddenComponents: {
+componentId: string
+reason: ("deprecated" | "forbidden")
+replacementComponentId: string
+}[]
+kind: "CatalogSnapshot"
+puckRuntime: {
+runtimeRevision: string
+schemaRevision: string
+}
 }
 /**
  * Bounded CompiledContext wire contract governed by PRD 0012.
@@ -483,6 +1077,3210 @@ tools: number
 total: number
 user: number
 }
+}
+/**
+ * Reviewable design-only proposal for a new component. It states the intent and rationale, the namespace and component name, the props with kinds and defaults, the variants and state model, the slot and composition rules, the design tokens it consumes, its accessibility requirements, the approved assets it needs, the preview scenarios a reviewer should see, and the decisions still open for a human to settle. It is semantically distinct from ComponentPackageSpec, which remains the later build-oriented boundary and is untouched by this contract. ComponentDesignSpec carries no source bundle, no dependency request, no lifecycle script, no build authorization, and no publication grant, so approving one authorizes further design work only and can never be read as permission to execute code, build, publish, or promote anything into a catalog.
+ */
+export interface ComponentDesignSpecContract {
+/**
+ * @minItems 0
+ * @maxItems 24
+ */
+accessibilityRequirements: {
+criterion: string
+requirement: string
+}[]
+/**
+ * @minItems 0
+ * @maxItems 24
+ */
+approvedAssetNeeds: {
+assetReference: SharedPrimitivesArtifactReference
+purpose: string
+}[]
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+composition: []|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]|[{
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}, {
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+allowedComponentIds: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+maxChildren: number
+slotName: string
+}]
+/**
+ * @minItems 0
+ * @maxItems 48
+ */
+designTokenUsage: {
+tokenName: string
+usage: string
+}[]
+intent: {
+rationale: string
+summary: string
+}
+kind: "ComponentDesignSpec"
+namespace: {
+componentName: string
+namespace: string
+}
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+previewScenarios: []|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]|[{
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}, {
+description: string
+name: string
+propValues: SharedPrimitivesBoundedStringMap
+}]
+/**
+ * @minItems 0
+ * @maxItems 48
+ */
+props: {
+defaultValue: string
+description: string
+name: string
+required: boolean
+valueKind: ("string" | "integer" | "boolean" | "enum" | "token-reference" | "asset-reference" | "slot")
+}[]
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+stateModel: []|[{
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]|[{
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}, {
+description: string
+state: string
+trigger: string
+}]
+/**
+ * @minItems 0
+ * @maxItems 12
+ */
+unresolvedDecisions: []|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]|[{
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}, {
+/**
+ * @minItems 1
+ * @maxItems 4
+ */
+options: [string]|[string, string]|[string, string, string]|[string, string, string, string]
+question: string
+}]
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+variants: []|[{
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]|[{
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}, {
+description: string
+name: string
+}]
 }
 /**
  * Bounded ComponentPackageSpec wire contract governed by PRD 0012.
@@ -780,12 +4578,243 @@ runId: SharedPrimitivesActorId
 target: SharedPrimitivesTargetReference
 }
 /**
+ * Intent-only command asking for bounded, expiring read access to one immutable artifact's bytes. It states which artifact is to be read and the governed purpose the reader declares for reading it. The purpose travels in the command body rather than in a header so that it is covered by the request digest the idempotency key binds: a retry under the same key that declares a different purpose is a different request and is refused as key reuse, instead of silently returning a capability issued for a purpose nobody asked for. No identity is carried on the wire: the acting reader, the workspace, and the project are derived by Agent Service from the verified request authority and the current authority register, and whether that reader may read this artifact for this purpose is decided against current authority rather than against anything the command asserts.
+ */
+export interface IssueArtifactContentGrantRequestContract {
+artifactId: string
+kind: "IssueArtifactContentGrantRequest"
+purpose: ("producer" | "scanner" | "review" | "approval" | "finalization" | "commit" | "read")
+}
+/**
  * Issued Apply Authorization response governed by ADR-021: the canonical ApplyAuthorization document plus its compact JWS carrier. The document must be byte-equivalent to the decoded JWS payload after canonicalization.
  */
 export interface IssuedApplyAuthorizationContract {
 authorization: ApplyAuthorizationContract
 compactJws: string
 kind: "IssuedApplyAuthorization"
+}
+/**
+ * Reviewable page-generation proposal bound to the exact inputs that produced it. It names the target and the base revision it was generated against, references the canonical Puck Data document that is the authoritative page content, and pins the target, catalog, contract-BOM, definition, and policy digests so a reviewer and the apply path resolve the same bytes the run saw. It carries validation receipts, the preview task and accepted preview result, a bounded generation summary and declared assumptions, bounded model, tool, delegation, and evidence references, and stable coded warnings a reviewer must see. Canonical Puck Data is authoritative within the candidate; pageIr is optional and derived, and never becomes the page document. The candidate is a proposal only: it commits nothing, approves nothing, and grants no authority to persist a page.
+ */
+export interface PageCandidateContract {
+baseRevision: SharedPrimitivesActorId
+candidateDigest: SharedPrimitivesDigest
+digests: {
+catalogDigest: SharedPrimitivesDigest
+contractBomDigest: SharedPrimitivesDigest
+definitionDigest: SharedPrimitivesDigest
+policyDigest: SharedPrimitivesDigest
+targetDigest: SharedPrimitivesDigest
+}
+generation: {
+/**
+ * @minItems 0
+ * @maxItems 32
+ */
+assumptions: string[]
+summary: string
+}
+kind: "PageCandidate"
+pageData: SharedPrimitivesArtifactReference
+pageIr?: SharedPrimitivesArtifactReference
+preview: {
+resultArtifact: SharedPrimitivesArtifactReference
+taskId: SharedPrimitivesActorId
+}
+references: {
+/**
+ * @minItems 0
+ * @maxItems 32
+ */
+delegations: SharedPrimitivesActorId[]
+/**
+ * @minItems 0
+ * @maxItems 64
+ */
+evidence: SharedPrimitivesActorId[]
+/**
+ * @minItems 0
+ * @maxItems 64
+ */
+modelInvocations: SharedPrimitivesActorId[]
+/**
+ * @minItems 0
+ * @maxItems 64
+ */
+toolInvocations: SharedPrimitivesActorId[]
+}
+target: SharedPrimitivesTargetReference
+/**
+ * @minItems 0
+ * @maxItems 16
+ */
+validationReceipts: []|[SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]|[SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference, SharedPrimitivesArtifactReference]
+/**
+ * @minItems 0
+ * @maxItems 32
+ */
+warnings: {
+code: string
+detail: string
+}[]
+}
+/**
+ * Bounded evidence payload returned by one deterministic page-preview render, carried as an artifact on the canonical worker result envelope. It binds the candidate digest it rendered, the per-viewport screenshots and render statuses, how each component resolved or was substituted, the console and network-policy violations observed, accessibility findings with their impact, measured resource usage, and the worker image and environment digests that produced it. It is render evidence a reviewer and the apply path consult: it approves nothing, commits nothing, and cannot mark a candidate fit to publish.
+ */
+export interface PagePreviewResultContract {
+/**
+ * @minItems 0
+ * @maxItems 128
+ */
+accessibilityFindings: {
+impact: ("minor" | "moderate" | "serious" | "critical")
+nodeCount: number
+ruleId: string
+}[]
+candidateDigest: SharedPrimitivesDigest
+/**
+ * @minItems 0
+ * @maxItems 128
+ */
+componentResolution: {
+componentId: string
+detail: string
+status: ("resolved" | "substituted" | "missing" | "forbidden")
+}[]
+/**
+ * @minItems 0
+ * @maxItems 32
+ */
+evidence: SharedPrimitivesActorId[]
+kind: "PagePreviewResult"
+/**
+ * @minItems 0
+ * @maxItems 128
+ */
+policyViolations: {
+channel: ("console" | "network")
+detail: string
+severity: ("info" | "warning" | "error")
+}[]
+resourceUsage: {
+cpuMillis: number
+durationMilliseconds: number
+peakMemoryBytes: number
+}
+/**
+ * @minItems 0
+ * @maxItems 32
+ */
+screenshots: {
+artifact: SharedPrimitivesArtifactReference
+viewportIndex: number
+}[]
+traceContext: SharedPrimitivesTraceContext
+/**
+ * @minItems 1
+ * @maxItems 32
+ */
+viewportStatuses: [{
+status: ("rendered" | "failed" | "timed-out")
+viewportIndex: number
+}, ...({
+status: ("rendered" | "failed" | "timed-out")
+viewportIndex: number
+})[]]
+workerEnvironment: {
+environmentDigest: SharedPrimitivesDigest
+imageDigest: SharedPrimitivesDigest
+}
+}
+/**
+ * Bounded input payload for one deterministic page-preview render, carried as an artifact input on the canonical worker lease envelope rather than as a second task family. It names the PageCandidate and its digest, the resolved catalog snapshot, approved assets, and exact Puck schema and runtime revisions, the viewport/locale/theme matrix to render, a deterministic runtime profile whose network policy is deny-all, the render deadline and resource bounds, and the contract, catalog, and runtime digests the worker must verify before rendering. It carries inputs only: no credential, no endpoint selection, and no authority to commit, approve, or publish anything it renders.
+ */
+export interface PagePreviewTaskContract {
+candidate: SharedPrimitivesArtifactReference
+candidateDigest: SharedPrimitivesDigest
+deadlineAt: SharedPrimitivesTimestamp
+expected: {
+catalogDigest: SharedPrimitivesDigest
+contractBomDigest: SharedPrimitivesDigest
+runtimeDigest: SharedPrimitivesDigest
+}
+kind: "PagePreviewTask"
+limits: SharedPrimitivesResourceLimits
+/**
+ * @minItems 1
+ * @maxItems 32
+ */
+matrix: [{
+locale: string
+theme: string
+viewportHeight: number
+viewportWidth: number
+}, ...({
+locale: string
+theme: string
+viewportHeight: number
+viewportWidth: number
+})[]]
+resolved: {
+/**
+ * @minItems 0
+ * @maxItems 512
+ */
+approvedAssets: SharedPrimitivesArtifactReference[]
+catalogSnapshot: SharedPrimitivesArtifactReference
+puckRuntimeRevision: string
+puckSchemaRevision: string
+}
+runtimeProfile: {
+deterministicSeed: number
+networkPolicy: "deny-all"
+reducedMotion: boolean
+timezone: string
+}
+}
+/**
+ * Domain result Pagix returns after committing one approved page candidate. It names the Apply Authorization it redeemed, the previous and new revision identifiers, the committed Puck Data digest and the candidate digest it came from, the durable outbox identifier written in the same transaction, the acting actor and the effective permission decision, whether this call committed or replayed an earlier identical commit, and the commit timestamp and trace. The authorization redemption, the new revision, the idempotency outcome, and the outbox event are persisted in one database transaction; an asynchronous publication is not evidence of that invariant. The receipt reports a commit that already happened — it authorizes nothing and cannot be replayed to cause one. permissionDecision.decision admits only 'allowed', so a receipt for a denied commit is unrepresentable.
+ */
+export interface PagixCommitReceiptContract {
+actorId: SharedPrimitivesActorId
+candidateDigest: SharedPrimitivesDigest
+committedAt: SharedPrimitivesTimestamp
+committedPageDataDigest: SharedPrimitivesDigest
+idempotencyOutcome: ("committed" | "replayed")
+kind: "PagixCommitReceipt"
+newRevision: SharedPrimitivesActorId
+outboxId: SharedPrimitivesActorId
+permissionDecision: {
+decision: "allowed"
+policy: SharedPrimitivesPolicyReference
+}
+previousRevision: SharedPrimitivesActorId
+redeemedAuthorizationId: SharedPrimitivesActorId
+traceContext: SharedPrimitivesTraceContext
+}
+/**
+ * The complete command to commit one approved page candidate. It carries the issued Apply Authorization, the reviewed PageCandidate that authorization was issued over, and the page document that candidate names, because the domain owner cannot create a revision from a document it never receives and must not fetch page bytes over a channel the authorization does not cover.
+ * 
+ * `pageCandidate` is the reviewed PageCandidate serialized as JSON and `pageDocument` is the canonical Puck Data serialized as JSON. Both are carried verbatim as strings rather than as embedded objects: their digests are taken over exact bytes, and re-serializing an embedded object would change those bytes and break every check below. `candidateDigest` is the SHA-256 of the `pageCandidate` bytes and `pageDocumentDigest` is the SHA-256 of the `pageDocument` bytes.
+ * 
+ * The bindings that make this safe, all four verifiable by the domain owner from this request alone:
+ * 
+ * 1. `candidateDigest` MUST equal the authorization's `artifactDigest`. The authorized artifact is the reviewed PageCandidate — the run's one final product — so an authorization can only ever commit the candidate it was issued for.
+ * 2. `candidateDigest` MUST equal the SHA-256 of the `pageCandidate` bytes, so the carried candidate is the one the authorization names rather than another candidate with a borrowed digest.
+ * 3. `pageDocumentDigest` MUST equal the SHA-256 of the `pageDocument` bytes.
+ * 4. `pageDocumentDigest` MUST equal the `digest` of the `pageData` reference inside `pageCandidate`. `pageData` is one of the candidate's identity fields, so the candidate's own digest already covers it: the document is bound to the candidate, and the candidate to the authorization. Substituting either the document or the candidate breaks the chain and the commit is refused.
+ * 
+ * `pageDocument` is bounded at 744 KiB rather than the 768 KiB a document alone could occupy: the reviewed candidate is carried in the same request at its own contract's full 256 KiB, and the governed 1 MiB ceiling for a canonical document is not negotiable. Carrying the candidate is what lets the domain owner verify the chain itself, and this is what that costs.
+ * 
+ * The request authorizes nothing on its own. It carries an authorization issued elsewhere and is refused unless that authorization verifies, is unspent, and still matches the page's current revision.
+ */
+export interface PersistAuthorizedPageRequestContract {
+authorization: IssuedApplyAuthorizationContract
+candidateDigest: SharedPrimitivesDigest
+kind: "PersistAuthorizedPageRequest"
+pageCandidate: string
+pageDocument: string
+pageDocumentDigest: SharedPrimitivesDigest
 }
 /**
  * Bounded ProviderContinuation wire contract governed by PRD 0012.

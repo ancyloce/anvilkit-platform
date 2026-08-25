@@ -353,6 +353,100 @@ export interface components {
             readonly run: components["schemas"]["AgentRun"];
         };
         /**
+         * AgentRuntimeManifest contract
+         * @description Immutable binding between one Agent Runtime Unit and the single AgentDefinition it is permitted to execute. It pins the image, provenance, and invocation protocol the unit was released with, the workload identity and the closed set of control-plane endpoints it may reach, and the queue, concurrency, resource, scaling, telemetry, drain, and rollback profile it is operated under. It carries execution-plane binding only: it never confers AgentRun, workflow, Tool, budget, approval, artifact, or business authority, and a runtime unit cannot reach another Agent Runtime Unit through it.
+         */
+        readonly AgentRuntimeManifest: {
+            readonly definition: components["schemas"]["SharedPrimitivesDefinitionReference"];
+            readonly execution: {
+                readonly cpuMillis: number;
+                readonly maxConcurrency: number;
+                readonly memoryBytes: number;
+                /** @enum {unknown} */
+                readonly resourceClass: "interactive-cpu" | "batch-cpu" | "interactive-gpu" | "batch-gpu";
+                readonly taskChannel: string;
+                readonly timeoutMilliseconds: number;
+            };
+            readonly image: {
+                readonly imageDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly provenanceDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly signatureDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly sourceCommit: string;
+            };
+            /** @constant */
+            readonly kind: "AgentRuntimeManifest";
+            readonly protocol: {
+                readonly contractBomReference: components["schemas"]["SharedPrimitivesContractBomReference"];
+                readonly invocationProtocolDigest: components["schemas"]["SharedPrimitivesDigest"];
+            };
+            readonly release: {
+                readonly drainSeconds: number;
+                readonly owner: string;
+                readonly rollbackTarget: components["schemas"]["SharedPrimitivesDigest"];
+                /** @enum {unknown} */
+                readonly rolloutPolicy: "new-runs-only";
+            };
+            readonly runtimeUnitId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly scaling: {
+                readonly maxReplicas: number;
+                readonly minReplicas: number;
+                readonly targetConcurrency: number;
+            };
+            readonly telemetry: {
+                readonly healthPath: string;
+                readonly namespace: string;
+                readonly readinessPath: string;
+            };
+            readonly workload: {
+                readonly allowedControlPlaneEndpoints: readonly string[];
+                readonly audience: string;
+                /** @enum {unknown} */
+                readonly networkPolicy: "deny-all-except-allowed-endpoints";
+                readonly workloadIdentity: string;
+            };
+        };
+        /**
+         * AgentRuntimeResult contract
+         * @description Signed, bounded result returned by one Agent Runtime Unit for exactly one AgentTask attempt. It reports which definition, runtime manifest, invocation protocol, and image digests actually served the attempt, the physical attempt identity and execution generation it belongs to, the metered usage it consumed, one bounded TurnDecision, safe coded diagnostics, and its signature and provenance references. It is a proposal that Agent Service validates and may reject: it never carries authoritative workflow state, never commits, approves, or publishes, and never names another Agent Runtime Unit to call.
+         */
+        readonly AgentRuntimeResult: {
+            readonly diagnostics: readonly {
+                readonly code: string;
+                readonly detail: string;
+            }[];
+            readonly executionGeneration: number;
+            /** @constant */
+            readonly kind: "AgentRuntimeResult";
+            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
+            readonly provenance: {
+                /** @enum {unknown} */
+                readonly signatureAlgorithm: "dsse-ed25519-v1" | "jws-eddsa-v1";
+                readonly signatureDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly statementDigest: components["schemas"]["SharedPrimitivesDigest"];
+            };
+            readonly rootRunId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly selected: {
+                readonly definitionDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly imageDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly invocationProtocolDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeManifestDigest: components["schemas"]["SharedPrimitivesDigest"];
+            };
+            readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
+            readonly turnDecision: {
+                readonly artifactOutputs: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
+                /** @enum {unknown} */
+                readonly decision: "continue" | "tool_call" | "delegate_agent" | "need_input" | "final" | "refuse";
+                readonly payload: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            };
+            readonly usage: {
+                readonly durationMilliseconds: number;
+                readonly inputTokens: number;
+                readonly outputTokens: number;
+            };
+        };
+        /**
          * AgentStreamDelta contract
          * @description Provisional streaming transport shape governed by ADR-020. Deltas are not AgentEvent, carry no public sequence, may be dropped, combined, sampled, or rate-limited, and can never satisfy a Validator, approval, or final-state reconstruction.
          */
@@ -409,6 +503,7 @@ export interface components {
             readonly audience: "urn:anvilkit:audience:pagix";
             readonly authorizationId: components["schemas"]["SharedPrimitivesAuthorizationId"];
             readonly baseRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly catalogDigest: components["schemas"]["SharedPrimitivesDigest"];
             readonly contractBomDigest: components["schemas"]["SharedPrimitivesDigest"];
             readonly definitionDigest: components["schemas"]["SharedPrimitivesDigest"];
             readonly expiresAt: components["schemas"]["SharedPrimitivesTimestamp"];
@@ -448,7 +543,65 @@ export interface components {
             readonly reviewerPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
             readonly runId: components["schemas"]["SharedPrimitivesRunId"];
         };
+        /**
+         * ArtifactContentGrant contract
+         * @description Bounded, expiring permission to read one artifact's bytes.
+         *
+         *     The governed metadata route describes an artifact; it never returns content. This grant is the separate, explicitly governed channel content travels on, so a disclosure of bytes is always a decision that was made, recorded, and time-boxed rather than a side effect of reading metadata.
+         *
+         *     A grant is scoped to one artifact at one content digest, for one actor, for one declared purpose from the governed access vocabulary, and it expires. `securityGeneration` pins the generation the grant was issued under: an artifact whose access is revoked advances its generation, and a grant issued before that no longer matches, so revocation takes effect on grants already in flight rather than only on new ones.
+         *
+         *     `url` is a capability. Anyone holding it holds the access it names for as long as it lives, so it is bounded, short-lived, and never logged. The grant conveys read access to bytes and nothing else: it approves nothing, finalizes nothing, and cannot change an artifact's custody or lifecycle.
+         */
+        readonly ArtifactContentGrant: {
+            readonly actorId: components["schemas"]["SharedPrimitivesActorId"];
+            readonly artifactId: components["schemas"]["SharedPrimitivesArtifactId"];
+            readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly expiresAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            /** @constant */
+            readonly kind: "ArtifactContentGrant";
+            /** @enum {unknown} */
+            readonly purpose: "producer" | "scanner" | "review" | "approval" | "finalization" | "commit" | "read";
+            readonly securityGeneration: number;
+            readonly url: string;
+        };
         readonly BoundedRequest: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+        /**
+         * CatalogSnapshot contract
+         * @description Immutable snapshot of the component catalog a page-generation run is permitted to compose from. It freezes the catalog revision and digest, the exact Puck schema and runtime revisions, every allowed component with its package revision, prop schema, defaults, slot rules, and nesting bound, the components that are forbidden or deprecated with their replacements, and the approved design-token, asset, and font references. It is produced by the catalog authority rather than by an editor client, and its digest is the value carried by TargetSnapshot's catalogDigest so that admission, candidate validation, preview, and apply all resolve the same catalog bytes. It confers no authority: it states what may be composed, never who may compose or commit it.
+         */
+        readonly CatalogSnapshot: {
+            readonly allowedComponents: readonly {
+                readonly componentId: string;
+                readonly defaults: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+                readonly maxNestingDepth: number;
+                readonly packageRevision: string;
+                readonly propSchema: components["schemas"]["SharedPrimitivesSchemaReference"];
+                readonly slots: readonly {
+                    readonly allowedComponentIds: readonly string[];
+                    readonly maxChildren: number;
+                    readonly slotName: string;
+                }[];
+            }[];
+            readonly approvedAssets: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
+            readonly approvedFonts: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
+            readonly capturedAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly catalogDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly catalogRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly designTokens: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
+            readonly forbiddenComponents: readonly {
+                readonly componentId: string;
+                /** @enum {unknown} */
+                readonly reason: "deprecated" | "forbidden";
+                readonly replacementComponentId: string;
+            }[];
+            /** @constant */
+            readonly kind: "CatalogSnapshot";
+            readonly puckRuntime: {
+                readonly runtimeRevision: string;
+                readonly schemaRevision: string;
+            };
+        };
         /**
          * CompiledContext contract
          * @description Bounded CompiledContext wire contract governed by PRD 0012.
@@ -481,6 +634,65 @@ export interface components {
                 readonly total: number;
                 readonly user: number;
             };
+        };
+        /**
+         * ComponentDesignSpec contract
+         * @description Reviewable design-only proposal for a new component. It states the intent and rationale, the namespace and component name, the props with kinds and defaults, the variants and state model, the slot and composition rules, the design tokens it consumes, its accessibility requirements, the approved assets it needs, the preview scenarios a reviewer should see, and the decisions still open for a human to settle. It is semantically distinct from ComponentPackageSpec, which remains the later build-oriented boundary and is untouched by this contract. ComponentDesignSpec carries no source bundle, no dependency request, no lifecycle script, no build authorization, and no publication grant, so approving one authorizes further design work only and can never be read as permission to execute code, build, publish, or promote anything into a catalog.
+         */
+        readonly ComponentDesignSpec: {
+            readonly accessibilityRequirements: readonly {
+                readonly criterion: string;
+                readonly requirement: string;
+            }[];
+            readonly approvedAssetNeeds: readonly {
+                readonly assetReference: components["schemas"]["SharedPrimitivesArtifactReference"];
+                readonly purpose: string;
+            }[];
+            readonly composition: readonly {
+                readonly allowedComponentIds: readonly string[];
+                readonly maxChildren: number;
+                readonly slotName: string;
+            }[];
+            readonly designTokenUsage: readonly {
+                readonly tokenName: string;
+                readonly usage: string;
+            }[];
+            readonly intent: {
+                readonly rationale: string;
+                readonly summary: string;
+            };
+            /** @constant */
+            readonly kind: "ComponentDesignSpec";
+            readonly namespace: {
+                readonly componentName: string;
+                readonly namespace: string;
+            };
+            readonly previewScenarios: readonly {
+                readonly description: string;
+                readonly name: string;
+                readonly propValues: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            }[];
+            readonly props: readonly {
+                readonly defaultValue: string;
+                readonly description: string;
+                readonly name: string;
+                readonly required: boolean;
+                /** @enum {unknown} */
+                readonly valueKind: "string" | "integer" | "boolean" | "enum" | "token-reference" | "asset-reference" | "slot";
+            }[];
+            readonly stateModel: readonly {
+                readonly description: string;
+                readonly state: string;
+                readonly trigger: string;
+            }[];
+            readonly unresolvedDecisions: readonly {
+                readonly options: readonly string[];
+                readonly question: string;
+            }[];
+            readonly variants: readonly {
+                readonly description: string;
+                readonly name: string;
+            }[];
         };
         /**
          * ComponentPackageSpec contract
@@ -743,6 +955,17 @@ export interface components {
             readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
         };
         /**
+         * IssueArtifactContentGrantRequest contract
+         * @description Intent-only command asking for bounded, expiring read access to one immutable artifact's bytes. It states which artifact is to be read and the governed purpose the reader declares for reading it. The purpose travels in the command body rather than in a header so that it is covered by the request digest the idempotency key binds: a retry under the same key that declares a different purpose is a different request and is refused as key reuse, instead of silently returning a capability issued for a purpose nobody asked for. No identity is carried on the wire: the acting reader, the workspace, and the project are derived by Agent Service from the verified request authority and the current authority register, and whether that reader may read this artifact for this purpose is decided against current authority rather than against anything the command asserts.
+         */
+        readonly IssueArtifactContentGrantRequest: {
+            readonly artifactId: string;
+            /** @constant */
+            readonly kind: "IssueArtifactContentGrantRequest";
+            /** @enum {unknown} */
+            readonly purpose: "producer" | "scanner" | "review" | "approval" | "finalization" | "commit" | "read";
+        };
+        /**
          * IssuedApplyAuthorization contract
          * @description Issued Apply Authorization response governed by ADR-021: the canonical ApplyAuthorization document plus its compact JWS carrier. The document must be byte-equivalent to the decoded JWS payload after canonicalization.
          */
@@ -751,6 +974,179 @@ export interface components {
             readonly compactJws: string;
             /** @constant */
             readonly kind: "IssuedApplyAuthorization";
+        };
+        /**
+         * PageCandidate contract
+         * @description Reviewable page-generation proposal bound to the exact inputs that produced it. It names the target and the base revision it was generated against, references the canonical Puck Data document that is the authoritative page content, and pins the target, catalog, contract-BOM, definition, and policy digests so a reviewer and the apply path resolve the same bytes the run saw. It carries validation receipts, the preview task and accepted preview result, a bounded generation summary and declared assumptions, bounded model, tool, delegation, and evidence references, and stable coded warnings a reviewer must see. Canonical Puck Data is authoritative within the candidate; pageIr is optional and derived, and never becomes the page document. The candidate is a proposal only: it commits nothing, approves nothing, and grants no authority to persist a page.
+         */
+        readonly PageCandidate: {
+            readonly baseRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly candidateDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly digests: {
+                readonly catalogDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly contractBomDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly definitionDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly policyDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly targetDigest: components["schemas"]["SharedPrimitivesDigest"];
+            };
+            readonly generation: {
+                readonly assumptions: readonly string[];
+                readonly summary: string;
+            };
+            /** @constant */
+            readonly kind: "PageCandidate";
+            readonly pageData: components["schemas"]["SharedPrimitivesArtifactReference"];
+            readonly pageIr?: components["schemas"]["SharedPrimitivesArtifactReference"];
+            readonly preview: {
+                readonly resultArtifact: components["schemas"]["SharedPrimitivesArtifactReference"];
+                readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
+            };
+            readonly references: {
+                readonly delegations: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
+                readonly evidence: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
+                readonly modelInvocations: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
+                readonly toolInvocations: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
+            };
+            readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
+            readonly validationReceipts: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
+            readonly warnings: readonly {
+                readonly code: string;
+                readonly detail: string;
+            }[];
+        };
+        /**
+         * PagePreviewResult contract
+         * @description Bounded evidence payload returned by one deterministic page-preview render, carried as an artifact on the canonical worker result envelope. It binds the candidate digest it rendered, the per-viewport screenshots and render statuses, how each component resolved or was substituted, the console and network-policy violations observed, accessibility findings with their impact, measured resource usage, and the worker image and environment digests that produced it. It is render evidence a reviewer and the apply path consult: it approves nothing, commits nothing, and cannot mark a candidate fit to publish.
+         */
+        readonly PagePreviewResult: {
+            readonly accessibilityFindings: readonly {
+                /** @enum {unknown} */
+                readonly impact: "minor" | "moderate" | "serious" | "critical";
+                readonly nodeCount: number;
+                readonly ruleId: string;
+            }[];
+            readonly candidateDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly componentResolution: readonly {
+                readonly componentId: string;
+                readonly detail: string;
+                /** @enum {unknown} */
+                readonly status: "resolved" | "substituted" | "missing" | "forbidden";
+            }[];
+            readonly evidence: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
+            /** @constant */
+            readonly kind: "PagePreviewResult";
+            readonly policyViolations: readonly {
+                /** @enum {unknown} */
+                readonly channel: "console" | "network";
+                readonly detail: string;
+                /** @enum {unknown} */
+                readonly severity: "info" | "warning" | "error";
+            }[];
+            readonly resourceUsage: {
+                readonly cpuMillis: number;
+                readonly durationMilliseconds: number;
+                readonly peakMemoryBytes: number;
+            };
+            readonly screenshots: readonly {
+                readonly artifact: components["schemas"]["SharedPrimitivesArtifactReference"];
+                readonly viewportIndex: number;
+            }[];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
+            readonly viewportStatuses: readonly {
+                /** @enum {unknown} */
+                readonly status: "rendered" | "failed" | "timed-out";
+                readonly viewportIndex: number;
+            }[];
+            readonly workerEnvironment: {
+                readonly environmentDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly imageDigest: components["schemas"]["SharedPrimitivesDigest"];
+            };
+        };
+        /**
+         * PagePreviewTask contract
+         * @description Bounded input payload for one deterministic page-preview render, carried as an artifact input on the canonical worker lease envelope rather than as a second task family. It names the PageCandidate and its digest, the resolved catalog snapshot, approved assets, and exact Puck schema and runtime revisions, the viewport/locale/theme matrix to render, a deterministic runtime profile whose network policy is deny-all, the render deadline and resource bounds, and the contract, catalog, and runtime digests the worker must verify before rendering. It carries inputs only: no credential, no endpoint selection, and no authority to commit, approve, or publish anything it renders.
+         */
+        readonly PagePreviewTask: {
+            readonly candidate: components["schemas"]["SharedPrimitivesArtifactReference"];
+            readonly candidateDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly deadlineAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly expected: {
+                readonly catalogDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly contractBomDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeDigest: components["schemas"]["SharedPrimitivesDigest"];
+            };
+            /** @constant */
+            readonly kind: "PagePreviewTask";
+            readonly limits: components["schemas"]["SharedPrimitivesResourceLimits"];
+            readonly matrix: readonly {
+                readonly locale: string;
+                readonly theme: string;
+                readonly viewportHeight: number;
+                readonly viewportWidth: number;
+            }[];
+            readonly resolved: {
+                readonly approvedAssets: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
+                readonly catalogSnapshot: components["schemas"]["SharedPrimitivesArtifactReference"];
+                readonly puckRuntimeRevision: string;
+                readonly puckSchemaRevision: string;
+            };
+            readonly runtimeProfile: {
+                readonly deterministicSeed: number;
+                /** @enum {unknown} */
+                readonly networkPolicy: "deny-all";
+                readonly reducedMotion: boolean;
+                readonly timezone: string;
+            };
+        };
+        /**
+         * PagixCommitReceipt contract
+         * @description Domain result Pagix returns after committing one approved page candidate. It names the Apply Authorization it redeemed, the previous and new revision identifiers, the committed Puck Data digest and the candidate digest it came from, the durable outbox identifier written in the same transaction, the acting actor and the effective permission decision, whether this call committed or replayed an earlier identical commit, and the commit timestamp and trace. The authorization redemption, the new revision, the idempotency outcome, and the outbox event are persisted in one database transaction; an asynchronous publication is not evidence of that invariant. The receipt reports a commit that already happened — it authorizes nothing and cannot be replayed to cause one. permissionDecision.decision admits only 'allowed', so a receipt for a denied commit is unrepresentable.
+         */
+        readonly PagixCommitReceipt: {
+            readonly actorId: components["schemas"]["SharedPrimitivesActorId"];
+            readonly candidateDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly committedAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly committedPageDataDigest: components["schemas"]["SharedPrimitivesDigest"];
+            /** @enum {unknown} */
+            readonly idempotencyOutcome: "committed" | "replayed";
+            /** @constant */
+            readonly kind: "PagixCommitReceipt";
+            readonly newRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly outboxId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly permissionDecision: {
+                /** @enum {unknown} */
+                readonly decision: "allowed";
+                readonly policy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            };
+            readonly previousRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly redeemedAuthorizationId: components["schemas"]["SharedPrimitivesAuthorizationId"];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
+        };
+        /**
+         * PersistAuthorizedPageRequest contract
+         * @description The complete command to commit one approved page candidate. It carries the issued Apply Authorization, the reviewed PageCandidate that authorization was issued over, and the page document that candidate names, because the domain owner cannot create a revision from a document it never receives and must not fetch page bytes over a channel the authorization does not cover.
+         *
+         *     `pageCandidate` is the reviewed PageCandidate serialized as JSON and `pageDocument` is the canonical Puck Data serialized as JSON. Both are carried verbatim as strings rather than as embedded objects: their digests are taken over exact bytes, and re-serializing an embedded object would change those bytes and break every check below. `candidateDigest` is the SHA-256 of the `pageCandidate` bytes and `pageDocumentDigest` is the SHA-256 of the `pageDocument` bytes.
+         *
+         *     The bindings that make this safe, all four verifiable by the domain owner from this request alone:
+         *
+         *     1. `candidateDigest` MUST equal the authorization's `artifactDigest`. The authorized artifact is the reviewed PageCandidate — the run's one final product — so an authorization can only ever commit the candidate it was issued for.
+         *     2. `candidateDigest` MUST equal the SHA-256 of the `pageCandidate` bytes, so the carried candidate is the one the authorization names rather than another candidate with a borrowed digest.
+         *     3. `pageDocumentDigest` MUST equal the SHA-256 of the `pageDocument` bytes.
+         *     4. `pageDocumentDigest` MUST equal the `digest` of the `pageData` reference inside `pageCandidate`. `pageData` is one of the candidate's identity fields, so the candidate's own digest already covers it: the document is bound to the candidate, and the candidate to the authorization. Substituting either the document or the candidate breaks the chain and the commit is refused.
+         *
+         *     `pageDocument` is bounded at 744 KiB rather than the 768 KiB a document alone could occupy: the reviewed candidate is carried in the same request at its own contract's full 256 KiB, and the governed 1 MiB ceiling for a canonical document is not negotiable. Carrying the candidate is what lets the domain owner verify the chain itself, and this is what that costs.
+         *
+         *     The request authorizes nothing on its own. It carries an authorization issued elsewhere and is refused unless that authorization verifies, is unspent, and still matches the page's current revision.
+         */
+        readonly PersistAuthorizedPageRequest: {
+            readonly authorization: components["schemas"]["IssuedApplyAuthorization"];
+            readonly candidateDigest: components["schemas"]["SharedPrimitivesDigest"];
+            /** @constant */
+            readonly kind: "PersistAuthorizedPageRequest";
+            readonly pageCandidate: string;
+            readonly pageDocument: string;
+            readonly pageDocumentDigest: components["schemas"]["SharedPrimitivesDigest"];
         };
         /**
          * ProblemDetails contract
@@ -1368,11 +1764,11 @@ export interface operations {
         };
         readonly requestBody: {
             readonly content: {
-                readonly "application/json": components["schemas"]["IssuedApplyAuthorization"];
+                readonly "application/json": components["schemas"]["PersistAuthorizedPageRequest"];
             };
         };
         readonly responses: {
-            /** @description Authoritative domain outcome; a revision conflict consumes the authorization. */
+            /** @description Authoritative domain outcome as a PagixCommitReceipt; a revision conflict consumes the authorization. */
             readonly 200: {
                 headers: {
                     /** @description true when a recorded semantic outcome is replayed. */
@@ -1382,7 +1778,7 @@ export interface operations {
                     readonly [name: string]: unknown;
                 };
                 content: {
-                    readonly "application/json": components["schemas"]["SharedPrimitivesBoundedStringMap"];
+                    readonly "application/json": components["schemas"]["PagixCommitReceipt"];
                 };
             };
             /** @description Stable contract problem. */

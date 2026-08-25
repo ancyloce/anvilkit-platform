@@ -37,13 +37,19 @@ const PUBLIC_EVENT_TYPES = [
 // ADR-022 transport-neutral runtime boundary).
 const EXPECTED_CONTRACTS = [
   "AgentArtifact", "AgentBudget", "AgentDefinition", "AgentEvent", "AgentEvidence",
-  "AgentRun", "AgentRunSnapshot", "AgentStreamDelta", "AgentTask", "ApplyAuthorization",
-  "ApprovalRequest",
-  "CompiledContext", "ComponentPackageSpec", "ContractBom", "ContractRevocationSnapshot",
+  "AgentRun", "AgentRunSnapshot", "AgentRuntimeManifest", "AgentRuntimeResult",
+  "ArtifactContentGrant",
+  "IssueArtifactContentGrantRequest",
+  "AgentStreamDelta", "AgentTask", "ApplyAuthorization",
+  "ApprovalRequest", "CatalogSnapshot",
+  "CompiledContext", "ComponentDesignSpec", "ComponentPackageSpec", "ContractBom",
+  "ContractRevocationSnapshot",
   "ContractRuntimeRequest", "ContractRuntimeResult", "ContractSignatureStatement",
   "ContractTrustRoot", "CreateAgentRunRequest", "DecideArtifactCustodyRequest",
   "ImageOperationPlan", "InputRequest",
-  "IssueApplyAuthorizationRequest", "IssuedApplyAuthorization", "ProblemDetails",
+  "IssueApplyAuthorizationRequest", "IssuedApplyAuthorization", "PageCandidate",
+  "PagePreviewResult", "PagePreviewTask", "PagixCommitReceipt",
+  "PersistAuthorizedPageRequest", "ProblemDetails",
   "ProviderContinuation", "ResolveDomainOperationRequest", "SharedPrimitives",
   "SubmitApprovalDecisionRequest", "SubmitInputResponseRequest", "TargetReference",
   "TargetSnapshot", "ToolDefinition",
@@ -61,7 +67,11 @@ const EMBEDDED_CONTRACTS: Record<string, { schema: string; pointer: string }> = 
 // at least a valid, an invalid, and an adversarial fixture.
 const FULL_COVERAGE = ["minimum", "full", "maximum-bound", "invalid", "adversarial"];
 const FULL_COVERAGE_CONTRACTS = new Set([
-  "AgentArtifact", "AgentBudget", "AgentDefinition", "AgentEvent", "AgentRun", "AgentTask",
+  "AgentArtifact", "AgentBudget", "AgentDefinition", "AgentEvent", "AgentRun",
+  "AgentRuntimeManifest", "AgentRuntimeResult", "AgentTask", "ArtifactContentGrant",
+  "CatalogSnapshot", "PageCandidate",
+  "ComponentDesignSpec", "PagePreviewResult", "PagePreviewTask", "PagixCommitReceipt",
+  "PersistAuthorizedPageRequest",
   "ApplyAuthorization", "ApprovalRequest", "CompiledContext", "InputRequest", "ProblemDetails",
   "ProviderContinuation", "TargetSnapshot", "ToolDefinition", "UsageObservation",
   "WorkerLease", "WorkerResult",
