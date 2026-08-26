@@ -43,11 +43,26 @@ walk(REPO_ROOT, files);
 // --- 1. Node/TS confinement -------------------------------------------------
 const JS_EXT = /\.(ts|tsx|js|jsx|mjs|cjs)$/;
 const ROOT_ALLOWED = new Set(["package.json", "bun.lock", "bun.lockb", "turbo.json"]);
+// Go-first (PRD 0009) confines Node/TS to tooling, with exactly one service
+// exempted by ADR-025 §17: the page preview worker runs in a Node runtime. It
+// drives a browser through a Node automation library, so the runtime is part of
+// what the service is rather than a choice about how to write it. (Rendering
+// reinforces it: a Go renderer could not use Puck, and a preview that
+// reimplements Puck's rendering is evidence about the reimplementation — the
+// "without reinterpretation" rule in design 0001 §2.2.)
+//
+// The exemption is this path and no other, and it is only the language
+// confinement: the forbidden-frontend-dependency check below still applies to
+// this service in full.
+const GO_FIRST_EXEMPT = ["services/preview-worker/"];
 for (const rel of files) {
   const isJs = JS_EXT.test(rel) || rel.endsWith("/package.json") || rel === "package.json";
   if (!isJs) continue;
   const allowed =
-    rel.startsWith("packages/") || rel.startsWith("scripts/") || ROOT_ALLOWED.has(rel);
+    rel.startsWith("packages/") ||
+    rel.startsWith("scripts/") ||
+    GO_FIRST_EXEMPT.some((prefix) => rel.startsWith(prefix)) ||
+    ROOT_ALLOWED.has(rel);
   if (!allowed) {
     failures.push(`Node/TS outside tooling areas: ${rel}`);
   }
