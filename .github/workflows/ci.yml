@@ -210,6 +210,66 @@ jobs:
         working-directory: services/export-worker
         run: go build ./...
 
+  agent-runtimes:
+    name: Agent Runtimes (lint, vet, race, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: services/agent-runtimes/go.mod
+      - uses: golangci/golangci-lint-action@v8
+        with:
+          working-directory: services/agent-runtimes
+      - name: gofmt
+        working-directory: services/agent-runtimes
+        run: test -z "$(gofmt -l .)"
+      - name: go vet
+        working-directory: services/agent-runtimes
+        run: go vet ./...
+      - name: Tests (race detector)
+        working-directory: services/agent-runtimes
+        run: go test -race -count=1 ./...
+      - name: Build every runtime unit
+        working-directory: services/agent-runtimes
+        run: go build ./...
+      # The vendored bindings must be the ones this commit's canonical material
+      # generates. A drifted copy would let a unit answer with a shape the
+      # control plane no longer admits.
+      - name: Vendored contract bindings match the canonical source
+        run: |
+          cmp packages/contracts-go/generated/schema/contracts.gen.go \
+              services/agent-runtimes/contracts/generated/schema/contracts.gen.go
+
+  preview-worker:
+    name: Page Preview Worker (typecheck, tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - name: Install pinned Bun workspace
+        run: bun install --frozen-lockfile
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Typecheck
+        run: bun run --cwd services/preview-worker typecheck
+      # Node strips TypeScript types natively, so the suite needs no test
+      # dependency of its own.
+      - name: Tests
+        working-directory: services/preview-worker
+        run: node --test 'test/**/*.test.ts'
+      - name: Vendored contract types match the canonical source
+        run: |
+          cmp packages/contracts-typescript/src/generated/schema.ts \
+              services/preview-worker/contracts/generated/schema.ts
+
   mocks:
     name: Mocks (contract conformance, FR-022)
     runs-on: ubuntu-latest
@@ -241,6 +301,17 @@ jobs:
         run: docker build --build-arg VERSION=${{ github.sha }} -t anvilkit-export-worker:${{ github.sha }} services/export-worker
       - name: Agent Service image
         run: docker build --build-arg VERSION=${{ github.sha }} -t anvilkit-agent-service:${{ github.sha }} services/agent-service
+      # One image per Agent Runtime Unit, built separately on purpose: units
+      # share the runtime host in source and share nothing in production, so
+      # each must be buildable, releasable, and rollback-able on its own.
+      - name: Page Change Manager runtime image
+        run: |
+          docker build -f services/agent-runtimes/agents/page-change-manager/Dockerfile \
+            -t anvilkit-page-change-manager:${{ github.sha }} services/agent-runtimes
+      - name: Page Candidate Specialist runtime image
+        run: |
+          docker build -f services/agent-runtimes/agents/page-candidate-specialist/Dockerfile \
+            -t anvilkit-page-candidate-specialist:${{ github.sha }} services/agent-runtimes
       # The image carries the pinned canonical contract material the service
       # verifies before it serves, so a build that produced an image with the
       # wrong contract root would start and then fail closed at every pod. The
@@ -277,6 +348,14 @@ jobs:
           $(go env GOPATH)/bin/kubeconform -strict -summary infra/k8s/agent-service-config.example.yaml
           sed 's/IMAGE_TAG/ci-validation/' infra/k8s/agent-service-protected-audit-provisioning.yaml | \
             $(go env GOPATH)/bin/kubeconform -strict -summary -
+          # Each Agent Runtime Unit carries its own Deployment and HPA, so each
+          # is validated on its own: a unit whose descriptor stopped parsing
+          # would be a unit that cannot be released, independently of the others.
+          for unit in page-change-manager page-candidate-specialist; do
+            sed "s|REPLACED_AT_RELEASE_BY_DIGEST|ghcr.io/anvilkit/$unit:ci-validation|" \
+              "services/agent-runtimes/agents/$unit/deploy/deployment.yaml" | \
+              $(go env GOPATH)/bin/kubeconform -strict -summary -
+          done
       - name: Alert rules validation (promtool)
         run: |
           docker run --rm -v "$PWD/infra/alerts:/rules:ro" --entrypoint promtool \
