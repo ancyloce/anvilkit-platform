@@ -419,8 +419,8 @@ given.**
 | # | Approval required | Accountable owner | Status |
 | --- | --- | --- | --- |
 | 1 | CD-1 through CD-7 dispositions in §1, selecting one option per §13.1 (5a, 5b), §13.2, and §13.3 | Platform owner | ☑ **GIVEN 2026-08-24** |
-| 2 | Agent Runtimes repository: accountable owner and confirmation that a Platform submodule is wanted (CLAUDE.md team-confirmation rule) | Platform owner + team | ☑ **GIVEN 2026-08-24** — exact remote target still to be named; see below |
-| 3 | Page Preview Worker repository: accountable owner | Platform owner | ☑ **GIVEN 2026-08-24** — exact remote target still to be named; see below |
+| 2 | Agent Runtimes repository: accountable owner and confirmation that a Platform submodule is wanted (CLAUDE.md team-confirmation rule) | Platform owner + team | ☑ **GIVEN 2026-08-24** — exact remote target still to be named; see below. **Resolved 2026-08-26, §18.** |
+| 3 | Page Preview Worker repository: accountable owner | Platform owner | ☑ **GIVEN 2026-08-24** — exact remote target still to be named; see below. **Resolved 2026-08-26, §18.** |
 
 #### Record of approval 1
 
@@ -440,7 +440,7 @@ given.**
 
 - **Decided by:** the Platform owner, by direct instruction on 2026-08-24 ("approve all").
 - **Scope:** ownership and the decision to proceed. Both repositories may be created and developed.
-- **Not supplied by the approval:** the exact remote targets. The repositories are therefore created as **local checkouts with no remote**, at paths inferred from the existing sibling convention:
+- **Not supplied by the approval:** the exact remote targets. The repositories were therefore created as **local checkouts with no remote** (**superseded 2026-08-26 — see §18**), at paths inferred from the existing sibling convention:
   - Agent Runtimes → `/root/Rhett/anvilkit-agent-runtimes`
   - Page Preview Worker → `/root/Rhett/anvilkit-page-preview-worker` (follows the `anvilkit-<stage>-worker` naming rule)
   Correct either path before a remote is attached; nothing downstream depends on the name except the eventual submodule entry.
@@ -625,6 +625,32 @@ none of them** — they anticipated a `RenderEngine` that does not exist. All fi
 were removed; typecheck and all 21 tests pass without them. Removing an unused
 dependency is not a policy change, and it means the exemption above is carrying
 only what the code actually is.
+
+### 18. Amendment 2026-08-26 — repository targets resolved and submodules pinned
+
+Approvals 2 and 3 were given on 2026-08-24 without the exact remote targets, so
+§3 and §14 record the repositories as local checkouts with no remote and the
+Platform submodules as deliberately unpinned. **That is no longer the state**, and
+those passages are superseded rather than rewritten.
+
+Both repositories now exist under `github.com/ancyloce`, are registered in
+`.gitmodules`, and are pinned:
+
+| Path | Remote | Contents |
+|---|---|---|
+| `services/agent-runtimes` | `anvilkit-agent-runtimes` | shared runtime host + two Agent Runtime Units, 27 test functions, two independent images |
+| `services/preview-worker` | `anvilkit-page-preview-worker` | isolation, signed transport, render pipeline, 21 tests |
+
+The condition §3 attached to pinning — "the pointer is added only after this
+repository's commit and ownership are independently accepted" — was satisfied by
+the owner creating the repositories and registering the submodules before the
+code was migrated into them.
+
+**What the migration additionally required**, recorded so the reasons are not
+lost: `services/*` is a Bun workspace glob, so admitting a `package.json` there
+made `bun.lock` inconsistent until regenerated (additive only); and `npm` no
+longer works inside the tree because the root pins Bun as package manager, so the
+preview worker's scripts run via `bun run --cwd services/preview-worker …`.
 
 ## Consequences
 
