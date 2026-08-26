@@ -2,7 +2,7 @@
 
 | Item | Decision |
 | --- | --- |
-| Status | **Accepted.** All three approvals given by the Platform owner 2026-08-24. Amended 2026-08-25 with two owner decisions — the page-persistence request shape (§15) and apply-redemption authority (§16). CD-6 and CD-7 remain gated on external material that approval cannot supply — see §14. |
+| Status | **Accepted.** All three approvals given by the Platform owner 2026-08-24. Amended 2026-08-25 with two owner decisions — the page-persistence request shape (§15) and apply-redemption authority (§16) — and 2026-08-26 with the preview worker's Go-first exemption (§17). CD-6 and CD-7 remain gated on external material that approval cannot supply — see §14. |
 | Date | 2026-08-24 |
 | Scope | Page and component-design generation milestone; Studio/Platform integration contract; Agent execution-plane topology |
 | Related ADR | ADR-016, ADR-018, ADR-019, ADR-021, ADR-022, ADR-023, ADR-024 |
@@ -529,7 +529,40 @@ in-process artifact byte read — of which it has none today
 (`artifacts.ObjectStore` is `PutOnce | Delete | Exists`; `artifacts.Reader` is
 `SignRead | Verify | Revoke`).
 
-**Consequence, recorded as a PR 10 finding rather than applied here.** The
+**Applied 2026-08-25, and the recorded scope below was wrong twice.** Two
+findings corrected it once the code was actually traced:
+
+1. `domaincommit.Coordinator` — the component holding the `Persist` call — is
+   **never constructed in production**: `domaincommit.New(` has no non-test
+   caller. The live commit path is `Executor.submitRecorded` →
+   `cfg.Domain.Commit`, a different port.
+2. That port is chosen by `selectDomainImplementation`, which offers exactly one
+   implementation — the **controlled** `VerifyingDomainPort`, an in-process
+   simulation of the domain owner that verifies the capability and returns a
+   configured outcome. It never contacts Pagix, and
+   `requireProductionEligible` refuses it outside a controlled topology.
+
+So the §2.2 violation was real in the source but **unreachable in any runnable
+production configuration**, and the removal was far smaller than the estimate
+below: the escalation, reconciliation, and operator-resolution machinery all
+stay, because Agent Service still waits for an outcome it does not control —
+the uncertainty moves from "did my command land" to "will the outcome arrive",
+and both need the same recovery.
+
+What was removed: `pagixclient.DomainCommand`, `pagixclient.Port.Persist`,
+`pagixclient.Client.Persist`, and `domaincommit.Pagix.Persist` with its call
+site. The coordinator now issues the capability, records issuance write-ahead,
+and awaits the authoritative outcome — returning no error on the first pass,
+because nothing uncertain has happened: a capability was issued, not an effect
+attempted. The `Issued` reconcile-first resume path keeps its meaning, since the
+capability may already have been redeemed.
+
+Two tests were retitled and re-pointed rather than deleted, and one assertion
+that had become vacuous — "no domain command was sent", on a path where no
+command is ever sent — was replaced with one that can still fail: no capability
+is issued past a failed precondition.
+
+**Superseded estimate, kept for the record.** The
 Agent Service page-persistence send and the uncertainty machinery built over it
 must be removed: the write-ahead `Issued` marker, reconcile-first restart,
 `ReconcileAttempts` / `FirstUncertainAt`, the bounded escalation window, and
@@ -541,6 +574,57 @@ Service's to carry. The change spans `internal/domaincommit/commit.go`,
 Postgres store and a state machine, with roughly thirty references to the
 escalation machinery alone. It was not attempted during the implementation pass,
 which forbids running the suites that would validate it.
+
+### 17. Amendment 2026-08-26 — Go-first exemption for the page preview worker
+
+**Decision:** the page preview worker is admitted to this repository at
+`services/preview-worker` as a Node/TypeScript service, exempt from the Go-first
+confinement that PRD 0009 and CLAUDE.md otherwise apply to production services.
+
+**Why the exemption is not arbitrary.** Stated by the owner: *the page preview
+worker itself runs in a Node runtime.* Its execution model is Node — it drives a
+browser through a Node automation library, and the process being deployed is a
+Node process. Go-first governs what production services are *written in* on the
+assumption that the choice is free; here it is not, because the runtime is part
+of what the service is.
+
+The rendering argument reinforces it rather than carrying it: a Go renderer
+could not use Puck, so it would reimplement Puck's component rendering, and its
+screenshots would be evidence about that reimplementation rather than about the
+page Studio will actually produce. Design 0001 §2.2 requires the apply path to
+materialize Puck Data "without reinterpretation", and a preview that
+reinterprets is not evidence about the candidate under review.
+
+The alternative — keeping the worker outside the repository — leaves a declared
+submodule empty and splits the contract-integration story across an unpinned
+checkout.
+
+**Scope, deliberately narrow.** `scripts/dependency-audit.ts` exempts the single
+path prefix `services/preview-worker/`, and only from the *language*
+confinement. The forbidden-frontend-dependency check still applies to this
+service in full, verified both ways: adding `react` to its `package.json` is
+still refused, and a stray `.ts` file under `services/agent-runtimes/` is still
+caught. No other service path is affected.
+
+**What the exemption does and does not permit.** Browser automation is *not*
+restricted: `playwright-core` is not in the forbidden set and returns to
+`dependencies` the moment `RenderEngine` is implemented. What stays forbidden is
+the React/Puck rendering surface — `react`, `react-dom`, `@measured/puck` — so a
+future `RenderEngine` cannot depend on those from inside this repository.
+
+That is a real constraint on how the renderer is built, not a bar on building
+it: driving a browser that loads a separately released Puck bundle is permitted;
+importing Puck's components into this service is not. If the renderer genuinely
+needs them in-process, that is a further decision — a second exemption with its
+own evidence, or a renderer bundle released from outside and consumed as an
+artifact.
+
+**Cleanup performed with the migration.** The worker declared `@measured/puck`,
+`playwright-core`, `react`, `react-dom`, and `@types/react`, and **referenced
+none of them** — they anticipated a `RenderEngine` that does not exist. All five
+were removed; typecheck and all 21 tests pass without them. Removing an unused
+dependency is not a policy change, and it means the exemption above is carrying
+only what the code actually is.
 
 ## Consequences
 
