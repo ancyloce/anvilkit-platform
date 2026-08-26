@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+/// <reference types="node" />
 /**
  * Operation-to-handler conformance.
  *
@@ -22,9 +23,10 @@
  */
 
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const repositoryRoot = resolve(import.meta.dir, "..");
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const descriptionPath = resolve(repositoryRoot, "contracts/agent/openapi/agent-service.openapi.json");
 const manifestPath = resolve(repositoryRoot, "services/agent-service/internal/api/operations.json");
 
