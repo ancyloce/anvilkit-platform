@@ -4,3 +4,9 @@
 [submodule "services/agent-service"]
 	path = services/agent-service
 	url = https://github.com/ancyloce/anvilkit-agent-service.git
+[submodule "services/preview-worker"]
+	path = services/preview-worker
+	url = https://github.com/ancyloce/anvilkit-page-preview-worker
+[submodule "services/agent-runtimes"]
+	path = services/agent-runtimes
+	url = https://github.com/ancyloce/anvilkit-agent-runtimes
