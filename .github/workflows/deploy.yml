@@ -21,10 +21,14 @@ on:
         description: "Which service to promote"
         required: true
         type: choice
-        options: [export-worker, agent-service, all]
+        options: [export-worker, agent-service, all, page-change-manager, page-candidate-specialist]
       image_tag:
-        description: "Immutable image tag to deploy (git sha or vX.Y.Z — never latest)"
-        required: true
+        description: "Immutable image tag to deploy (git sha or vX.Y.Z — never latest; unused for runtime units)"
+        required: false
+        type: string
+      image_digest:
+        description: "Released image digest (sha256:...) — required for runtime units, which deploy by digest only"
+        required: false
         type: string
 
 permissions:
@@ -36,6 +40,10 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The Agent Runtime Unit deployment material lives in the pinned
+          # agent-runtimes submodule; promoting a unit applies that material.
+          submodules: recursive
       - name: BD-006 gate — cluster must be provisioned
         env:
           KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
@@ -45,10 +53,20 @@ jobs:
             echo "Register the environment's kubeconfig as the KUBECONFIG_B64 secret to enable deploys."
             exit 1
           fi
-      - name: Reject mutable tags
+      - name: Reject mutable tags and unresolved digests
         run: |
-          case "${{ inputs.image_tag }}" in
-            latest|main|"") echo "::error::Immutable tags only (ADR-008)"; exit 1 ;;
+          case "${{ inputs.service }}" in
+            page-change-manager|page-candidate-specialist)
+              # Runtime units deploy by immutable digest only: a tag would let
+              # the running image change without a release, and a result could
+              # then be attributed to a binding that never produced it.
+              if ! printf '%s' "${{ inputs.image_digest }}" | grep -Eq '^sha256:[0-9a-f]{64}$'; then
+                echo "::error::Runtime units require image_digest (sha256:<64 hex>); tags are refused"; exit 1
+              fi ;;
+            *)
+              case "${{ inputs.image_tag }}" in
+                latest|main|"") echo "::error::Immutable tags only (ADR-008)"; exit 1 ;;
+              esac ;;
           esac
       - name: Configure cluster access
         env:
@@ -77,3 +95,23 @@ jobs:
           sed "s/IMAGE_TAG/${{ inputs.image_tag }}/" infra/k8s/agent-service-statefulset.yaml | \
             kubectl apply -f -
           kubectl rollout status statefulset/agent-service --timeout=10m
+      # Each Agent Runtime Unit is promoted on its own: its identity and
+      # network boundary, then its digest-pinned Deployment. Rolling out — or
+      # rolling back, which is this same dispatch with the previous released
+      # digest — changes which release serves NEW work only: Runs already
+      # executing stay pinned to the manifest and image that started them, and
+      # the maxUnavailable:0 strategy plus the unit's SIGTERM drain let their
+      # in-flight tasks finish on the old pods.
+      - name: Apply runtime unit (identity, network boundary, digest-pinned deployment)
+        if: inputs.service == 'page-change-manager' || inputs.service == 'page-candidate-specialist'
+        run: |
+          unit="${{ inputs.service }}"
+          kubectl apply -f "services/agent-runtimes/agents/$unit/deploy/identity.yaml"
+          rendered=$(mktemp)
+          sed "s|REPLACED_AT_RELEASE_BY_DIGEST|ghcr.io/anvilkit/$unit@${{ inputs.image_digest }}|" \
+            "services/agent-runtimes/agents/$unit/deploy/deployment.yaml" > "$rendered"
+          if grep -q REPLACED_AT_RELEASE_BY_DIGEST "$rendered"; then
+            echo "::error::Unresolved digest placeholder survived rendering"; exit 1
+          fi
+          kubectl apply -f "$rendered"
+          kubectl rollout status "deployment/$unit" --timeout=5m

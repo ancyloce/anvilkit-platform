@@ -124,27 +124,30 @@ jobs:
         working-directory: services/agent-service
         env:
           POSTGRES_TEST_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
+          ANVILKIT_REQUIRE_POSTGRES_PROOFS: "1"
           DURABLE_CREATE_LOAD_TEST: "1"
           DURABLE_CREATE_LOAD_DURATION: 25s
           DURABLE_CREATE_EVIDENCE_PATH: .evidence/durable-create/create-floor.json
         run: go test -race -count=1 -v ./internal/persistence ./internal/journal/postgres
-      # The restart matrix runs here rather than being folded into the step
-      # above: its checkpoints self-skip without POSTGRES_TEST_URL, and a
-      # required proof that skips silently is indistinguishable from one that
-      # passed. It gets a step of its own because it creates durable-runtime
-      # schemas owned by the same database roles the persistence proof drops
-      # when it rolls its migrations back — run concurrently, the two race, and
-      # whichever loses fails for reasons that have nothing to do with the
-      # change under test.
+      # The restart matrix gets a step of its own because it creates
+      # durable-runtime schemas owned by the same database roles the
+      # persistence proof drops when it rolls its migrations back — run
+      # concurrently, the two race, and whichever loses fails for reasons that
+      # have nothing to do with the change under test. Every PostgreSQL step
+      # carries ANVILKIT_REQUIRE_POSTGRES_PROOFS: a required proof that skips
+      # silently is indistinguishable from one that passed, so a missing or
+      # unreachable database fails the job instead.
       - name: Production restart matrix across durable checkpoints
         working-directory: services/agent-service
         env:
           POSTGRES_TEST_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
+          ANVILKIT_REQUIRE_POSTGRES_PROOFS: "1"
         run: go test -race -count=1 -v ./cmd/agent-service
       - name: DBOS durable-step, wait, cancel, and two-executor proofs
         working-directory: services/agent-service
         env:
           DBOS_TEST_URL: postgres://postgres:agent-service-ci@127.0.0.1:5432/agent_service_ci?sslmode=disable
+          ANVILKIT_REQUIRE_POSTGRES_PROOFS: "1"
         run: go test -race -count=1 ./internal/workflow/dbos
       - name: DBOS subprocess SIGKILL, recovery, and pinned-load proof
         working-directory: services/agent-service
@@ -279,7 +282,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-go@v5
         with:
-          go-version-file: services/export-worker/go.mod
+          go-version-file: mocks/go.mod
       - name: go vet
         working-directory: mocks
         run: go vet ./...
@@ -355,11 +358,109 @@ jobs:
             sed "s|REPLACED_AT_RELEASE_BY_DIGEST|ghcr.io/anvilkit/$unit:ci-validation|" \
               "services/agent-runtimes/agents/$unit/deploy/deployment.yaml" | \
               $(go env GOPATH)/bin/kubeconform -strict -summary -
+            $(go env GOPATH)/bin/kubeconform -strict -summary \
+              "services/agent-runtimes/agents/$unit/deploy/identity.yaml"
           done
+          $(go env GOPATH)/bin/kubeconform -strict -summary infra/k8s/agent-runtimes-config.example.yaml
       - name: Alert rules validation (promtool)
         run: |
           docker run --rm -v "$PWD/infra/alerts:/rules:ro" --entrypoint promtool \
             prom/prometheus:latest check rules /rules/export-worker-rules.yaml
+      # ---- Agent Runtime release pipeline ----
+      # The release pipeline runs against the images built above: capture the
+      # built digests, cut and sign the complete release material, verify it
+      # with the exact ingestion the control plane runs at startup, render the
+      # deployment descriptors digest-pinned, and boot each image as a
+      # disposable test environment to prove readiness, liveness, and
+      # termination drain. The signing key is ephemeral to this build — it
+      # proves the cut-sign-verify path end to end; production attestation is
+      # sealed by the operator's own key, never by CI.
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: services/agent-service/go.mod
+      - name: Cut and sign the runtime release material from the built digests
+        run: |
+          OUT="$RUNNER_TEMP/runtime-release"
+          mkdir -p "$OUT"
+          MANAGER_DIGEST=$(docker image inspect --format '{{.Id}}' anvilkit-page-change-manager:${{ github.sha }})
+          SPECIALIST_DIGEST=$(docker image inspect --format '{{.Id}}' anvilkit-page-candidate-specialist:${{ github.sha }})
+          printf 'MANAGER_DIGEST=%s\nSPECIALIST_DIGEST=%s\n' "$MANAGER_DIGEST" "$SPECIALIST_DIGEST" > "$OUT/digests.env"
+          SOURCE_COMMIT=$(git -C services/agent-runtimes rev-parse HEAD)
+          (cd services/agent-service && go run ./cmd/runtime-release cut \
+            -out "$OUT" -ephemeral \
+            -image "runtime.platform.page-change-manager=$MANAGER_DIGEST" \
+            -image "runtime.platform.page-candidate-specialist=$SPECIALIST_DIGEST" \
+            -source-commit "$SOURCE_COMMIT" \
+            -builder "github-actions:${{ github.run_id }}")
+      - name: Render digest-pinned deployment material; reject mutable references
+        run: |
+          OUT="$RUNNER_TEMP/runtime-release"
+          . "$OUT/digests.env"
+          mkdir -p "$OUT/deploy"
+          sed "s|REPLACED_AT_RELEASE_BY_DIGEST|ghcr.io/anvilkit/page-change-manager@$MANAGER_DIGEST|" \
+            services/agent-runtimes/agents/page-change-manager/deploy/deployment.yaml > "$OUT/deploy/page-change-manager.yaml"
+          sed "s|REPLACED_AT_RELEASE_BY_DIGEST|ghcr.io/anvilkit/page-candidate-specialist@$SPECIALIST_DIGEST|" \
+            services/agent-runtimes/agents/page-candidate-specialist/deploy/deployment.yaml > "$OUT/deploy/page-candidate-specialist.yaml"
+          (cd services/agent-service && go run ./cmd/runtime-release verify \
+            -releases "$OUT/releases" -definitions "$OUT/definitions" \
+            -trust-root "$OUT/attestations/release-trust-root.json" \
+            -attestation "$OUT/attestations/runtime-release-catalog.attestation.json" \
+            -definition-attestation "$OUT/attestations/agent-definition-catalog.attestation.json" \
+            -deployment "$OUT/deploy/page-change-manager.yaml" \
+            -deployment "$OUT/deploy/page-candidate-specialist.yaml")
+          $(go env GOPATH)/bin/kubeconform -strict -summary "$OUT"/deploy/*.yaml
+      - name: Deploy the released images to a disposable test environment (readiness, drain)
+        run: |
+          OUT="$RUNNER_TEMP/runtime-release"
+          # Boot material: the result-signing seed is generated for this check,
+          # and the trust-root document has the operator shape with placeholder
+          # key material — the check proves boot, probes, and drain, and no
+          # task is dispatched, so no credential is ever verified against it.
+          SEED=$(head -c 32 /dev/urandom | base64 | tr '+/' '-_' | tr -d '=\n')
+          python3 -c "import yaml,sys,pathlib; doc=[d for d in yaml.safe_load_all(pathlib.Path('infra/k8s/agent-runtimes-config.example.yaml').read_text()) if d['metadata']['name']=='anvilkit-task-credential-trust'][0]; pathlib.Path(sys.argv[1]).write_text(doc['data']['task-credential-trust-root.json'])" "$OUT/task-credential-trust-root.json"
+          for unit in page-change-manager page-candidate-specialist; do
+            port=18080; [ "$unit" = "page-candidate-specialist" ] && port=18081
+            docker run -d --name "$unit-release-check" -p "$port:8080" \
+              -v "$OUT:/release:ro" \
+              -e ANVILKIT_RUNTIME_MANIFEST="/release/releases/release.platform.$unit.json" \
+              -e ANVILKIT_CONTROL_PLANE="http://agent-service:8080" \
+              -e ANVILKIT_RESULT_SIGNING_KEY="$SEED" \
+              -e ANVILKIT_RESULT_SIGNING_KEY_ID="urn:anvilkit:key:release-boot-check" \
+              -e ANVILKIT_TASK_CREDENTIAL_TRUST_ROOT="/release/task-credential-trust-root.json" \
+              "anvilkit-$unit:${{ github.sha }}"
+            ready=""
+            for attempt in $(seq 1 100); do
+              if curl -fsS "http://localhost:$port/healthz" >/dev/null 2>&1 && \
+                 curl -fsS "http://localhost:$port/readyz" >/dev/null 2>&1; then ready=1; break; fi
+              sleep 0.2
+            done
+            if [ -z "$ready" ]; then
+              echo "::error::$unit did not become ready"; docker logs "$unit-release-check"; exit 1
+            fi
+            # SIGTERM starts the drain: readiness must stop saying ready, and
+            # the process must exit cleanly inside its released drain window.
+            docker kill -s TERM "$unit-release-check" >/dev/null
+            sleep 1
+            if curl -fsS "http://localhost:$port/readyz" >/dev/null 2>&1; then
+              echo "::error::$unit still reports ready while draining"; exit 1
+            fi
+            exit_code=$(timeout 40 docker wait "$unit-release-check" || echo timeout)
+            if [ "$exit_code" != "0" ]; then
+              echo "::error::$unit did not drain cleanly (exit: $exit_code)"; docker logs "$unit-release-check"; exit 1
+            fi
+            docker rm "$unit-release-check" >/dev/null
+          done
+      - name: Retain the verified release candidate (without its ephemeral seed)
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-runtime-release-candidate-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/runtime-release/releases
+            ${{ runner.temp }}/runtime-release/definitions
+            ${{ runner.temp }}/runtime-release/evidence
+            ${{ runner.temp }}/runtime-release/attestations
+            ${{ runner.temp }}/runtime-release/deploy
+          if-no-files-found: error
 
   audit:
     name: Dependency audit (AC-002, AC-018)
