@@ -1,0 +1,17 @@
+{
+  "kind": "ModelInvocationResult",
+  "invocationId": "invocation.page.001",
+  "taskId": "task.page.001",
+  "physicalAttemptId": "attempt.page.002",
+  "attemptNumber": 2,
+  "executionGeneration": 2,
+  "outcome": "ok",
+  "reasonCode": "GATEWAY_MODEL_COMPLETED",
+  "output": {
+    "completion": "synthetic"
+  },
+  "outputDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  }
+}

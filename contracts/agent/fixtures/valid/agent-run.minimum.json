@@ -71,6 +71,13 @@
   "status": "created",
   "executionGeneration": 0,
   "resourceRevision": 0,
+  "runtimeBinding": {
+    "runtimeUnitId": "agent.synthetic.001",
+    "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "runtimeImageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "runtimeAudience": "urn:anvilkit:audience:runtime-page-change-manager"
+  },
   "createdAt": "2026-08-09T12:00:00.000Z",
   "updatedAt": "2026-08-09T12:00:00.000Z"
 }

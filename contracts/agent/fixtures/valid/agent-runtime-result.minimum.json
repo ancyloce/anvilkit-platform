@@ -4,12 +4,20 @@
   "runId": "run.synthetic.001",
   "rootRunId": "run.synthetic.001",
   "physicalAttemptId": "attempt.synthetic.001",
+  "attemptNumber": 1,
   "executionGeneration": 0,
+  "leaseEpoch": 0,
+  "fenceToken": "fence.synthetic.0001",
   "selected": {
+    "runtimeUnitId": "agent.synthetic.001",
     "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
     "imageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "status": {
+    "status": "completed",
+    "reasonCode": "RUNTIME_COMPLETED"
   },
   "turnDecision": {
     "decision": "continue",
@@ -17,15 +25,23 @@
     "artifactOutputs": []
   },
   "usage": {
+    "modelCalls": 0,
+    "toolCalls": 0,
     "inputTokens": 0,
     "outputTokens": 0,
-    "durationMilliseconds": 0
+    "durationMilliseconds": 0,
+    "cost": {
+      "amount": "0",
+      "currency": "USD"
+    }
   },
   "diagnostics": [],
-  "provenance": {
-    "signatureAlgorithm": "dsse-ed25519-v1",
-    "signatureDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-    "statementDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  "signature": {
+    "algorithm": "dsse-ed25519-v1",
+    "keyId": "urn:anvilkit:key:agent-runtime:synthetic",
+    "statementDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "signature": "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "provenanceReference": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
   },
   "traceContext": {
     "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"

@@ -2,7 +2,24 @@
   "kind": "AgentTask",
   "runId": "run.synthetic.001",
   "rootRunId": "run.synthetic.001",
+  "physicalAttemptId": "attempt.page.002",
+  "attemptNumber": 2,
   "executionGeneration": 0,
+  "leaseEpoch": 3,
+  "fenceToken": "fence.page.0000000002",
+  "expiresAt": "2026-08-27T12:05:00.000Z",
+  "definition": {
+    "definitionId": "definition.synthetic.001",
+    "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "runtimeBinding": {
+    "runtimeUnitId": "page-change-manager",
+    "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "runtimeImageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "runtimeAudience": "urn:anvilkit:audience:runtime-page-change-manager"
+  },
+  "authorizationAudience": "urn:anvilkit:audience:runtime-page-change-manager",
   "capability": "fake.execute",
   "inputSchema": {
     "componentName": "anvilkit.contract.schema.problem-details",

@@ -43,6 +43,13 @@
     "completed"
   ],
   "evaluators": [],
+  "runtimeBinding": {
+    "runtimeUnitId": "agent.synthetic.001",
+    "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "runtimeImageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "runtimeAudience": "urn:anvilkit:audience:runtime-page-change-manager"
+  },
   "definitionId": "definition.synthetic.001",
   "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
 }

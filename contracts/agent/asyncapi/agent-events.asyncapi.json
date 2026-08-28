@@ -304,7 +304,7 @@
           "additionalProperties": false
         },
         "payload": {
-          "$ref": "anvilkit://schema/agent-task?digest=sha256:323739e5173befedf6c54f79ee0c05a3757460329a7ffef765622a26da711939"
+          "$ref": "anvilkit://schema/agent-task?digest=sha256:0db34f07c19ac81a3adacd43fc25d10f4c0168b5ca57c6bddd0a7374a0d32176"
         },
         "correlationId": {
           "description": "Trace correlation.",

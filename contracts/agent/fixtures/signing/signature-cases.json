@@ -59,6 +59,100 @@
       "operation": "verify",
       "mutation": "none",
       "expectedVerified": true
+    },
+    {
+      "id": "runtime-statement-sign-and-verify",
+      "profile": "runtime-statement",
+      "operation": "sign-and-verify",
+      "mutation": "none",
+      "expectedVerified": true
+    },
+    {
+      "id": "runtime-statement-signature-tamper",
+      "profile": "runtime-statement",
+      "operation": "verify",
+      "mutation": "signature-first-byte",
+      "expectedVerified": false
+    },
+    {
+      "id": "runtime-statement-statement-tamper",
+      "profile": "runtime-statement",
+      "operation": "verify",
+      "mutation": "message-last-byte",
+      "expectedVerified": false
+    },
+    {
+      "id": "runtime-statement-verify",
+      "profile": "runtime-statement",
+      "operation": "verify",
+      "mutation": "none",
+      "expectedVerified": true
     }
-  ]
+  ],
+  "runtimeStatement": {
+    "notice": "Known-answer vectors for the signed AgentRuntimeResult statement. The statement is the canonical result document with its signature envelope removed; the signed bytes are the RFC 8785 (JCS) serialization of that statement carried in a DSSE pre-authentication encoding. Go and TypeScript must reproduce these bytes exactly.",
+    "contract": "AgentRuntimeResult",
+    "envelopePointer": "/signature",
+    "canonicalization": "RFC8785",
+    "payloadType": "application/vnd.anvilkit.agent-runtime-result+json",
+    "statement": {
+      "kind": "AgentRuntimeResult",
+      "taskId": "task.page.001",
+      "runId": "run.page.001",
+      "rootRunId": "run.page.001",
+      "physicalAttemptId": "attempt.page.001",
+      "attemptNumber": 2,
+      "executionGeneration": 2,
+      "leaseEpoch": 3,
+      "fenceToken": "fence.page.0000000002",
+      "selected": {
+        "runtimeUnitId": "page-change-manager",
+        "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "imageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      "status": {
+        "status": "completed",
+        "reasonCode": "RUNTIME_COMPLETED"
+      },
+      "turnDecision": {
+        "decision": "final",
+        "payload": {
+          "summary": "synthetic"
+        },
+        "artifactOutputs": [
+          {
+            "artifactId": "artifact.synthetic.001",
+            "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "mediaType": "application/json",
+            "sizeBytes": 128
+          }
+        ]
+      },
+      "usage": {
+        "modelCalls": 3,
+        "toolCalls": 1,
+        "inputTokens": 1200,
+        "outputTokens": 340,
+        "durationMilliseconds": 8400,
+        "cost": {
+          "amount": "0.004200",
+          "currency": "USD"
+        }
+      },
+      "diagnostics": [
+        {
+          "code": "CATALOG_COMPONENT_SUBSTITUTED",
+          "detail": "synthetic diagnostic"
+        }
+      ],
+      "traceContext": {
+        "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+      }
+    },
+    "canonicalBytesBase64Url": "eyJhdHRlbXB0TnVtYmVyIjoyLCJkaWFnbm9zdGljcyI6W3siY29kZSI6IkNBVEFMT0dfQ09NUE9ORU5UX1NVQlNUSVRVVEVEIiwiZGV0YWlsIjoic3ludGhldGljIGRpYWdub3N0aWMifV0sImV4ZWN1dGlvbkdlbmVyYXRpb24iOjIsImZlbmNlVG9rZW4iOiJmZW5jZS5wYWdlLjAwMDAwMDAwMDIiLCJraW5kIjoiQWdlbnRSdW50aW1lUmVzdWx0IiwibGVhc2VFcG9jaCI6MywicGh5c2ljYWxBdHRlbXB0SWQiOiJhdHRlbXB0LnBhZ2UuMDAxIiwicm9vdFJ1bklkIjoicnVuLnBhZ2UuMDAxIiwicnVuSWQiOiJydW4ucGFnZS4wMDEiLCJzZWxlY3RlZCI6eyJkZWZpbml0aW9uRGlnZXN0Ijoic2hhMjU2OmFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJpbWFnZURpZ2VzdCI6InNoYTI1NjpkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkIiwiaW52b2NhdGlvblByb3RvY29sRGlnZXN0Ijoic2hhMjU2OmNjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2MiLCJydW50aW1lTWFuaWZlc3REaWdlc3QiOiJzaGEyNTY6YmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYiIsInJ1bnRpbWVVbml0SWQiOiJwYWdlLWNoYW5nZS1tYW5hZ2VyIn0sInN0YXR1cyI6eyJyZWFzb25Db2RlIjoiUlVOVElNRV9DT01QTEVURUQiLCJzdGF0dXMiOiJjb21wbGV0ZWQifSwidGFza0lkIjoidGFzay5wYWdlLjAwMSIsInRyYWNlQ29udGV4dCI6eyJ0cmFjZXBhcmVudCI6IjAwLTAxMjM0NTY3ODlhYmNkZWYwMTIzNDU2Nzg5YWJjZGVmLTAxMjM0NTY3ODlhYmNkZWYtMDEifSwidHVybkRlY2lzaW9uIjp7ImFydGlmYWN0T3V0cHV0cyI6W3siYXJ0aWZhY3RJZCI6ImFydGlmYWN0LnN5bnRoZXRpYy4wMDEiLCJkaWdlc3QiOiJzaGEyNTY6YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYSIsIm1lZGlhVHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJzaXplQnl0ZXMiOjEyOH1dLCJkZWNpc2lvbiI6ImZpbmFsIiwicGF5bG9hZCI6eyJzdW1tYXJ5Ijoic3ludGhldGljIn19LCJ1c2FnZSI6eyJjb3N0Ijp7ImFtb3VudCI6IjAuMDA0MjAwIiwiY3VycmVuY3kiOiJVU0QifSwiZHVyYXRpb25NaWxsaXNlY29uZHMiOjg0MDAsImlucHV0VG9rZW5zIjoxMjAwLCJtb2RlbENhbGxzIjozLCJvdXRwdXRUb2tlbnMiOjM0MCwidG9vbENhbGxzIjoxfX0",
+    "statementDigest": "sha256:b5d384d92e31b5804d57a269e3b2d473a579033c2cbef480214fc926581c173b",
+    "signatureBase64Url": "CabzwCWEq74DCa-3ezEvL6hbNH4enurQUmGLuX8hcww3mxdl_9IMcWH91_tDlZdKzsD9N8DBy3FrYSWnVN3sCA"
+  }
 }

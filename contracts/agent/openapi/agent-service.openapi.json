@@ -99,7 +99,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                  "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
                 }
               }
             }
@@ -231,7 +231,7 @@
                       "minItems": 0,
                       "maxItems": 1000,
                       "items": {
-                        "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                        "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
                       }
                     },
                     "pageInfo": {
@@ -324,7 +324,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                  "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
                 }
               }
             }
@@ -526,7 +526,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/agent-run-snapshot?digest=sha256:a75079baf5ecfa347ef501e113ac96abaedb8bdbcf0c06a1cfe568e065ac55db"
+                  "$ref": "anvilkit://schema/agent-run-snapshot?digest=sha256:bc667183fc52ba4141132bbde63ea9022c0324c74b9a269a9a01b50484b0dbdd"
                 }
               }
             }
@@ -634,7 +634,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                  "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
                 }
               }
             }
@@ -791,7 +791,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                  "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
                 }
               }
             }
@@ -948,7 +948,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                  "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
                 }
               }
             }
@@ -1118,7 +1118,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                  "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
                 }
               }
             }
@@ -1298,7 +1298,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                  "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
                 }
               }
             }
@@ -1479,7 +1479,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+                  "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
                 }
               }
             }
@@ -2320,16 +2320,16 @@
         "$ref": "anvilkit://schema/agent-budget?digest=sha256:e2942efa249ebe3c79c105b3356d50a8cc3c99e8b544616a6ed10fb44a0b8467"
       },
       "AgentDefinition": {
-        "$ref": "anvilkit://schema/agent-definition?digest=sha256:59ea772874f19e68bf7dc7b3e83c2429a0e72e7a645ae23b5217d411130d4bfe"
+        "$ref": "anvilkit://schema/agent-definition?digest=sha256:09122ada3e6c0814476bb44d0d291560ef7d95baa14a79f1c8587b300ee515e4"
       },
       "AgentEvent": {
         "$ref": "anvilkit://schema/agent-event?digest=sha256:2fdd8937381427507e721675ebbd66144595a193b53ba460534e9712df9b774a"
       },
       "AgentRun": {
-        "$ref": "anvilkit://schema/agent-run?digest=sha256:e293860d680a93c9fa5d8c3907201ac3a6a54b7a81cbb81fd5bcb6f332497564"
+        "$ref": "anvilkit://schema/agent-run?digest=sha256:6265dda23cd50d6b716d5ee15a5cd8d9f427b10cfff63a29e3ce2cd727d7d09d"
       },
       "AgentRunSnapshot": {
-        "$ref": "anvilkit://schema/agent-run-snapshot?digest=sha256:a75079baf5ecfa347ef501e113ac96abaedb8bdbcf0c06a1cfe568e065ac55db"
+        "$ref": "anvilkit://schema/agent-run-snapshot?digest=sha256:bc667183fc52ba4141132bbde63ea9022c0324c74b9a269a9a01b50484b0dbdd"
       },
       "AgentStreamDelta": {
         "$ref": "anvilkit://schema/agent-stream-delta?digest=sha256:0d64114cedd078202f1046fbadd7291544a590b9019422af77ce2f8c4cb8f590"

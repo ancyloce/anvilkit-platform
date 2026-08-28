@@ -108,6 +108,24 @@
       "run.artifact-available",
       "run.problem-recorded"
     ],
+    "runtime-result-reason": [
+      "RUNTIME_COMPLETED",
+      "RUNTIME_INPUT_REQUIRED",
+      "RUNTIME_REFUSED_BY_GUARDRAIL",
+      "RUNTIME_REFUSED_BY_POLICY",
+      "RUNTIME_MODEL_UNAVAILABLE",
+      "RUNTIME_TOOL_FAILED",
+      "RUNTIME_BUDGET_EXHAUSTED",
+      "RUNTIME_DEADLINE_EXCEEDED",
+      "RUNTIME_CANCELLED",
+      "RUNTIME_INTERNAL_ERROR",
+      "GATEWAY_MODEL_COMPLETED",
+      "GATEWAY_MODEL_REFUSED",
+      "GATEWAY_BUDGET_EXHAUSTED",
+      "GATEWAY_PROVIDER_UNAVAILABLE",
+      "RELEASE_REVOKED_BY_OWNER",
+      "RELEASE_EMERGENCY_DISABLED"
+    ],
     "domain": [
       "platform-agent",
       "pagix-page",
@@ -181,7 +199,11 @@
     ],
     "audience": [
       "urn:anvilkit:audience:contract-consumers",
-      "urn:anvilkit:audience:pagix"
+      "urn:anvilkit:audience:pagix",
+      "urn:anvilkit:audience:agent-runtime",
+      "urn:anvilkit:audience:runtime-page-change-manager",
+      "urn:anvilkit:audience:runtime-page-candidate-specialist",
+      "urn:anvilkit:audience:agent-service-runtime-boundary"
     ],
     "key-status": [
       "active",
@@ -239,7 +261,9 @@
       "anvilkit.contract.schema.contract-runtime-result",
       "anvilkit.contract.registry-set",
       "anvilkit.contract.fixture-manifest",
-      "anvilkit.contract.p0-kernel-profile"
+      "anvilkit.contract.p0-kernel-profile",
+      "anvilkit.contract.schema.model-invocation-request",
+      "anvilkit.contract.schema.model-invocation-result"
     ]
   }
 }

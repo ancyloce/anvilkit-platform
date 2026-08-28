@@ -1,10 +1,14 @@
 {
   "kind": "AgentRuntimeManifest",
   "runtimeUnitId": "agent.synthetic.001",
+  "role": "manager",
   "definition": {
     "definitionId": "definition.synthetic.001",
     "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
+  "capabilities": [
+    "fake.execute"
+  ],
   "image": {
     "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "sourceCommit": "0000000000000000000000000000000000000000",
@@ -51,5 +55,9 @@
     "rolloutPolicy": "new-runs-only",
     "drainSeconds": 0,
     "rollbackTarget": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "lifecycle": {
+    "state": "active",
+    "effectiveAt": "2026-08-27T12:00:00.000Z"
   }
 }

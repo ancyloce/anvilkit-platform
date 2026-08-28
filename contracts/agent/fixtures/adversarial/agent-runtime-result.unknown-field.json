@@ -1,34 +1,64 @@
 {
   "kind": "AgentRuntimeResult",
-  "taskId": "task.synthetic.001",
-  "runId": "run.synthetic.001",
-  "rootRunId": "run.synthetic.001",
-  "physicalAttemptId": "attempt.synthetic.001",
-  "executionGeneration": 0,
+  "taskId": "task.page.001",
+  "runId": "run.page.001",
+  "rootRunId": "run.page.001",
+  "physicalAttemptId": "attempt.page.001",
+  "attemptNumber": 2,
+  "executionGeneration": 2,
+  "leaseEpoch": 3,
+  "fenceToken": "fence.page.0000000002",
   "selected": {
+    "runtimeUnitId": "page-change-manager",
     "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
     "imageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
   },
+  "status": {
+    "status": "completed",
+    "reasonCode": "RUNTIME_COMPLETED"
+  },
   "turnDecision": {
-    "decision": "continue",
-    "payload": {},
-    "artifactOutputs": []
+    "decision": "final",
+    "payload": {
+      "summary": "synthetic"
+    },
+    "artifactOutputs": [
+      {
+        "artifactId": "artifact.synthetic.001",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mediaType": "application/json",
+        "sizeBytes": 128
+      }
+    ]
   },
   "usage": {
-    "inputTokens": 0,
-    "outputTokens": 0,
-    "durationMilliseconds": 0
+    "modelCalls": 3,
+    "toolCalls": 1,
+    "inputTokens": 1200,
+    "outputTokens": 340,
+    "durationMilliseconds": 8400,
+    "cost": {
+      "amount": "0.004200",
+      "currency": "USD"
+    }
   },
-  "diagnostics": [],
-  "provenance": {
-    "signatureAlgorithm": "dsse-ed25519-v1",
-    "signatureDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-    "statementDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  "diagnostics": [
+    {
+      "code": "CATALOG_COMPONENT_SUBSTITUTED",
+      "detail": "synthetic diagnostic"
+    }
+  ],
+  "signature": {
+    "algorithm": "dsse-ed25519-v1",
+    "keyId": "urn:anvilkit:key:agent-runtime:synthetic",
+    "statementDigest": "sha256:b5d384d92e31b5804d57a269e3b2d473a579033c2cbef480214fc926581c173b",
+    "signature": "CabzwCWEq74DCa-3ezEvL6hbNH4enurQUmGLuX8hcww3mxdl_9IMcWH91_tDlZdKzsD9N8DBy3FrYSWnVN3sCA",
+    "provenanceReference": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
   },
   "traceContext": {
     "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
   },
-  "workflowState": "committing"
+  "workflowState": "committed"
 }

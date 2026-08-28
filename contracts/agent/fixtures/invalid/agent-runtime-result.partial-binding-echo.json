@@ -9,7 +9,6 @@
   "leaseEpoch": 3,
   "fenceToken": "fence.page.0000000002",
   "selected": {
-    "runtimeUnitId": "page-change-manager",
     "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
@@ -53,8 +52,8 @@
   "signature": {
     "algorithm": "dsse-ed25519-v1",
     "keyId": "urn:anvilkit:key:agent-runtime:synthetic",
-    "statementDigest": "sha256:b5d384d92e31b5804d57a269e3b2d473a579033c2cbef480214fc926581c173b",
-    "signature": "CabzwCWEq74DCa-3ezEvL6hbNH4enurQUmGLuX8hcww3mxdl_9IMcWH91_tDlZdKzsD9N8DBy3FrYSWnVN3sCA",
+    "statementDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "signature": "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
     "provenanceReference": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
   },
   "traceContext": {

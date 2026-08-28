@@ -57,9 +57,5 @@
     "rolloutPolicy": "new-runs-only",
     "drainSeconds": 30,
     "rollbackTarget": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-  },
-  "lifecycle": {
-    "state": "active",
-    "effectiveAt": "2026-08-27T12:00:00.000Z"
   }
 }

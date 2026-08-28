@@ -51,7 +51,14 @@
     "refused"
   ],
   "evaluators": [],
+  "runtimeBinding": {
+    "runtimeUnitId": "page-change-manager",
+    "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "runtimeImageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "runtimeAudience": "urn:anvilkit:audience:runtime-page-change-manager"
+  },
   "definitionId": "definition.synthetic.001",
   "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-  "unexpectedField": true
+  "unexpectedField": "value"
 }

@@ -846,6 +846,140 @@
       ]
     },
     {
+      "registryId": "runtime-result-reason",
+      "owner": "Platform Contracts owner",
+      "entries": [
+        {
+          "wireValue": "RUNTIME_COMPLETED",
+          "meaning": "The attempt ran to completion and returned its bounded turn decision.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RUNTIME_INPUT_REQUIRED",
+          "meaning": "The attempt stopped because it requires governed input before it can continue.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RUNTIME_REFUSED_BY_GUARDRAIL",
+          "meaning": "A guardrail refused the attempt; no artifact or effect was produced.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RUNTIME_REFUSED_BY_POLICY",
+          "meaning": "The pinned policy forbids what the attempt would have to do to continue.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RUNTIME_MODEL_UNAVAILABLE",
+          "meaning": "The governed Model Gateway could not serve the attempt's invocation.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RUNTIME_TOOL_FAILED",
+          "meaning": "A controlled tool invocation failed and the attempt cannot continue safely.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RUNTIME_BUDGET_EXHAUSTED",
+          "meaning": "The attempt stopped because continuing would exceed the run's remaining budget.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RUNTIME_DEADLINE_EXCEEDED",
+          "meaning": "The attempt exceeded its dispatched deadline before producing a decision.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RUNTIME_CANCELLED",
+          "meaning": "The attempt stopped because its run or lease was cancelled.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RUNTIME_INTERNAL_ERROR",
+          "meaning": "The runtime unit failed for a reason it cannot attribute to policy, budget, model, or tool.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "GATEWAY_MODEL_COMPLETED",
+          "meaning": "The governed Model Gateway returned a metered model result for the attempt.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "GATEWAY_MODEL_REFUSED",
+          "meaning": "The governed Model Gateway refused the invocation under the pinned model policy.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "GATEWAY_BUDGET_EXHAUSTED",
+          "meaning": "The governed Model Gateway refused the invocation because the attempt has no remaining budget.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "GATEWAY_PROVIDER_UNAVAILABLE",
+          "meaning": "No permitted provider could serve the invocation within its limits.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RELEASE_REVOKED_BY_OWNER",
+          "meaning": "The runtime release was revoked by its owner and may not be selected for new runs.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "RELEASE_EMERGENCY_DISABLED",
+          "meaning": "The runtime release was disabled in an emergency; outstanding leases are cancelled or expired.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        }
+      ]
+    },
+    {
       "registryId": "domain",
       "owner": "Platform Contracts owner",
       "entries": [
@@ -1312,6 +1446,38 @@
           "status": "active",
           "aliases": [],
           "replacement": null
+        },
+        {
+          "wireValue": "urn:anvilkit:audience:agent-runtime",
+          "meaning": "Workload audience every Agent Runtime Unit presents as its fleet identity, independent of the per-unit audience a dispatched task is scoped to.",
+          "owner": "Security",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "urn:anvilkit:audience:runtime-page-change-manager",
+          "meaning": "Task-scoped credential audience for the Page Change Manager runtime unit. Only that release may admit a task naming it.",
+          "owner": "Security",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "urn:anvilkit:audience:runtime-page-candidate-specialist",
+          "meaning": "Task-scoped credential audience for the Page Candidate Specialist runtime unit. Only that release may admit a task naming it.",
+          "owner": "Security",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "urn:anvilkit:audience:agent-service-runtime-boundary",
+          "meaning": "Audience a runtime unit presents to the Agent Service runtime boundary: the governed Model Gateway and the controlled artifact and tool operations.",
+          "owner": "Security",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
         }
       ]
     },
@@ -1752,6 +1918,22 @@
         {
           "wireValue": "anvilkit.contract.p0-kernel-profile",
           "meaning": "Machine-readable P0-Kernel Contract Profile component.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.model-invocation-request",
+          "meaning": "Canonical bounded request one runtime unit sends to the governed Model Gateway.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.model-invocation-result",
+          "meaning": "Canonical bounded result the governed Model Gateway returns for one invocation.",
           "owner": "Platform Contracts owner",
           "status": "active",
           "aliases": [],

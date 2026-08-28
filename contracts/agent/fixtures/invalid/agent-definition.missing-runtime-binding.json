@@ -37,31 +37,20 @@
     "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
   "repairPolicy": {
-    "maximumAttempts": 8,
+    "maximumAttempts": 1,
     "mode": "bounded-repair"
   },
   "allowedDelegates": [
     "definition.synthetic.specialist"
   ],
-  "maximumDelegationDepth": 8,
-  "maximumFanOut": 64,
-  "turnLimit": 1024,
+  "maximumDelegationDepth": 1,
+  "maximumFanOut": 2,
+  "turnLimit": 8,
   "stopConditions": [
     "completed",
-    "refused",
-    "budget-exhausted",
-    "approval-required",
-    "input-required",
-    "policy-blocked"
+    "refused"
   ],
   "evaluators": [],
-  "runtimeBinding": {
-    "runtimeUnitId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-    "runtimeImageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-    "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-    "runtimeAudience": "urn:anvilkit:audience:runtime-page-candidate-specialist"
-  },
   "definitionId": "definition.synthetic.001",
   "definitionDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
 }

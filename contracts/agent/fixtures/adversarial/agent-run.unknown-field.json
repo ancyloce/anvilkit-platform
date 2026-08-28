@@ -2,6 +2,7 @@
   "kind": "AgentRun",
   "runId": "run.synthetic.001",
   "rootRunId": "run.synthetic.001",
+  "parentRunId": "run.synthetic.parent",
   "workspaceId": "workspace.synthetic.001",
   "actorId": "actor.synthetic.001",
   "domain": "platform-agent",
@@ -68,10 +69,24 @@
     "key": "idem.synthetic.001",
     "canonicalRequestDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
-  "status": "created",
+  "status": "failed",
   "executionGeneration": 0,
   "resourceRevision": 0,
+  "runtimeBinding": {
+    "runtimeUnitId": "page-change-manager",
+    "runtimeManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "runtimeImageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "invocationProtocolDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "runtimeAudience": "urn:anvilkit:audience:runtime-page-change-manager"
+  },
   "createdAt": "2026-08-09T12:00:00.000Z",
   "updatedAt": "2026-08-09T12:00:00.000Z",
-  "unexpectedField": "must be rejected"
+  "problem": {
+    "kind": "ProblemDetails",
+    "code": "VALIDATION_FAILED",
+    "retryability": "never",
+    "message": "Synthetic validation failure.",
+    "fieldErrors": []
+  },
+  "unexpectedField": "value"
 }

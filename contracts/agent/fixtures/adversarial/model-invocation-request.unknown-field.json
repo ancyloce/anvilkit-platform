@@ -1,0 +1,42 @@
+{
+  "kind": "ModelInvocationRequest",
+  "runId": "run.page.001",
+  "rootRunId": "run.page.001",
+  "taskId": "task.page.001",
+  "physicalAttemptId": "attempt.page.002",
+  "attemptNumber": 2,
+  "executionGeneration": 2,
+  "definition": {
+    "definitionId": "definition.synthetic.001",
+    "definitionDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "modelPolicy": {
+    "policyId": "policy.model.001",
+    "version": "1",
+    "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "contextDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "promptDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "limits": {
+    "timeoutMilliseconds": 60000,
+    "memoryBytes": 67108864,
+    "cpuMillis": 60000,
+    "gpuMillis": 0,
+    "outputBytes": 1048576
+  },
+  "idempotency": {
+    "scope": "task.page.001:model-invoke",
+    "key": "idem.model.001",
+    "canonicalRequestDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "traceContext": {
+    "traceparent": "00-0123456789abcdef0123456789abcdef-0123456789abcdef-01"
+  },
+  "contractBomReference": {
+    "repository": "anvilkit/contracts",
+    "bomDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "ociManifestDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "evidenceManifestDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "providerApiKey": "not-a-field-this-contract-has"
+}
