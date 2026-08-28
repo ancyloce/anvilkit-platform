@@ -8,6 +8,7 @@ import { expect, test } from "bun:test";
 import {
   allowlistFor,
   canonicalScopeNames,
+  committablePaths,
   contentScan,
   governedLocations,
   measurementNames,
@@ -15,6 +16,9 @@ import {
   sourceScan,
   LABELS,
 } from "./naming-governance.ts";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const PREFIXES = [
   "m", "M", "wp", "WP", "Wp", "p", "P",
@@ -173,4 +177,30 @@ test("the governed allowlist stays narrow", () => {
   expect(canonicalScopeNames.length).toBeLessThanOrEqual(6);
   const explicit = [...locations.keys()].filter((file) => !file.startsWith("contracts/agent/"));
   expect(explicit.length).toBeLessThanOrEqual(8);
+});
+
+// The aggregate verification runs from a materialised committable tree, which
+// carries no history on purpose. A guard that can only enumerate through git
+// is unrunnable exactly where reproducibility is proven, so the tree itself is
+// the enumerator there — minus what the run's own tooling writes into it.
+test("a tree with no history enumerates as its own committable content", () => {
+  const tree = mkdtempSync(join(tmpdir(), "naming-governance-"));
+  try {
+    writeFileSync(join(tree, "package.json"), "{}\n");
+    mkdirSync(join(tree, "scripts"));
+    writeFileSync(join(tree, "scripts", "verify.sh"), "#!/bin/sh\n");
+    mkdirSync(join(tree, "node_modules", "left-pad"), { recursive: true });
+    writeFileSync(join(tree, "node_modules", "left-pad", "index.js"), "\n");
+    // A submodule is governed by its own scan, over its own tree, under its
+    // own allowed names -- exactly as git's own enumeration treats it.
+    writeFileSync(join(tree, ".gitmodules"), '[submodule "services/renderer"]\n\tpath = services/renderer\n');
+    mkdirSync(join(tree, "services", "renderer"), { recursive: true });
+    writeFileSync(join(tree, "services", "renderer", "main.go"), "package main\n");
+
+    const found = committablePaths(tree);
+
+    expect(found).toEqual([".gitmodules", "package.json", "scripts/verify.sh"]);
+  } finally {
+    rmSync(tree, { recursive: true, force: true });
+  }
 });

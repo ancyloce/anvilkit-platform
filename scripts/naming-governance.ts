@@ -17,7 +17,7 @@
 // whole, because a name readable everywhere is not an exception, it is a
 // second vocabulary.
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 
@@ -179,13 +179,59 @@ const SOURCE = /(\.(go|ts|tsx|js|mjs|cjs|sh)$|(^|\/)(Makefile|Dockerfile)[^/]*$)
 // Lockfiles are generated dependency digests, not names anyone chose.
 const GENERATED = /(^|\/)(bun\.lock|go\.sum|package-lock\.json)$/;
 
+// A verification run materialises the committable tree and runs from it
+// (scripts/clean-checkout.sh), and that tree is deliberately not a repository,
+// so the enumerator cannot be git alone or the scan would be unrunnable
+// exactly where reproducibility is being proven. What the tooling writes into
+// such a tree while the run is in progress is not committable content and is
+// named here; everything else in it is, by construction.
+const UNCOMMITTABLE = new Set(["node_modules", ".git", ".turbo", "dist", "target", "__pycache__", ".evidence", ".venv"]);
+
+// git never lists a submodule's contents from the superproject, and neither
+// may the walk: each service carries this same scan in its own boundary check,
+// under its own governed locations, and judging its files by this tree's
+// allowlist would fail the names its own governance grants it.
+function submodulePaths(repositoryRoot: string): Set<string> {
+  const declaration = join(repositoryRoot, ".gitmodules");
+  if (!existsSync(declaration)) return new Set();
+  const declared = readFileSync(declaration, "utf8").matchAll(/^\s*path\s*=\s*(.+)$/gm);
+  return new Set([...declared].map((match) => match[1].trim()));
+}
+
+function treePaths(directory: string, prefix: string, submodules: Set<string>): string[] {
+  const paths: string[] = [];
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const path = prefix + entry.name;
+    if (entry.isDirectory()) {
+      if (UNCOMMITTABLE.has(entry.name) || submodules.has(path)) continue;
+      paths.push(...treePaths(join(directory, entry.name), path + "/", submodules));
+    } else if (entry.isFile()) {
+      paths.push(path);
+    }
+  }
+  return paths;
+}
+
+// committablePaths lists what a commit of this tree would carry. In a
+// repository that is git's answer: the working tree is the subject, not the
+// index, so a file renamed but not yet staged is judged by the name it now
+// has and a newly written one is judged before it is ever committed, while
+// ignored paths stay out — which is what keeps ADR-023's local-only
+// documentation out of scope.
+export function committablePaths(repositoryRoot: string = root): string[] {
+  let repository = true;
+  try {
+    execFileSync("git", ["rev-parse", "--is-inside-work-tree"], { cwd: repositoryRoot, stdio: "ignore" });
+  } catch {
+    repository = false;
+  }
+  if (!repository) return treePaths(repositoryRoot, "", submodulePaths(repositoryRoot)).sort();
+  const listed = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], { cwd: repositoryRoot, encoding: "utf8" });
+  return [...new Set(listed.split(/\r?\n/).filter(Boolean))].filter((file) => existsSync(join(repositoryRoot, file))).sort();
+}
+
 function main(): number {
-  // The working tree is the subject, not the index: a file renamed but not yet
-  // staged must be judged by the name it now has, and a newly written one must
-  // be judged before it is ever committed. Ignored paths stay out, which is
-  // what keeps ADR-023's local-only documentation out of scope.
-  const listed = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], { cwd: root, encoding: "utf8" });
-  const files = [...new Set(listed.split(/\r?\n/).filter(Boolean))].filter((file) => existsSync(join(root, file))).sort();
+  const files = committablePaths();
   const locations = governedLocations();
   const failures: string[] = [];
   for (const file of files) {
@@ -211,7 +257,7 @@ function main(): number {
     for (const failure of failures) console.error(`  ${failure}`);
     return 1;
   }
-  console.log(`naming governance passed: ${files.length} tracked paths, capability-based names only`);
+  console.log(`naming governance passed: ${files.length} committable paths, capability-based names only`);
   return 0;
 }
 

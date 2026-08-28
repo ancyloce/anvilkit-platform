@@ -28,7 +28,18 @@ import { fileURLToPath } from "node:url";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const descriptionPath = resolve(repositoryRoot, "contracts/agent/openapi/agent-service.openapi.json");
+const runtimeDescriptionPath = resolve(repositoryRoot, "contracts/agent/openapi/agent-runtime.openapi.json");
 const manifestPath = resolve(repositoryRoot, "services/agent-service/internal/api/operations.json");
+
+/**
+ * The canonical runtime boundary description declares both sides of that
+ * boundary. The unit-side operations (task dispatch, release description) are
+ * served by the released Manager and Specialist processes; the service-side
+ * operations — every path under /internal/runtime/ — are the Agent Service's
+ * to serve, and belong in this gate exactly the way the public description's
+ * operations do.
+ */
+const runtimeServicePathPrefix = "/internal/runtime/";
 
 type RoutedOperation = { operationId: string; method: string; template: string };
 type Manifest = { servedPrefix: string; operations: RoutedOperation[] };
@@ -64,6 +75,7 @@ function declaredOperations(description: any): Map<string, { method: string; pat
 
 function main(): void {
   const description = readJSON<any>(descriptionPath, "the canonical Agent Service description");
+  const runtimeDescription = readJSON<any>(runtimeDescriptionPath, "the canonical runtime boundary description");
   const manifest = readJSON<Manifest>(manifestPath, "the production routing manifest");
 
   if (typeof manifest.servedPrefix !== "string" || !manifest.servedPrefix.startsWith("/")) {
@@ -74,6 +86,13 @@ function main(): void {
   }
 
   const declared = declaredOperations(description);
+  for (const [operationId, described] of declaredOperations(runtimeDescription)) {
+    if (!described.path.startsWith(runtimeServicePathPrefix)) continue;
+    if (declared.has(operationId)) {
+      throw new Error(`operationId ${operationId} is declared by both canonical descriptions`);
+    }
+    declared.set(operationId, described);
+  }
   const routed = new Map<string, RoutedOperation>();
   for (const operation of manifest.operations) {
     if (routed.has(operation.operationId)) {
