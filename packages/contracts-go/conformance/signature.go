@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/ancyloce/anvilkit-platform/packages/contracts-go/canonicalizer"
 	contractsSignature "github.com/ancyloce/anvilkit-platform/packages/contracts-go/signature"
 )
 
@@ -36,6 +37,13 @@ type signatureCorpus struct {
 		PayloadBase64URL   string `json:"payloadBase64Url"`
 		SignatureBase64URL string `json:"signatureBase64Url"`
 	} `json:"jws"`
+	RuntimeStatement struct {
+		PayloadType             string          `json:"payloadType"`
+		Statement               json.RawMessage `json:"statement"`
+		CanonicalBytesBase64URL string          `json:"canonicalBytesBase64Url"`
+		StatementDigest         string          `json:"statementDigest"`
+		SignatureBase64URL      string          `json:"signatureBase64Url"`
+	} `json:"runtimeStatement"`
 	Cases []signatureVectorCase `json:"cases"`
 }
 
@@ -53,7 +61,9 @@ type signatureResultCase struct {
 	Valid            bool               `json:"valid"`
 	Findings         []signatureFinding `json:"findings"`
 	Canonicalization struct {
-		Status string `json:"status"`
+		Status      string `json:"status"`
+		BytesBase64 string `json:"bytesBase64,omitempty"`
+		Digest      string `json:"digest,omitempty"`
 	} `json:"canonicalization"`
 	ComponentDigest *string `json:"componentDigest"`
 	RootBOMDigest   *string `json:"rootBomDigest"`
@@ -78,8 +88,21 @@ func GenerateSignature(repositoryRoot string) ([]byte, error) {
 	if err := json.Unmarshal(corpusBytes, &corpus); err != nil {
 		return nil, err
 	}
-	if corpus.CorpusVersion != 1 || len(corpus.Cases) != 6 {
+	if corpus.CorpusVersion != 1 || len(corpus.Cases) != 10 {
 		return nil, fmt.Errorf("invalid signature corpus")
+	}
+	// The signed statement is canonicalized here rather than read back from the
+	// corpus: reproducing the recorded bytes from the statement is the parity
+	// claim, and decoding them would prove nothing.
+	statementBytes, err := canonicalizer.Canonicalize(corpus.RuntimeStatement.Statement)
+	if err != nil {
+		return nil, fmt.Errorf("runtime result statement canonicalization: %w", err)
+	}
+	if base64.RawURLEncoding.EncodeToString(statementBytes) != corpus.RuntimeStatement.CanonicalBytesBase64URL {
+		return nil, fmt.Errorf("runtime result statement canonical bytes differ from the corpus")
+	}
+	if digest(statementBytes) != corpus.RuntimeStatement.StatementDigest {
+		return nil, fmt.Errorf("runtime result statement digest differs from the corpus")
 	}
 	decode := func(value string) ([]byte, error) { return base64.RawURLEncoding.DecodeString(value) }
 	publicKey, err := decode(corpus.Key.PublicKeyBase64URL)
@@ -102,6 +125,10 @@ func GenerateSignature(repositoryRoot string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	runtimeStatementSignature, err := decode(corpus.RuntimeStatement.SignatureBase64URL)
+	if err != nil {
+		return nil, err
+	}
 
 	cases := make([]signatureResultCase, 0, len(corpus.Cases))
 	for _, vector := range corpus.Cases {
@@ -109,6 +136,9 @@ func GenerateSignature(repositoryRoot string) ([]byte, error) {
 		if vector.Profile == "dsse" {
 			message = contractsSignature.PreAuthEncoding(corpus.DSSE.PayloadType, dssePayload)
 			expectedSignature = dsseSignature
+		} else if vector.Profile == "runtime-statement" {
+			message = contractsSignature.PreAuthEncoding(corpus.RuntimeStatement.PayloadType, statementBytes)
+			expectedSignature = runtimeStatementSignature
 		} else if vector.Profile == "jws" {
 			message = []byte(corpus.JWS.ProtectedBase64URL + "." + corpus.JWS.PayloadBase64URL)
 			expectedSignature = jwsSignature
@@ -140,7 +170,13 @@ func GenerateSignature(repositoryRoot string) ([]byte, error) {
 			CaseID: vector.ID, InputDigest: digest(message), InputBytes: len(message), ParseOutcome: "accepted",
 			Valid: verified, Findings: []signatureFinding{},
 		}
-		item.Canonicalization.Status = "not-applicable"
+		if vector.Profile == "runtime-statement" {
+			item.Canonicalization.Status = "produced"
+			item.Canonicalization.BytesBase64 = base64.StdEncoding.EncodeToString(statementBytes)
+			item.Canonicalization.Digest = digest(statementBytes)
+		} else {
+			item.Canonicalization.Status = "not-applicable"
+		}
 		if verified {
 			item.Signature.Status = "verified"
 		} else {

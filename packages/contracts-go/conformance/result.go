@@ -87,10 +87,14 @@ type result struct {
 }
 
 var profileCases = map[string]bool{
-	"adversarial-agent-event.duplicate-reordered":   true,
-	"adversarial-worker-result.stale-fence":         true,
-	"invalid-agent-event.both-payload-and-artifact": true,
-	"invalid-apply-authorization.cross-workspace":   true,
+	"adversarial-agent-event.duplicate-reordered":    true,
+	"adversarial-agent-runtime-result.digest-tamper": true,
+	"adversarial-agent-runtime-result.fence-replay":  true,
+	"adversarial-agent-runtime-result.wrong-runtime": true,
+	"adversarial-agent-task.expired-admission":       true,
+	"adversarial-worker-result.stale-fence":          true,
+	"invalid-agent-event.both-payload-and-artifact":  true,
+	"invalid-apply-authorization.cross-workspace":    true,
 }
 
 func digest(raw []byte) string {
