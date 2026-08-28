@@ -212,7 +212,7 @@ export interface components {
         };
         /**
          * AgentDefinition contract
-         * @description Bounded AgentDefinition wire contract governed by PRD 0012 and ADR-018. A definition is immutable by definitionId and definitionDigest and carries role, owner, instruction digest, input/output schema identity, Tool profile, delegation constraints, repair policy, and evaluation profile.
+         * @description Bounded AgentDefinition wire contract governed by PRD 0012 and ADR-018. A definition is immutable by definitionId and definitionDigest and carries role, owner, instruction digest, input/output schema identity, Tool profile, delegation constraints, repair policy, and evaluation profile. The runtime binding names the one runtime release permitted to execute this definition — unit, manifest digest, image digest, invocation protocol digest, and workload audience. It is an immutable pin, not a mutable discovery hint.
          */
         readonly AgentDefinition: {
             readonly allowedDelegates: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
@@ -239,6 +239,13 @@ export interface components {
             };
             /** @enum {unknown} */
             readonly role: "manager" | "specialist";
+            readonly runtimeBinding: {
+                readonly invocationProtocolDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeAudience: string;
+                readonly runtimeImageDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeManifestDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeUnitId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            };
             readonly stopConditions: readonly ("completed" | "refused" | "budget-exhausted" | "approval-required" | "input-required" | "policy-blocked")[];
             readonly toolProfile: {
                 readonly maximumParallelTools: number;
@@ -307,7 +314,7 @@ export interface components {
         };
         /**
          * AgentRun contract
-         * @description Bounded AgentRun wire contract governed by PRD 0012.
+         * @description Bounded AgentRun wire contract governed by PRD 0012. The runtime binding pinned at creation is immutable for the life of the Run: registry changes after Run creation never alter which runtime release its attempts may execute on.
          */
         readonly AgentRun: {
             readonly actorId: components["schemas"]["SharedPrimitivesActorId"];
@@ -329,6 +336,13 @@ export interface components {
             readonly resourceRevision: number;
             readonly rootRunId: components["schemas"]["SharedPrimitivesRunId"];
             readonly runId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly runtimeBinding: {
+                readonly invocationProtocolDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeAudience: string;
+                readonly runtimeImageDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeManifestDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeUnitId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            };
             /** @enum {unknown} */
             readonly status: "created" | "preparing" | "planning" | "awaiting_input" | "executing" | "validating" | "awaiting_review" | "awaiting_approval" | "committing" | "awaiting_domain_confirmation" | "conflict" | "cancelling" | "failed" | "completed" | "cancelled" | "refused" | "discarded";
             readonly target: components["schemas"]["SharedPrimitivesTargetReference"];
@@ -354,9 +368,10 @@ export interface components {
         };
         /**
          * AgentRuntimeManifest contract
-         * @description Immutable binding between one Agent Runtime Unit and the single AgentDefinition it is permitted to execute. It pins the image, provenance, and invocation protocol the unit was released with, the workload identity and the closed set of control-plane endpoints it may reach, and the queue, concurrency, resource, scaling, telemetry, drain, and rollback profile it is operated under. It carries execution-plane binding only: it never confers AgentRun, workflow, Tool, budget, approval, artifact, or business authority, and a runtime unit cannot reach another Agent Runtime Unit through it.
+         * @description Immutable binding between one Agent Runtime Unit and the single AgentDefinition it is permitted to execute. It pins the image, provenance, and invocation protocol the unit was released with, the workload identity and the closed set of control-plane endpoints it may reach, and the queue, concurrency, resource, scaling, telemetry, drain, and rollback profile it is operated under. It carries execution-plane binding only: it never confers AgentRun, workflow, Tool, budget, approval, artifact, or business authority, and a runtime unit cannot reach another Agent Runtime Unit through it. The manifest also declares the role the unit plays, the task capabilities it is able to serve — the surface deterministic selection matches an AgentTask against — and its release lifecycle state, so revocation and emergency disable are contract surface rather than operational convention.
          */
         readonly AgentRuntimeManifest: {
+            readonly capabilities: readonly ("provider.invoke" | "contract.validate" | "artifact.scan" | "fake.execute")[];
             readonly definition: components["schemas"]["SharedPrimitivesDefinitionReference"];
             readonly execution: {
                 readonly cpuMillis: number;
@@ -375,6 +390,12 @@ export interface components {
             };
             /** @constant */
             readonly kind: "AgentRuntimeManifest";
+            readonly lifecycle: {
+                readonly effectiveAt: components["schemas"]["SharedPrimitivesTimestamp"];
+                readonly reasonCode?: string;
+                /** @enum {unknown} */
+                readonly state: "active" | "revoked" | "disabled";
+            };
             readonly protocol: {
                 readonly contractBomReference: components["schemas"]["SharedPrimitivesContractBomReference"];
                 readonly invocationProtocolDigest: components["schemas"]["SharedPrimitivesDigest"];
@@ -386,6 +407,8 @@ export interface components {
                 /** @enum {unknown} */
                 readonly rolloutPolicy: "new-runs-only";
             };
+            /** @enum {unknown} */
+            readonly role: "manager" | "specialist";
             readonly runtimeUnitId: components["schemas"]["SharedPrimitivesOpaqueId"];
             readonly scaling: {
                 readonly maxReplicas: number;
@@ -407,23 +430,20 @@ export interface components {
         };
         /**
          * AgentRuntimeResult contract
-         * @description Signed, bounded result returned by one Agent Runtime Unit for exactly one AgentTask attempt. It reports which definition, runtime manifest, invocation protocol, and image digests actually served the attempt, the physical attempt identity and execution generation it belongs to, the metered usage it consumed, one bounded TurnDecision, safe coded diagnostics, and its signature and provenance references. It is a proposal that Agent Service validates and may reject: it never carries authoritative workflow state, never commits, approves, or publishes, and never names another Agent Runtime Unit to call.
+         * @description Signed, bounded result returned by one Agent Runtime Unit for exactly one physical attempt of one AgentTask. It echoes the complete binding it was dispatched under — logical task, physical attempt, attempt number, execution generation, lease epoch, fence token, and the runtime unit, manifest, image, and invocation protocol digests that actually served the attempt — reports one bounded TurnDecision with its artifact outputs and content digests, a result status with a governed reason code, the per-attempt model, tool, token, duration, and cost usage it consumed, safe coded diagnostics, and a complete signature envelope over the RFC 8785 canonical bytes of the result statement. It is a proposal Agent Service verifies and may reject: it never carries authoritative workflow state, never commits, approves, or publishes, and never names another Agent Runtime Unit to call.
          */
         readonly AgentRuntimeResult: {
+            readonly attemptNumber: number;
             readonly diagnostics: readonly {
                 readonly code: string;
                 readonly detail: string;
             }[];
             readonly executionGeneration: number;
+            readonly fenceToken: string;
             /** @constant */
             readonly kind: "AgentRuntimeResult";
+            readonly leaseEpoch: number;
             readonly physicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
-            readonly provenance: {
-                /** @enum {unknown} */
-                readonly signatureAlgorithm: "dsse-ed25519-v1" | "jws-eddsa-v1";
-                readonly signatureDigest: components["schemas"]["SharedPrimitivesDigest"];
-                readonly statementDigest: components["schemas"]["SharedPrimitivesDigest"];
-            };
             readonly rootRunId: components["schemas"]["SharedPrimitivesRunId"];
             readonly runId: components["schemas"]["SharedPrimitivesRunId"];
             readonly selected: {
@@ -431,6 +451,20 @@ export interface components {
                 readonly imageDigest: components["schemas"]["SharedPrimitivesDigest"];
                 readonly invocationProtocolDigest: components["schemas"]["SharedPrimitivesDigest"];
                 readonly runtimeManifestDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeUnitId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            };
+            readonly signature: {
+                /** @enum {unknown} */
+                readonly algorithm: "dsse-ed25519-v1" | "jws-eddsa-v1";
+                readonly keyId: string;
+                readonly provenanceReference: components["schemas"]["SharedPrimitivesDigest"];
+                readonly signature: string;
+                readonly statementDigest: components["schemas"]["SharedPrimitivesDigest"];
+            };
+            readonly status: {
+                readonly reasonCode: string;
+                /** @enum {unknown} */
+                readonly status: "completed" | "failed" | "refused" | "cancelled";
             };
             readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
             readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
@@ -441,9 +475,12 @@ export interface components {
                 readonly payload: components["schemas"]["SharedPrimitivesBoundedStringMap"];
             };
             readonly usage: {
+                readonly cost: components["schemas"]["SharedPrimitivesCost"];
                 readonly durationMilliseconds: number;
                 readonly inputTokens: number;
+                readonly modelCalls: number;
                 readonly outputTokens: number;
+                readonly toolCalls: number;
             };
         };
         /**
@@ -466,20 +503,27 @@ export interface components {
         };
         /**
          * AgentTask contract
-         * @description Bounded AgentTask wire contract governed by PRD 0012.
+         * @description Bounded AgentTask wire contract governed by PRD 0012. One AgentTask is a logical unit of work; each actual execution of it is a physical attempt with its own attempt identity, lease epoch, and fence token. The task pins the Agent Definition and the runtime release permitted to execute it, carries the audience the task-scoped credential is issued for, and expires: a runtime may not admit it after expiresAt. The raw fence token is a commit capability and must never be written to logs or public events; persistent diagnostics may record its digest instead.
          */
         readonly AgentTask: {
             readonly artifactInputs: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
+            readonly attemptNumber: number;
+            readonly authorizationAudience: string;
             /** @enum {unknown} */
             readonly capability: "provider.invoke" | "contract.validate" | "artifact.scan" | "fake.execute";
             readonly contractBomReference: components["schemas"]["SharedPrimitivesContractBomReference"];
+            readonly definition: components["schemas"]["SharedPrimitivesDefinitionReference"];
             readonly executionGeneration: number;
+            readonly expiresAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly fenceToken: string;
             readonly idempotency: components["schemas"]["SharedPrimitivesIdempotency"];
             readonly inputSchema: components["schemas"]["SharedPrimitivesSchemaReference"];
             /** @constant */
             readonly kind: "AgentTask";
+            readonly leaseEpoch: number;
             readonly limits: components["schemas"]["SharedPrimitivesResourceLimits"];
             readonly parameters: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
             readonly resources: {
                 readonly priority: number;
                 /** @enum {unknown} */
@@ -487,6 +531,13 @@ export interface components {
             };
             readonly rootRunId: components["schemas"]["SharedPrimitivesRunId"];
             readonly runId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly runtimeBinding: {
+                readonly invocationProtocolDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeAudience: string;
+                readonly runtimeImageDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeManifestDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly runtimeUnitId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            };
             readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
             readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
         };
@@ -974,6 +1025,53 @@ export interface components {
             readonly compactJws: string;
             /** @constant */
             readonly kind: "IssuedApplyAuthorization";
+        };
+        /**
+         * ModelInvocationRequest contract
+         * @description Bounded request one Agent Runtime Unit sends to the governed Model Gateway for exactly one physical attempt. The runtime never holds provider credentials and never selects a provider: it names the attempt it is executing, the definition and model policy the Agent Service pinned, and the digests of the compiled context and prompt the gateway must use. The gateway resolves the provider, enforces the policy and the attempt's remaining budget, and attributes every token it spends to this attempt.
+         */
+        readonly ModelInvocationRequest: {
+            readonly attemptNumber: number;
+            readonly contextDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly contractBomReference: components["schemas"]["SharedPrimitivesContractBomReference"];
+            readonly definition: components["schemas"]["SharedPrimitivesDefinitionReference"];
+            readonly executionGeneration: number;
+            readonly idempotency: components["schemas"]["SharedPrimitivesIdempotency"];
+            /** @constant */
+            readonly kind: "ModelInvocationRequest";
+            readonly limits: components["schemas"]["SharedPrimitivesResourceLimits"];
+            readonly modelPolicy: components["schemas"]["SharedPrimitivesPolicyReference"];
+            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
+            readonly promptDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly rootRunId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly runId: components["schemas"]["SharedPrimitivesRunId"];
+            readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
+        };
+        /**
+         * ModelInvocationResult contract
+         * @description Bounded result the governed Model Gateway returns for exactly one ModelInvocationRequest. It carries the bounded model output and its content digest, the governed outcome and reason code, and the token, duration, and cost usage the gateway metered and recorded against the attempt. It never carries provider credentials, provider-native payloads, or an instruction to call another runtime unit.
+         */
+        readonly ModelInvocationResult: {
+            readonly attemptNumber: number;
+            readonly executionGeneration: number;
+            readonly invocationId: components["schemas"]["SharedPrimitivesOpaqueId"];
+            /** @constant */
+            readonly kind: "ModelInvocationResult";
+            /** @enum {unknown} */
+            readonly outcome: "ok" | "refused" | "problem";
+            readonly output: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            readonly outputDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly physicalAttemptId: components["schemas"]["SharedPrimitivesPhysicalAttemptId"];
+            readonly reasonCode: string;
+            readonly taskId: components["schemas"]["SharedPrimitivesTaskId"];
+            readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
+            readonly usage: {
+                readonly cost: components["schemas"]["SharedPrimitivesCost"];
+                readonly durationMilliseconds: number;
+                readonly inputTokens: number;
+                readonly outputTokens: number;
+            };
         };
         /**
          * PageCandidate contract

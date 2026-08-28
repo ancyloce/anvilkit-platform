@@ -1,36 +1,81 @@
 export interface paths {
-    readonly "/workspaces/{workspaceId}/agent-runs": {
+    readonly "/internal/runtime/artifact-content-grants": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
-            readonly path: {
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
+            readonly path?: never;
             readonly cookie?: never;
         };
-        /** List workspace runs with bounded pagination. */
-        readonly get: operations["listAgentRuns"];
+        readonly get?: never;
         readonly put?: never;
-        /** Create an idempotent Agent run from an intent-only command. */
-        readonly post: operations["createAgentRun"];
+        /** Obtain bounded, expiring read access to one artifact's bytes. */
+        readonly post: operations["issueRuntimeArtifactContentGrant"];
         readonly delete?: never;
         readonly options?: never;
         readonly head?: never;
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}": {
+    readonly "/internal/runtime/artifacts": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
+            readonly path?: never;
             readonly cookie?: never;
         };
-        /** Read the authoritative run resource and its strong ETag. */
-        readonly get: operations["getAgentRun"];
+        readonly get?: never;
+        readonly put?: never;
+        /** Submit one immutable page candidate artifact produced by the attempt. */
+        readonly post: operations["submitRuntimeArtifact"];
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
+    readonly "/internal/runtime/contract-runtime-invocations": {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly get?: never;
+        readonly put?: never;
+        /** Invoke the deterministic Contract Runtime as a controlled tool. */
+        readonly post: operations["invokeGovernedContractRuntime"];
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
+    readonly "/internal/runtime/model-invocations": {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly get?: never;
+        readonly put?: never;
+        /** Invoke the governed Model Gateway for one physical attempt. */
+        readonly post: operations["invokeGovernedModel"];
+        readonly delete?: never;
+        readonly options?: never;
+        readonly head?: never;
+        readonly patch?: never;
+        readonly trace?: never;
+    };
+    readonly "/runtime-release": {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header?: never;
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        /** Report the immutable runtime release this unit is running. */
+        readonly get: operations["describeAgentRuntimeRelease"];
         readonly put?: never;
         readonly post?: never;
         readonly delete?: never;
@@ -39,252 +84,17 @@ export interface paths {
         readonly patch?: never;
         readonly trace?: never;
     };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/apply-authorizations": {
+    readonly "/task": {
         readonly parameters: {
             readonly query?: never;
             readonly header?: never;
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
+            readonly path?: never;
             readonly cookie?: never;
         };
         readonly get?: never;
         readonly put?: never;
-        /** Issue a server-owned single-use Apply Authorization from an intent-only command. */
-        readonly post: operations["issueApplyAuthorization"];
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/approvals/{requestId}/decisions": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly requestId: components["parameters"]["RequestId"];
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /** Record a governed approval decision bound to the exact action digest. */
-        readonly post: operations["decideAgentApproval"];
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/cancel": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /** Request reconciled cancellation. */
-        readonly post: operations["cancelAgentRun"];
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/discard": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /** Discard an eligible reviewed artifact and terminate the run. */
-        readonly post: operations["discardAgentRun"];
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/domain-operations/{operationId}/resolution": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly operationId: components["parameters"]["OperationId"];
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /**
-         * Record the audited operator resolution of an escalated governed domain effect.
-         * @description Operator recovery for a run holding at the submit boundary whose governed effect is durably escalated. The command states which authoritative outcome the effect actually had, bound to the exact domain operation the operator reviewed and to the evidence the decision rests on. The resolving operator is derived from the verified request authority and is never carried on the wire. Agent Service re-reads current authority on every call and requires the caller to be admitted under the operator role in this workspace and project; the durable resolution is a compare-and-set on the escalated state, so racing operators produce exactly one audited decision and a replayed decision converges on the recorded one. Nothing here contacts the domain owner and nothing is resubmitted.
-         */
-        readonly post: operations["resolveAgentDomainOperation"];
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/events": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        /** Stream durable public AgentEvent frames with Last-Event-ID recovery. */
-        readonly get: operations["streamAgentRunEvents"];
-        readonly put?: never;
-        readonly post?: never;
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/inputs/{requestId}/responses": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly requestId: components["parameters"]["RequestId"];
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /** Submit a bounded response to the current input request revision. */
-        readonly post: operations["respondToAgentInput"];
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/retry": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /** Explicitly retry a failed run under current authority. */
-        readonly post: operations["retryAgentRun"];
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/agent-runs/{runId}/snapshot": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        /** Read the current run snapshot and the durable cursor an expired event stream resumes from. */
-        readonly get: operations["getAgentRunSnapshot"];
-        readonly put?: never;
-        readonly post?: never;
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/artifacts/{artifactId}": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly artifactId: components["parameters"]["ArtifactId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        /** Read immutable artifact metadata under its governed lifecycle. */
-        readonly get: operations["getAgentArtifact"];
-        readonly put?: never;
-        readonly post?: never;
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/artifacts/{artifactId}/content-grant": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly artifactId: components["parameters"]["ArtifactId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /**
-         * Issue a bounded, expiring grant to read one artifact's bytes.
-         * @description Content is disclosed through a grant rather than from the metadata route, so reading bytes is always a recorded, time-boxed decision. The declared access purpose is audited with the verified accessor, the tenant, the artifact, and the trace before any grant is issued.
-         */
-        readonly post: operations["issueAgentArtifactContentGrant"];
-        readonly delete?: never;
-        readonly options?: never;
-        readonly head?: never;
-        readonly patch?: never;
-        readonly trace?: never;
-    };
-    readonly "/workspaces/{workspaceId}/artifacts/{artifactId}/custody": {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header?: never;
-            readonly path: {
-                readonly artifactId: components["parameters"]["ArtifactId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly get?: never;
-        readonly put?: never;
-        /**
-         * Record the audited custody decision an authorized custodian made about one immutable artifact.
-         * @description Artifact custody is the authority to decide whether an immutable artifact survives: placing or lifting the legal hold that makes it undeletable, and destroying it. The acting custodian is derived from the verified request authority and is never carried on the wire, and neither is the workspace or project the decision is made in — the command states what is being decided, never who decides it or where. Agent Service re-reads current authority on every call and requires the caller to be admitted under the artifact-custodian role in this workspace and project, to hold the custody capability for this exact operation, to hold a clearance for the data class artifact content is governed under, and to hold authority over this artifact that has not been revoked. Every decision is written to the protected audit before anything is changed and again after, so a decision that cannot be audited is not made at all. If-Match pins the artifact revision the custodian observed, which is what the decision identity is built from: a retry converges on the outcome that revision already produced rather than opening a second decision over it.
-         */
-        readonly post: operations["decideAgentArtifactCustody"];
+        /** Execute exactly one physical attempt of one AgentTask and return a signed result. */
+        readonly post: operations["dispatchAgentTask"];
         readonly delete?: never;
         readonly options?: never;
         readonly head?: never;
@@ -772,7 +582,6 @@ export interface components {
             readonly securityGeneration: number;
             readonly url: string;
         };
-        readonly BoundedResponse: components["schemas"]["SharedPrimitivesBoundedStringMap"];
         /**
          * CatalogSnapshot contract
          * @description Immutable snapshot of the component catalog a page-generation run is permitted to compose from. It freezes the catalog revision and digest, the exact Puck schema and runtime revisions, every allowed component with its package revision, prop schema, defaults, slot rules, and nesting bound, the components that are forbidden or deprecated with their replacements, and the approved design-token, asset, and font references. It is produced by the catalog authority rather than by an editor client, and its digest is the value carried by TargetSnapshot's catalogDigest so that admission, candidate validation, preview, and apply all resolve the same catalog bytes. It confers no authority: it states what may be composed, never who may compose or commit it.
@@ -1710,20 +1519,9 @@ export interface components {
     };
     responses: never;
     parameters: {
-        /** @description Why this artifact is being read, drawn from the governed access vocabulary. It is recorded in the protected audit together with the verified accessor, the tenant, the artifact, the decision outcome, and the trace before anything is disclosed; a disclosure that cannot be recorded does not happen. */
-        readonly ArtifactAccessPurpose: "producer" | "scanner" | "review" | "approval" | "finalization" | "commit" | "read";
-        readonly ArtifactId: string;
         readonly IdempotencyKey: string;
-        /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
-        readonly IfMatch: string;
-        /** @description Strong ETag "<artifactId>:v<resourceRevision>". Missing returns 428; stale returns 412. */
-        readonly IfMatchArtifact: string;
-        readonly OperationId: string;
         readonly RequestDigest: string;
-        readonly RequestId: string;
-        readonly RunId: string;
         readonly Traceparent: string;
-        readonly WorkspaceId: string;
     };
     requestBodies: never;
     headers: never;
@@ -1731,73 +1529,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    readonly listAgentRuns: {
-        readonly parameters: {
-            readonly query?: {
-                readonly cursor?: string;
-                readonly limit?: number;
-            };
-            readonly header: {
-                readonly traceparent: components["parameters"]["Traceparent"];
-            };
-            readonly path: {
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody?: never;
-        readonly responses: {
-            /** @description Bounded page of runs. */
-            readonly 200: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": {
-                        readonly items: readonly components["schemas"]["AgentRun"][];
-                        readonly pageInfo: components["schemas"]["SharedPrimitivesPageInfo"];
-                    };
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly createAgentRun: {
+    readonly issueRuntimeArtifactContentGrant: {
         readonly parameters: {
             readonly query?: never;
             readonly header: {
@@ -1805,1178 +1537,7 @@ export interface operations {
                 readonly traceparent: components["parameters"]["Traceparent"];
                 readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
             };
-            readonly path: {
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody: {
-            readonly content: {
-                readonly "application/json": components["schemas"]["CreateAgentRunRequest"];
-            };
-        };
-        readonly responses: {
-            /** @description Created or replayed recorded creation outcome. */
-            readonly 201: {
-                headers: {
-                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
-                    readonly ETag?: string;
-                    /** @description true when a recorded semantic outcome is replayed. */
-                    readonly "Idempotency-Replayed"?: boolean;
-                    /** @description Canonical resource location of the created run. */
-                    readonly Location?: string;
-                    /** @description Canonical request digest accepted for the operation. */
-                    readonly "X-AnvilKit-Request-Digest"?: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentRun"];
-                };
-            };
-            /** @description Stable contract problem. */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
-            readonly 409: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Structurally valid command failing domain validation. */
-            readonly 422: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly getAgentRun: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly traceparent: components["parameters"]["Traceparent"];
-            };
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody?: never;
-        readonly responses: {
-            /** @description Authoritative run state. */
-            readonly 200: {
-                headers: {
-                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
-                    readonly ETag?: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentRun"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly issueApplyAuthorization: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
-                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
-                readonly "If-Match": components["parameters"]["IfMatch"];
-                readonly traceparent: components["parameters"]["Traceparent"];
-                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
-            };
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody: {
-            readonly content: {
-                readonly "application/json": components["schemas"]["IssueApplyAuthorizationRequest"];
-            };
-        };
-        readonly responses: {
-            /** @description Issued authorization: canonical document plus byte-equivalent compact JWS. */
-            readonly 201: {
-                headers: {
-                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
-                    readonly ETag?: string;
-                    /** @description true when a recorded semantic outcome is replayed. */
-                    readonly "Idempotency-Replayed"?: boolean;
-                    /** @description Canonical request digest accepted for the operation. */
-                    readonly "X-AnvilKit-Request-Digest"?: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["IssuedApplyAuthorization"];
-                };
-            };
-            /** @description Stable contract problem. */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
-            readonly 409: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stale If-Match resource revision. */
-            readonly 412: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Structurally valid command failing domain validation. */
-            readonly 422: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Missing required If-Match precondition. */
-            readonly 428: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly decideAgentApproval: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
-                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
-                readonly "If-Match": components["parameters"]["IfMatch"];
-                readonly traceparent: components["parameters"]["Traceparent"];
-                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
-            };
-            readonly path: {
-                readonly requestId: components["parameters"]["RequestId"];
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody: {
-            readonly content: {
-                readonly "application/json": components["schemas"]["SubmitApprovalDecisionRequest"];
-            };
-        };
-        readonly responses: {
-            /** @description Recorded semantic outcome. */
-            readonly 200: {
-                headers: {
-                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
-                    readonly ETag?: string;
-                    /** @description true when a recorded semantic outcome is replayed. */
-                    readonly "Idempotency-Replayed"?: boolean;
-                    /** @description Canonical request digest accepted for the operation. */
-                    readonly "X-AnvilKit-Request-Digest"?: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentRun"];
-                };
-            };
-            /** @description Stable contract problem. */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
-            readonly 409: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stale If-Match resource revision. */
-            readonly 412: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Structurally valid command failing domain validation. */
-            readonly 422: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Missing required If-Match precondition. */
-            readonly 428: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly cancelAgentRun: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
-                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
-                readonly "If-Match": components["parameters"]["IfMatch"];
-                readonly traceparent: components["parameters"]["Traceparent"];
-                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
-            };
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody?: never;
-        readonly responses: {
-            /** @description Recorded semantic outcome. */
-            readonly 200: {
-                headers: {
-                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
-                    readonly ETag?: string;
-                    /** @description true when a recorded semantic outcome is replayed. */
-                    readonly "Idempotency-Replayed"?: boolean;
-                    /** @description Canonical request digest accepted for the operation. */
-                    readonly "X-AnvilKit-Request-Digest"?: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentRun"];
-                };
-            };
-            /** @description Stable contract problem. */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
-            readonly 409: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stale If-Match resource revision. */
-            readonly 412: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Missing required If-Match precondition. */
-            readonly 428: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly discardAgentRun: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
-                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
-                readonly "If-Match": components["parameters"]["IfMatch"];
-                readonly traceparent: components["parameters"]["Traceparent"];
-                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
-            };
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody?: never;
-        readonly responses: {
-            /** @description Recorded semantic outcome. */
-            readonly 200: {
-                headers: {
-                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
-                    readonly ETag?: string;
-                    /** @description true when a recorded semantic outcome is replayed. */
-                    readonly "Idempotency-Replayed"?: boolean;
-                    /** @description Canonical request digest accepted for the operation. */
-                    readonly "X-AnvilKit-Request-Digest"?: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentRun"];
-                };
-            };
-            /** @description Stable contract problem. */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
-            readonly 409: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stale If-Match resource revision. */
-            readonly 412: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Missing required If-Match precondition. */
-            readonly 428: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly resolveAgentDomainOperation: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
-                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
-                readonly "If-Match": components["parameters"]["IfMatch"];
-                readonly traceparent: components["parameters"]["Traceparent"];
-                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
-            };
-            readonly path: {
-                readonly operationId: components["parameters"]["OperationId"];
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody: {
-            readonly content: {
-                readonly "application/json": components["schemas"]["ResolveDomainOperationRequest"];
-            };
-        };
-        readonly responses: {
-            /** @description Recorded semantic outcome. */
-            readonly 200: {
-                headers: {
-                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
-                    readonly ETag?: string;
-                    /** @description true when a recorded semantic outcome is replayed. */
-                    readonly "Idempotency-Replayed"?: boolean;
-                    /** @description Canonical request digest accepted for the operation. */
-                    readonly "X-AnvilKit-Request-Digest"?: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentRun"];
-                };
-            };
-            /** @description Stable contract problem. */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated without the operator scope, or current authority does not admit the caller as an operator in this scope. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description The named operation is not the run’s current submission, the effect is already decided, or the run is not holding at the submit boundary, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
-            readonly 409: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stale If-Match resource revision. */
-            readonly 412: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Structurally valid command failing domain validation. */
-            readonly 422: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Missing required If-Match precondition. */
-            readonly 428: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly streamAgentRunEvents: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                /** @description Durable public AgentEvent sequence cursor for reconnection. */
-                readonly "Last-Event-ID"?: string;
-                readonly traceparent: components["parameters"]["Traceparent"];
-            };
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody?: never;
-        readonly responses: {
-            /** @description SSE stream. Durable frames carry AgentEvent; provisional frames carry AgentStreamDelta and never advance the durable cursor. */
-            readonly 200: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "text/event-stream": string;
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Cursor is older than the retention window. The Link header names the tenant- and run-scoped snapshot recovery operation; fetch it and resume from its cursor. */
-            readonly 410: {
-                headers: {
-                    /** @description RFC 8288 link to the snapshot recovery operation for this workspace and run, with relation type urn:anvilkit:relation:run-snapshot. */
-                    readonly Link: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly respondToAgentInput: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
-                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
-                readonly "If-Match": components["parameters"]["IfMatch"];
-                readonly traceparent: components["parameters"]["Traceparent"];
-                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
-            };
-            readonly path: {
-                readonly requestId: components["parameters"]["RequestId"];
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody: {
-            readonly content: {
-                readonly "application/json": components["schemas"]["SubmitInputResponseRequest"];
-            };
-        };
-        readonly responses: {
-            /** @description Recorded semantic outcome. */
-            readonly 200: {
-                headers: {
-                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
-                    readonly ETag?: string;
-                    /** @description true when a recorded semantic outcome is replayed. */
-                    readonly "Idempotency-Replayed"?: boolean;
-                    /** @description Canonical request digest accepted for the operation. */
-                    readonly "X-AnvilKit-Request-Digest"?: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentRun"];
-                };
-            };
-            /** @description Stable contract problem. */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
-            readonly 409: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stale If-Match resource revision. */
-            readonly 412: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Structurally valid command failing domain validation. */
-            readonly 422: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Missing required If-Match precondition. */
-            readonly 428: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly retryAgentRun: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
-                /** @description Strong ETag "run:<runId>:<resourceRevision>". Missing returns 428; stale returns 412. */
-                readonly "If-Match": components["parameters"]["IfMatch"];
-                readonly traceparent: components["parameters"]["Traceparent"];
-                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
-            };
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody?: never;
-        readonly responses: {
-            /** @description Recorded semantic outcome. */
-            readonly 200: {
-                headers: {
-                    /** @description Strong resource revision: "run:<runId>:<resourceRevision>". */
-                    readonly ETag?: string;
-                    /** @description true when a recorded semantic outcome is replayed. */
-                    readonly "Idempotency-Replayed"?: boolean;
-                    /** @description Canonical request digest accepted for the operation. */
-                    readonly "X-AnvilKit-Request-Digest"?: string;
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentRun"];
-                };
-            };
-            /** @description Stable contract problem. */
-            readonly 400: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Business-state conflict, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
-            readonly 409: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stale If-Match resource revision. */
-            readonly 412: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Missing required If-Match precondition. */
-            readonly 428: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly getAgentRunSnapshot: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly traceparent: components["parameters"]["Traceparent"];
-            };
-            readonly path: {
-                readonly runId: components["parameters"]["RunId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody?: never;
-        readonly responses: {
-            /** @description Current run resource, governed artifact projections, and the durable public AgentEvent cursor to resume from. */
-            readonly 200: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentRunSnapshot"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly getAgentArtifact: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly traceparent: components["parameters"]["Traceparent"];
-                /** @description Why this artifact is being read, drawn from the governed access vocabulary. It is recorded in the protected audit together with the verified accessor, the tenant, the artifact, the decision outcome, and the trace before anything is disclosed; a disclosure that cannot be recorded does not happen. */
-                readonly "X-AnvilKit-Access-Purpose": components["parameters"]["ArtifactAccessPurpose"];
-            };
-            readonly path: {
-                readonly artifactId: components["parameters"]["ArtifactId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
-            readonly cookie?: never;
-        };
-        readonly requestBody?: never;
-        readonly responses: {
-            /** @description Immutable artifact metadata. */
-            readonly 200: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/json": components["schemas"]["AgentArtifact"];
-                };
-            };
-            /** @description Not authenticated. */
-            readonly 401: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Authenticated but not authorized. */
-            readonly 403: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
-            readonly 404: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
-            readonly 500: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-        };
-    };
-    readonly issueAgentArtifactContentGrant: {
-        readonly parameters: {
-            readonly query?: never;
-            readonly header: {
-                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
-                /** @description Strong ETag "<artifactId>:v<resourceRevision>". Missing returns 428; stale returns 412. */
-                readonly "If-Match": components["parameters"]["IfMatchArtifact"];
-                readonly traceparent: components["parameters"]["Traceparent"];
-                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
-            };
-            readonly path: {
-                readonly artifactId: components["parameters"]["ArtifactId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
+            readonly path?: never;
             readonly cookie?: never;
         };
         readonly requestBody: {
@@ -2985,7 +1546,7 @@ export interface operations {
             };
         };
         readonly responses: {
-            /** @description A bounded grant scoped to one artifact, actor, purpose, and expiry. */
+            /** @description Bounded, expiring content grant. */
             readonly 201: {
                 headers: {
                     /** @description true when a recorded semantic outcome is replayed. */
@@ -3016,7 +1577,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Authenticated but not authorized to read this artifact for this purpose. */
+            /** @description Authenticated but not authorized. */
             readonly 403: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -3025,7 +1586,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            /** @description Unknown addressed resource. */
             readonly 404: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -3034,7 +1595,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description The artifact is not in a state whose content may be disclosed. */
+            /** @description Idempotency key reused with different bytes, or the addressed state moved. */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -3043,8 +1604,8 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stale If-Match resource revision. */
-            readonly 412: {
+            /** @description The addressed attempt is expired, superseded, or fenced out; no state changed. */
+            readonly 410: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
@@ -3052,7 +1613,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Structurally valid command failing domain validation. */
+            /** @description Canonical contract validation failed. */
             readonly 422: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -3061,16 +1622,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Missing required If-Match precondition. */
-            readonly 428: {
-                headers: {
-                    readonly [name: string]: unknown;
-                };
-                content: {
-                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
-                };
-            };
-            /** @description Stable internal problem without sensitive detail. */
+            /** @description Unexpected internal problem. */
             readonly 500: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -3081,40 +1633,35 @@ export interface operations {
             };
         };
     };
-    readonly decideAgentArtifactCustody: {
+    readonly submitRuntimeArtifact: {
         readonly parameters: {
             readonly query?: never;
             readonly header: {
                 readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
-                /** @description Strong ETag "<artifactId>:v<resourceRevision>". Missing returns 428; stale returns 412. */
-                readonly "If-Match": components["parameters"]["IfMatchArtifact"];
                 readonly traceparent: components["parameters"]["Traceparent"];
                 readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
             };
-            readonly path: {
-                readonly artifactId: components["parameters"]["ArtifactId"];
-                readonly workspaceId: components["parameters"]["WorkspaceId"];
-            };
+            readonly path?: never;
             readonly cookie?: never;
         };
         readonly requestBody: {
             readonly content: {
-                readonly "application/json": components["schemas"]["DecideArtifactCustodyRequest"];
+                readonly "application/json": components["schemas"]["PageCandidate"];
             };
         };
         readonly responses: {
-            /** @description The custody decision is recorded and applied. The decision changes what may be done to the artifact rather than producing a representation of it, so the new resource revision is returned in ETag and the artifact metadata is read from its own operation. */
-            readonly 204: {
+            /** @description Immutable artifact metadata for the submitted candidate. */
+            readonly 201: {
                 headers: {
-                    /** @description Strong resource revision: "<artifactId>:v<resourceRevision>". */
-                    readonly ETag?: string;
-                    /** @description true when a recorded custody decision is replayed. */
+                    /** @description true when a recorded semantic outcome is replayed. */
                     readonly "Idempotency-Replayed"?: boolean;
                     /** @description Canonical request digest accepted for the operation. */
                     readonly "X-AnvilKit-Request-Digest"?: string;
                     readonly [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    readonly "application/json": components["schemas"]["AgentArtifact"];
+                };
             };
             /** @description Stable contract problem. */
             readonly 400: {
@@ -3134,7 +1681,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Authenticated without the custody scope, or current authority does not admit the caller as an artifact custodian holding this capability, this clearance, and unrevoked authority over the artifact. */
+            /** @description Authenticated but not authorized. */
             readonly 403: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -3143,7 +1690,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Absent resource, or existence hidden by anti-enumeration policy. */
+            /** @description Unknown addressed resource. */
             readonly 404: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -3152,7 +1699,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description The artifact's destruction is already owned by another custody decision, or an idempotency key replayed with different canonical bytes (IDEMPOTENCY_KEY_REUSED). */
+            /** @description Idempotency key reused with different bytes, or the addressed state moved. */
             readonly 409: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -3161,8 +1708,8 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stale If-Match resource revision. */
-            readonly 412: {
+            /** @description The addressed attempt is expired, superseded, or fenced out; no state changed. */
+            readonly 410: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
@@ -3170,7 +1717,7 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Structurally valid command failing domain validation. */
+            /** @description Canonical contract validation failed. */
             readonly 422: {
                 headers: {
                     readonly [name: string]: unknown;
@@ -3179,8 +1726,8 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Missing required If-Match precondition. */
-            readonly 428: {
+            /** @description Unexpected internal problem. */
+            readonly 500: {
                 headers: {
                     readonly [name: string]: unknown;
                 };
@@ -3188,7 +1735,368 @@ export interface operations {
                     readonly "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
-            /** @description Stable internal problem without sensitive detail. */
+        };
+    };
+    readonly invokeGovernedContractRuntime: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header: {
+                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                readonly traceparent: components["parameters"]["Traceparent"];
+                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
+            };
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly requestBody: {
+            readonly content: {
+                readonly "application/json": components["schemas"]["ContractRuntimeRequest"];
+            };
+        };
+        readonly responses: {
+            /** @description Deterministic contract runtime result. */
+            readonly 200: {
+                headers: {
+                    /** @description true when a recorded semantic outcome is replayed. */
+                    readonly "Idempotency-Replayed"?: boolean;
+                    /** @description Canonical request digest accepted for the operation. */
+                    readonly "X-AnvilKit-Request-Digest"?: string;
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/json": components["schemas"]["ContractRuntimeResult"];
+                };
+            };
+            /** @description Stable contract problem. */
+            readonly 400: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unknown addressed resource. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Idempotency key reused with different bytes, or the addressed state moved. */
+            readonly 409: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description The addressed attempt is expired, superseded, or fenced out; no state changed. */
+            readonly 410: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Canonical contract validation failed. */
+            readonly 422: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unexpected internal problem. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    readonly invokeGovernedModel: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header: {
+                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                readonly traceparent: components["parameters"]["Traceparent"];
+                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
+            };
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly requestBody: {
+            readonly content: {
+                readonly "application/json": components["schemas"]["ModelInvocationRequest"];
+            };
+        };
+        readonly responses: {
+            /** @description Governed model result metered against the attempt. */
+            readonly 200: {
+                headers: {
+                    /** @description true when a recorded semantic outcome is replayed. */
+                    readonly "Idempotency-Replayed"?: boolean;
+                    /** @description Canonical request digest accepted for the operation. */
+                    readonly "X-AnvilKit-Request-Digest"?: string;
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/json": components["schemas"]["ModelInvocationResult"];
+                };
+            };
+            /** @description Stable contract problem. */
+            readonly 400: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unknown addressed resource. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Idempotency key reused with different bytes, or the addressed state moved. */
+            readonly 409: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description The addressed attempt is expired, superseded, or fenced out; no state changed. */
+            readonly 410: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Canonical contract validation failed. */
+            readonly 422: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unexpected internal problem. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    readonly describeAgentRuntimeRelease: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header: {
+                readonly traceparent: components["parameters"]["Traceparent"];
+            };
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly requestBody?: never;
+        readonly responses: {
+            /** @description The manifest of the release serving this process. */
+            readonly 200: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/json": components["schemas"]["AgentRuntimeManifest"];
+                };
+            };
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unknown addressed resource. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unexpected internal problem. */
+            readonly 500: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    readonly dispatchAgentTask: {
+        readonly parameters: {
+            readonly query?: never;
+            readonly header: {
+                readonly "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+                readonly traceparent: components["parameters"]["Traceparent"];
+                readonly "X-AnvilKit-Request-Digest": components["parameters"]["RequestDigest"];
+            };
+            readonly path?: never;
+            readonly cookie?: never;
+        };
+        readonly requestBody: {
+            readonly content: {
+                readonly "application/json": components["schemas"]["AgentTask"];
+            };
+        };
+        readonly responses: {
+            /** @description Signed result proposal for the dispatched attempt. */
+            readonly 200: {
+                headers: {
+                    /** @description true when a recorded semantic outcome is replayed. */
+                    readonly "Idempotency-Replayed"?: boolean;
+                    /** @description Canonical request digest accepted for the operation. */
+                    readonly "X-AnvilKit-Request-Digest"?: string;
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/json": components["schemas"]["AgentRuntimeResult"];
+                };
+            };
+            /** @description Stable contract problem. */
+            readonly 400: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not authenticated. */
+            readonly 401: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Authenticated but not authorized. */
+            readonly 403: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unknown addressed resource. */
+            readonly 404: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Idempotency key reused with different bytes, or the addressed state moved. */
+            readonly 409: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description The addressed attempt is expired, superseded, or fenced out; no state changed. */
+            readonly 410: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Canonical contract validation failed. */
+            readonly 422: {
+                headers: {
+                    readonly [name: string]: unknown;
+                };
+                content: {
+                    readonly "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unexpected internal problem. */
             readonly 500: {
                 headers: {
                     readonly [name: string]: unknown;
