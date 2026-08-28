@@ -210,6 +210,7 @@ function validateExternalRefs(label: string, document: JsonObject): Set<string> 
 const specRefs = new Map<string, Set<string>>();
 const operationIds = new Set<string>();
 for (const path of [
+  "contracts/agent/openapi/agent-runtime.openapi.json",
   "contracts/agent/openapi/agent-service.openapi.json",
   "contracts/agent/openapi/pagix-agent-integration.openapi.json",
 ]) {
@@ -328,6 +329,13 @@ const PROFILE_CASES: Record<string, { instancePath: string; schemaPath: string }
   "invalid-apply-authorization.cross-workspace": { instancePath: "/target/workspaceId", schemaPath: "/profile/workspaceIsolation" },
   "adversarial-worker-result.stale-fence": { instancePath: "/leaseEpoch", schemaPath: "/profile/workerFence" },
   "adversarial-agent-event.duplicate-reordered": { instancePath: "/eventId", schemaPath: "/profile/byteStableEvent" },
+  // Runtime results whose bytes are schema-valid and whose meaning is not: each
+  // one is a way a plausible-looking result must still fail before any state
+  // changes, so each is a schema-valid fixture with a profile finding.
+  "adversarial-agent-runtime-result.digest-tamper": { instancePath: "/signature/statementDigest", schemaPath: "/profile/runtimeStatementDigest" },
+  "adversarial-agent-runtime-result.wrong-runtime": { instancePath: "/selected/runtimeUnitId", schemaPath: "/profile/runtimeBindingEcho" },
+  "adversarial-agent-runtime-result.fence-replay": { instancePath: "/leaseEpoch", schemaPath: "/profile/runtimeFence" },
+  "adversarial-agent-task.expired-admission": { instancePath: "/expiresAt", schemaPath: "/profile/runtimeAdmissionExpiry" },
 };
 
 // Cross-shape separation cases are validated against the OTHER contract's schema.
@@ -450,6 +458,14 @@ function buildManifest(): { manifest: JsonObject; text: string } {
     { id: "command-server-fields", rule: "intent-only-commands-reject-caller-owned-server-fields", fixtures: ["invalid-create-agent-run-request.caller-owned-run-id", "invalid-create-agent-run-request.caller-owned-status", "invalid-create-agent-run-request.caller-owned-workspace", "invalid-issue-apply-authorization-request.caller-owned-issuer", "invalid-issue-apply-authorization-request.caller-owned-expiry", "invalid-decide-artifact-custody-request.caller-owned-custodian", "invalid-decide-artifact-custody-request.caller-owned-workspace"], expected: "reject" },
     { id: "worker-current-fence", rule: "only-the-current-fence-may-commit-a-state-changing-result", fixtures: ["valid-worker-result.minimum", "valid-worker-lease.minimum"], expected: "accept" },
     { id: "worker-stale-fence", rule: "stale-lease-epoch-results-cannot-commit-state", fixtures: ["adversarial-worker-result.stale-fence"], expected: "reject" },
+    { id: "runtime-binding-echo", rule: "a-result-must-echo-the-runtime-binding-its-task-pinned", fixtures: ["valid-agent-task.full", "valid-agent-runtime-result.full"], expected: "accept" },
+    { id: "runtime-wrong-release", rule: "a-result-from-a-runtime-release-the-task-did-not-pin-cannot-commit", fixtures: ["adversarial-agent-runtime-result.wrong-runtime"], expected: "reject" },
+    { id: "runtime-statement-digest", rule: "the-statement-digest-must-be-the-digest-of-the-canonical-statement-bytes", fixtures: ["adversarial-agent-runtime-result.digest-tamper"], expected: "reject" },
+    { id: "runtime-fence-replay", rule: "a-result-carrying-a-superseded-lease-epoch-cannot-commit-state", fixtures: ["adversarial-agent-runtime-result.fence-replay"], expected: "reject" },
+    { id: "runtime-admission-expiry", rule: "a-runtime-cannot-admit-a-task-after-its-expiry", fixtures: ["adversarial-agent-task.expired-admission"], expected: "reject" },
+    { id: "runtime-complete-signature", rule: "a-signature-envelope-without-verifiable-bytes-and-a-key-reference-is-not-a-signature", fixtures: ["invalid-agent-runtime-result.digest-only-signature"], expected: "reject" },
+    { id: "runtime-binding-completeness", rule: "every-missing-or-partial-runtime-binding-fails-validation", fixtures: ["invalid-agent-task.missing-runtime-binding", "invalid-agent-runtime-result.partial-binding-echo", "invalid-agent-definition.missing-runtime-binding", "invalid-agent-run.missing-runtime-binding"], expected: "reject" },
+    { id: "runtime-fence-completeness", rule: "a-task-or-result-without-its-fence-or-expiry-fails-validation", fixtures: ["invalid-agent-task.missing-fence-token", "invalid-agent-task.missing-expiry", "invalid-agent-runtime-result.missing-fence-token"], expected: "reject" },
     { id: "all-attempt-usage", rule: "every-physical-attempt-records-additive-usage", fixtures: ["valid-usage-observation.minimum", "valid-usage-observation.losing-attempt"], expected: "accept" },
     { id: "authorization-workspace-binding", rule: "authorization-workspace-must-match-target-workspace", fixtures: ["invalid-apply-authorization.cross-workspace"], expected: "reject" },
     { id: "authorization-single-use", rule: "issuer-and-authorization-id-redeem-exactly-once", fixtures: ["valid-apply-authorization.minimum"], expected: "single-use" },
@@ -506,6 +522,44 @@ if (existsSync(manifestPath)) {
 }
 
 // ---- 5. Cross-contract invariants (ADR-018/020/021) ----
+// The canonical corpus may only speak governed vocabulary. An audience or a
+// reason code a fixture invents is a value some consumer will implement against
+// and no registry owns, which is how a second, ungoverned vocabulary starts.
+// Counter-example corpora are exempt by construction: invalid and adversarial
+// fixtures exist to carry values the contracts reject.
+{
+  const audiences = new Set(registryValues("audience"));
+  const reasonCodes = new Set(registryValues("runtime-result-reason"));
+  const AUDIENCE_PROPERTIES = new Set(["audience", "runtimeAudience", "authorizationAudience"]);
+  const REASON_PROPERTIES = new Set(["reasonCode"]);
+  const walk = (value: unknown, path: string, report: (message: string) => void): void => {
+    if (Array.isArray(value)) {
+      value.forEach((item, index) => walk(item, path + "/" + index, report));
+      return;
+    }
+    if (!isObject(value)) return;
+    for (const [property, child] of Object.entries(value)) {
+      const childPath = path + "/" + property;
+      if (typeof child === "string") {
+        if (AUDIENCE_PROPERTIES.has(property) && !audiences.has(child)) {
+          report(childPath + " uses ungoverned audience " + child);
+        }
+        if (REASON_PROPERTIES.has(property) && !reasonCodes.has(child)) {
+          report(childPath + " uses ungoverned reason code " + child);
+        }
+      }
+      walk(child, childPath, report);
+    }
+  };
+  const directory = join(FIXTURE_DIR, "valid");
+  for (const name of readdirSync(directory).sort(compareUtf8)) {
+    if (!name.endsWith(".json") || name === "registry-values.full.json") continue;
+    walk(readJson<unknown>(join(directory, name)), "", (message) => {
+      failures.push("AK-FIX-002 valid-" + name.replace(/\.json$/, "") + message);
+    });
+  }
+}
+
 
 function rootEnum(logicalId: string, property: string): unknown {
   const schema = byLogicalId.get(logicalId)?.schema;
@@ -772,6 +826,6 @@ if (failures.length > 0) {
 
 console.log(
   "canonical Agent contracts valid: " + schemaPaths.length + " schemas, " +
-  registrySet.registries.length + " registries, 2 OpenAPI documents, 2 AsyncAPI documents, " +
+  registrySet.registries.length + " registries, 3 OpenAPI documents, 2 AsyncAPI documents, " +
   "deterministic fixture manifest, six-event vocabulary, Event/Evidence/Delta separation, identity and signing corpora",
 );

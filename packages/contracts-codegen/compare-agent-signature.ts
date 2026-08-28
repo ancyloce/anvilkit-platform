@@ -7,7 +7,7 @@ import { dssePreAuthEncoding } from "./native-signature.ts";
 
 type VectorCase = {
   id: string;
-  profile: "dsse" | "jws";
+  profile: "dsse" | "jws" | "runtime-statement";
   operation: "sign-and-verify" | "verify";
   mutation: "none" | "message-last-byte" | "signature-first-byte";
   expectedVerified: boolean;
@@ -16,6 +16,11 @@ type Corpus = {
   corpusVersion: number;
   dsse: { payloadType: string; payloadBase64Url: string };
   jws: { protectedBase64Url: string; payloadBase64Url: string };
+  runtimeStatement: {
+    payloadType: string;
+    canonicalBytesBase64Url: string;
+    statementDigest: string;
+  };
   cases: VectorCase[];
 };
 
@@ -31,10 +36,16 @@ function resultPaths(): string[] {
   return paths;
 }
 
+function statementBytes(corpus: Corpus): Buffer {
+  return Buffer.from(corpus.runtimeStatement.canonicalBytesBase64Url, "base64url");
+}
+
 function expectedMessage(corpus: Corpus, vector: VectorCase): Buffer {
   const message = vector.profile === "dsse"
     ? dssePreAuthEncoding(corpus.dsse.payloadType, Buffer.from(corpus.dsse.payloadBase64Url, "base64url"))
-    : Buffer.from(`${corpus.jws.protectedBase64Url}.${corpus.jws.payloadBase64Url}`, "ascii");
+    : vector.profile === "runtime-statement"
+      ? dssePreAuthEncoding(corpus.runtimeStatement.payloadType, statementBytes(corpus))
+      : Buffer.from(`${corpus.jws.protectedBase64Url}.${corpus.jws.payloadBase64Url}`, "ascii");
   if (vector.mutation === "message-last-byte") message[message.length - 1] ^= 1;
   return message;
 }
@@ -43,7 +54,7 @@ export function compareAgentSignature(repositoryRoot: string, paths: string[]): 
   if (paths.length !== 2) throw new Error(`expected two --result paths, got ${paths.length}`);
   const corpusBytes = readFileSync(join(repositoryRoot, "contracts/agent/fixtures/signing/signature-cases.json"));
   const corpus = JSON.parse(corpusBytes.toString("utf8")) as Corpus;
-  if (corpus.corpusVersion !== 1 || corpus.cases.length !== 6) throw new Error("invalid signature corpus");
+  if (corpus.corpusVersion !== 1 || corpus.cases.length !== 10) throw new Error("invalid signature corpus");
   const corpusDigest = digest(corpusBytes);
   const vectors = new Map(corpus.cases.map((item) => [item.id, item]));
   const rawResults = paths.map((path) => readFileSync(path));
@@ -60,7 +71,21 @@ export function compareAgentSignature(repositoryRoot: string, paths: string[]): 
       if (item.inputDigest !== digest(message) || item.inputBytes !== message.length || item.parseOutcome !== "accepted") {
         throw new Error(`${result.language}/${item.caseId}: signed input binding differs`);
       }
-      if (item.canonicalization.status !== "not-applicable" || item.componentDigest !== null || item.rootBomDigest !== null) {
+      if (item.componentDigest !== null || item.rootBomDigest !== null) {
+        throw new Error(`${result.language}/${item.caseId}: non-signature fields differ`);
+      }
+      if (vector.profile === "runtime-statement") {
+        // Cross-language agreement alone would be satisfied by two
+        // implementations that are identically wrong, so each language is also
+        // held to the recorded known answer.
+        const canonical = statementBytes(corpus);
+        if (item.canonicalization.status !== "produced" ||
+            item.canonicalization.bytesBase64 !== canonical.toString("base64") ||
+            item.canonicalization.digest !== corpus.runtimeStatement.statementDigest ||
+            item.canonicalization.digest !== digest(canonical)) {
+          throw new Error(`${result.language}/${item.caseId}: signed statement bytes differ from the known answer`);
+        }
+      } else if (item.canonicalization.status !== "not-applicable") {
         throw new Error(`${result.language}/${item.caseId}: non-signature fields differ`);
       }
       if (vector.expectedVerified) {
@@ -81,6 +106,8 @@ export function compareAgentSignature(repositoryRoot: string, paths: string[]): 
     ...parity,
     dsseCaseCount: corpus.cases.filter((item) => item.profile === "dsse").length,
     jwsCaseCount: corpus.cases.filter((item) => item.profile === "jws").length,
+    runtimeStatementCaseCount: corpus.cases.filter((item) => item.profile === "runtime-statement").length,
+    runtimeStatementDigest: corpus.runtimeStatement.statementDigest,
     mandatoryCaseExecutions: corpus.cases.length * results.length,
     resultDigests: Object.fromEntries(results.map((result, index) => [result.language, digest(rawResults[index])])),
   };

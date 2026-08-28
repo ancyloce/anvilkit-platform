@@ -10,6 +10,7 @@ import { normalizeDescriptionForTooling, type JsonObject } from "./spec-normaliz
 const REPO_ROOT = join(import.meta.dir, "..", "..");
 const REDOCLY = join(import.meta.dir, "node_modules", ".bin", "redocly");
 const OPENAPI = [
+  "contracts/agent/openapi/agent-runtime.openapi.json",
   "contracts/agent/openapi/agent-service.openapi.json",
   "contracts/agent/openapi/pagix-agent-integration.openapi.json",
 ];

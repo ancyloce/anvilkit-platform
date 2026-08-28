@@ -29,7 +29,12 @@ import { hardenGeneratedGo } from "./go-generated-hardening.ts";
 
 const ROOT = join(import.meta.dir, "..", "..");
 const LOCK = JSON.parse(readFileSync(join(import.meta.dir, "agent-generators.lock.json"), "utf8"));
-const OPENAPI_NAMES = ["agent-service", "pagix-agent-integration"];
+const OPENAPI_NAMES = ["agent-runtime", "agent-service", "pagix-agent-integration"];
+const GO_CLIENT_PACKAGES: Record<string, string> = {
+  "agent-runtime": "agentruntimeclient",
+  "agent-service": "agentclient",
+  "pagix-agent-integration": "pagixclient",
+};
 const SYNC_AGENT_SERVICE = !process.argv.includes("--skip-agent-service");
 const workspace = mkdtempSync(join(tmpdir(), "anvilkit-agent-generation-"));
 
@@ -119,7 +124,7 @@ async function generateGo(): Promise<void> {
   rmSync(output, { recursive: true, force: true });
   run(process.env.GO_JSONSCHEMA ?? "go-jsonschema", ["-p", "schema", bundlePath], join(output, "schema", "contracts.gen.go"));
   for (const name of OPENAPI_NAMES) {
-    const packageName = name === "agent-service" ? "agentclient" : "pagixclient";
+    const packageName = GO_CLIENT_PACKAGES[name];
     run(process.env.OAPI_CODEGEN ?? "oapi-codegen", ["-generate", "types,client", "-package", packageName, projectedOpenApi.get(name)!], join(output, packageName, "client.gen.go"));
   }
   hardenGeneratedGo(output);
@@ -162,6 +167,14 @@ function syncAgentServiceIntake(): void {
   }
   cpSync(join(ROOT, "contracts", "agent", "schemas", "meta", "anvilkit-2020-12.schema.json"), join(schemaTarget, "meta", "anvilkit-2020-12.schema.json"));
   cpSync(join(ROOT, "contracts", "agent", "schemas", "meta", "source-lint-cases.json"), join(schemaTarget, "meta", "source-lint-cases.json"));
+  // The runtime boundary description travels with the service because the
+  // service must know, as production material, which invocation protocol it
+  // speaks: the Runtime Registry refuses a release that speaks another one, and
+  // that decision cannot rest on a digest an operator typed into configuration.
+  const descriptionTarget = join(serviceRoot, "agent", "openapi");
+  rmSync(descriptionTarget, { recursive: true, force: true });
+  mkdirSync(descriptionTarget, { recursive: true });
+  cpSync(join(ROOT, "contracts", "agent", "openapi", "agent-runtime.openapi.json"), join(descriptionTarget, "agent-runtime.openapi.json"));
   // generated bindings and validator copies (byte-identical to packages/contracts-go)
   rmSync(join(serviceRoot, "generated"), { recursive: true, force: true });
   cpSync(join(ROOT, "packages", "contracts-go", "generated"), join(serviceRoot, "generated"), { recursive: true });

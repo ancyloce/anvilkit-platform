@@ -25,6 +25,10 @@ type FixtureManifest = { manifestVersion: number; cases: ManifestCase[] };
 
 const PROFILE_CASES = new Set([
   "adversarial-agent-event.duplicate-reordered",
+  "adversarial-agent-runtime-result.digest-tamper",
+  "adversarial-agent-runtime-result.fence-replay",
+  "adversarial-agent-runtime-result.wrong-runtime",
+  "adversarial-agent-task.expired-admission",
   "adversarial-worker-result.stale-fence",
   "invalid-agent-event.both-payload-and-artifact",
   "invalid-apply-authorization.cross-workspace",

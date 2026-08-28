@@ -183,6 +183,37 @@ func scanJSONValue(decoder *json.Decoder, depth int) error {
 \treturn err
 }
 
+// canonicalTimestampLayout is the one timestamp form the canonical contracts
+// admit: RFC 3339, UTC, exactly three fractional digits. It is the layout the
+// shared Timestamp pattern describes.
+const canonicalTimestampLayout = "2006-01-02T15:04:05.000Z"
+
+// UnmarshalJSON decodes a canonical timestamp.
+//
+// The generator emits Timestamp as a defined type over time.Time, and a defined
+// type inherits none of time.Time's methods — without these the binding could
+// not decode, or re-encode, its own canonical fixtures. Parsing with the
+// canonical layout also means a timestamp in any other shape is rejected at the
+// boundary rather than silently normalized later.
+func (j *SharedPrimitivesTimestamp) UnmarshalJSON(value []byte) error {
+	var plain string
+	if err := json.Unmarshal(value, &plain); err != nil {
+		return err
+	}
+	parsed, err := time.Parse(canonicalTimestampLayout, plain)
+	if err != nil {
+		return fmt.Errorf("timestamp %q is not canonical RFC 3339 UTC with milliseconds", plain)
+	}
+	*j = SharedPrimitivesTimestamp(parsed)
+	return nil
+}
+
+// MarshalJSON writes the canonical timestamp form, so a document this binding
+// produced and a document it consumed serialize identically.
+func (j SharedPrimitivesTimestamp) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(j).UTC().Format(canonicalTimestampLayout))
+}
+
 // UnmarshalJSON enforces the bounds declared by BoundedStringMap.
 func (j *SharedPrimitivesBoundedStringMap) UnmarshalJSON(value []byte) error {
 \tvar plain map[string]string
@@ -246,8 +277,9 @@ function hardenSchema(path: string): void {
 
 export function hardenGeneratedGo(output: string): void {
   hardenSchema(join(output, "schema", "contracts.gen.go"));
-  hardenClient(join(output, "agentclient", "client.gen.go"));
-  hardenClient(join(output, "pagixclient", "client.gen.go"));
+  for (const client of ["agentruntimeclient", "agentclient", "pagixclient"]) {
+    hardenClient(join(output, client, "client.gen.go"));
+  }
 }
 
 function sha256(value: string | Uint8Array): string {

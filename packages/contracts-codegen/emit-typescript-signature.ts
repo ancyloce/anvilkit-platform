@@ -4,10 +4,12 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import type { ConformanceCase, ConformanceResult } from "./conformance-result.ts";
 import { dssePreAuthEncoding, signEd25519, verifyEd25519 } from "./native-signature.ts";
+import { canonicalizeJcs } from "./identity.ts";
+import type { JsonValue } from "./strict-json.ts";
 
 type VectorCase = {
   id: string;
-  profile: "dsse" | "jws";
+  profile: "dsse" | "jws" | "runtime-statement";
   operation: "sign-and-verify" | "verify";
   mutation: "none" | "message-last-byte" | "signature-first-byte";
   expectedVerified: boolean;
@@ -17,6 +19,13 @@ type Corpus = {
   key: { publicKeyBase64Url: string; privateSeedBase64Url: string };
   dsse: { payloadType: string; payloadBase64Url: string; signatureBase64Url: string };
   jws: { protectedBase64Url: string; payloadBase64Url: string; signatureBase64Url: string };
+  runtimeStatement: {
+    payloadType: string;
+    statement: JsonValue;
+    canonicalBytesBase64Url: string;
+    statementDigest: string;
+    signatureBase64Url: string;
+  };
   cases: VectorCase[];
 };
 
@@ -35,14 +44,30 @@ export function generateSignatureResult(repositoryRoot: string): ConformanceResu
   const corpusPath = join(repositoryRoot, "contracts/agent/fixtures/signing/signature-cases.json");
   const corpusBytes = readFileSync(corpusPath);
   const corpus = JSON.parse(corpusBytes.toString("utf8")) as Corpus;
-  if (corpus.corpusVersion !== 1 || corpus.cases.length !== 6) throw new Error("invalid signature corpus");
+  if (corpus.corpusVersion !== 1 || corpus.cases.length !== 10) throw new Error("invalid signature corpus");
+  // The result statement is canonicalized here rather than read from the
+  // corpus: reproducing the recorded bytes from the statement is the parity
+  // claim, and reading them back would prove nothing.
+  const statementBytes = Buffer.from(canonicalizeJcs(corpus.runtimeStatement.statement));
+  if (statementBytes.toString("base64url") !== corpus.runtimeStatement.canonicalBytesBase64Url) {
+    throw new Error("runtime result statement canonical bytes differ from the corpus");
+  }
+  if (digest(statementBytes) !== corpus.runtimeStatement.statementDigest) {
+    throw new Error("runtime result statement digest differs from the corpus");
+  }
   const cases: ConformanceCase[] = corpus.cases.map((item) => {
     const baseMessage = item.profile === "dsse"
       ? dssePreAuthEncoding(corpus.dsse.payloadType, Buffer.from(corpus.dsse.payloadBase64Url, "base64url"))
-      : Buffer.from(`${corpus.jws.protectedBase64Url}.${corpus.jws.payloadBase64Url}`, "ascii");
+      : item.profile === "runtime-statement"
+        ? dssePreAuthEncoding(corpus.runtimeStatement.payloadType, statementBytes)
+        : Buffer.from(`${corpus.jws.protectedBase64Url}.${corpus.jws.payloadBase64Url}`, "ascii");
     const message = mutate(baseMessage, item.mutation === "message-last-byte");
     const expectedSignature = Buffer.from(
-      item.profile === "dsse" ? corpus.dsse.signatureBase64Url : corpus.jws.signatureBase64Url,
+      item.profile === "dsse"
+        ? corpus.dsse.signatureBase64Url
+        : item.profile === "runtime-statement"
+          ? corpus.runtimeStatement.signatureBase64Url
+          : corpus.jws.signatureBase64Url,
       "base64url",
     );
     const candidateSignature = item.operation === "sign-and-verify"
@@ -62,7 +87,9 @@ export function generateSignatureResult(repositoryRoot: string): ConformanceResu
       parseOutcome: "accepted",
       valid: verified,
       findings: verified ? [] : [{ code: "SIGNATURE_INVALID", instancePath: "/signature", schemaPath: "/profile/ed25519" }],
-      canonicalization: { status: "not-applicable" },
+      canonicalization: item.profile === "runtime-statement"
+        ? { status: "produced", bytesBase64: statementBytes.toString("base64"), digest: digest(statementBytes) }
+        : { status: "not-applicable" },
       componentDigest: null,
       rootBomDigest: null,
       signature: verified ? { status: "verified" } : { status: "rejected", code: "SIGNATURE_INVALID" },

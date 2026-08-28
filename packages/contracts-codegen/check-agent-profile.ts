@@ -47,7 +47,8 @@ const EXPECTED_CONTRACTS = [
   "ContractRuntimeRequest", "ContractRuntimeResult", "ContractSignatureStatement",
   "ContractTrustRoot", "CreateAgentRunRequest", "DecideArtifactCustodyRequest",
   "ImageOperationPlan", "InputRequest",
-  "IssueApplyAuthorizationRequest", "IssuedApplyAuthorization", "PageCandidate",
+  "IssueApplyAuthorizationRequest", "IssuedApplyAuthorization",
+  "ModelInvocationRequest", "ModelInvocationResult", "PageCandidate",
   "PagePreviewResult", "PagePreviewTask", "PagixCommitReceipt",
   "PersistAuthorizedPageRequest", "ProblemDetails",
   "ProviderContinuation", "ResolveDomainOperationRequest", "SharedPrimitives",
@@ -76,6 +77,12 @@ const FULL_COVERAGE_CONTRACTS = new Set([
   "ProviderContinuation", "TargetSnapshot", "ToolDefinition", "UsageObservation",
   "WorkerLease", "WorkerResult",
 ]);
+// The contracts that cross the Agent Service / Agent Runtime process boundary.
+const RUNTIME_BOUNDARY_CONTRACTS = [
+  "AgentTask", "AgentRuntimeResult", "AgentRuntimeManifest",
+  "ModelInvocationRequest", "ModelInvocationResult",
+];
+
 const EXTENDED_COVERAGE = ["minimum", "full", "invalid", "adversarial"];
 const EXTENDED_COVERAGE_CONTRACTS = new Set([
   "AgentEvidence", "AgentStreamDelta", "CreateAgentRunRequest",
@@ -182,6 +189,18 @@ for (const schema of schemas) {
     failures.push("AK-PROFILE-001 schema outside the frozen catalog: " + schema.path);
   }
 }
+
+// Runtime boundary contracts cross a process boundary between two independently
+// released parties, so a profiled one with no wire description is an incomplete
+// contract: the payload would be governed while the operation carrying it was
+// not. check-agent-contracts.ts proves each named description really does
+// reference the schema; this proves one was named at all.
+for (const logicalId of RUNTIME_BOUNDARY_CONTRACTS) {
+  const schema = byLogicalId.get(logicalId);
+  if (schema && schema.metadata.descriptions.length === 0) {
+    failures.push("AK-PROFILE-001 runtime boundary contract " + logicalId + " is bound to no wire description");
+  }
+}
 for (const [logicalId, coverage] of Object.entries(Object.fromEntries(
   contractEntries.map((entry) => [entry.logicalId, entry.fixtureCoverage]),
 ))) {
@@ -214,6 +233,7 @@ const profileDocument = {
     registrySet: { path: "contracts/agent/registries/registry-set.json", digest: sourceDigest("contracts/agent/registries/registry-set.json") },
     registrySetSchema: { path: "contracts/agent/registries/registry-set.schema.json", digest: sourceDigest("contracts/agent/registries/registry-set.schema.json") },
     openapi: [
+      { path: "contracts/agent/openapi/agent-runtime.openapi.json", digest: sourceDigest("contracts/agent/openapi/agent-runtime.openapi.json") },
       { path: "contracts/agent/openapi/agent-service.openapi.json", digest: sourceDigest("contracts/agent/openapi/agent-service.openapi.json") },
       { path: "contracts/agent/openapi/pagix-agent-integration.openapi.json", digest: sourceDigest("contracts/agent/openapi/pagix-agent-integration.openapi.json") },
     ],
@@ -227,6 +247,21 @@ const profileDocument = {
     strictAdmissionCases: { path: "contracts/agent/fixtures/canonical/strict-admission-cases.json", digest: sourceDigest("contracts/agent/fixtures/canonical/strict-admission-cases.json") },
     signatureCases: { path: "contracts/agent/fixtures/signing/signature-cases.json", digest: sourceDigest("contracts/agent/fixtures/signing/signature-cases.json") },
   },
+  signedStatements: [
+    {
+      contract: "AgentRuntimeResult",
+      // The envelope cannot be inside the bytes it signs, so the statement is
+      // the result document with the envelope removed — and nothing else
+      // removed, because every other field is part of what the runtime claims.
+      statement: "the canonical document with the envelope pointer removed",
+      envelopePointer: "/signature",
+      canonicalization: "RFC8785",
+      digestAlgorithm: "sha256",
+      payloadType: "application/vnd.anvilkit.agent-runtime-result+json",
+      signatureAlgorithms: ["dsse-ed25519-v1", "jws-eddsa-v1"],
+      knownAnswerVectors: "contracts/agent/fixtures/signing/signature-cases.json#/runtimeStatement",
+    },
+  ],
   contracts: contractEntries,
   generated: {
     go: {
@@ -285,6 +320,12 @@ function buildLock(profileBytes: Buffer): string {
     ["goTrace", "packages/contracts-go/generated/trace.json"],
     ["typescriptTrace", "packages/contracts-typescript/src/generated/trace.json"],
     ["agentServiceIntakeTrace", "services/agent-service/contracts/generated/trace.json"],
+    // The runtime consumers vendor a copy rather than importing across
+    // repositories, so the lock records the bytes they carry. Their own pins
+    // record which profile and lock produced those bytes; recording the pins
+    // here instead would be circular and prove nothing.
+    ["agentRuntimesBinding", "services/agent-runtimes/contracts/generated/schema/contracts.gen.go"],
+    ["previewWorkerBinding", "services/preview-worker/contracts/generated/schema.ts"],
   ] as const) {
     if (!existsSync(join(REPO_ROOT, path))) {
       failures.push("AK-PROFILE-001 generated trace missing: " + path);
@@ -370,6 +411,89 @@ if (UPDATE) {
     const copy = join(REPO_ROOT, "services", "agent-service", "contracts", "agent", "schemas", basename(schema.path));
     if (!existsSync(copy) || !readFileSync(copy).equals(schema.bytes)) {
       failures.push("AK-PROFILE-001 agent-service schema intake differs: " + basename(schema.path));
+    }
+  }
+}
+
+// vendored-pin identity: the runtime and preview consumers vendor the generated
+// bindings with a pin recording which canonical profile and lock produced them.
+// A pin no gate reads is a promise nobody keeps, so the recorded digests are
+// held to the live canonical bytes and the vendored binding to the exact
+// platform generation.
+{
+  const vendoredConsumers: Array<{ name: string; pin: string; source: string }> = [
+    {
+      name: "agent-runtimes",
+      pin: "services/agent-runtimes/contracts/pin.json",
+      source: "packages/contracts-go/generated/schema/contracts.gen.go",
+    },
+    {
+      name: "preview-worker",
+      pin: "services/preview-worker/contracts/pin.json",
+      source: "packages/contracts-typescript/src/generated/schema.ts",
+    },
+  ];
+  for (const consumer of vendoredConsumers) {
+    const pinPath = join(REPO_ROOT, consumer.pin);
+    if (!existsSync(pinPath)) {
+      failures.push("AK-PROFILE-001 " + consumer.name + " pin missing: " + consumer.pin);
+      continue;
+    }
+    let vendored: any;
+    try {
+      vendored = JSON.parse(readFileSync(pinPath, "utf8"));
+    } catch {
+      failures.push("AK-PROFILE-001 " + consumer.name + " pin unreadable: " + consumer.pin);
+      continue;
+    }
+    if (vendored?.profile?.sha256 !== digest(Buffer.from(profileText, "utf8"))) {
+      failures.push("AK-PROFILE-001 " + consumer.name + " pin records a stale profile digest: re-vendor and re-pin");
+    }
+    if (vendored?.lock?.sha256 !== digest(Buffer.from(lockText, "utf8"))) {
+      failures.push("AK-PROFILE-001 " + consumer.name + " pin records a stale lock digest: re-vendor and re-pin");
+    }
+    const generatedPath = typeof vendored?.generated?.path === "string" ? vendored.generated.path : "";
+    const copy = join(REPO_ROOT, "services", consumer.name, generatedPath);
+    if (generatedPath === "" || !existsSync(copy)) {
+      failures.push("AK-PROFILE-001 " + consumer.name + " vendored binding missing: " + generatedPath);
+      continue;
+    }
+    const bytes = readFileSync(copy);
+    if (vendored?.generated?.sha256 !== digest(bytes)) {
+      failures.push("AK-PROFILE-001 " + consumer.name + " vendored binding differs from its pin digest");
+    }
+    if (!bytes.equals(readFileSync(join(REPO_ROOT, consumer.source)))) {
+      failures.push("AK-PROFILE-001 " + consumer.name + " vendored binding differs from canonical generation");
+    }
+  }
+}
+
+// generator pins: agent-generators.lock.json is the governed identity recorded
+// into every generated package, so nothing may declare a generator version
+// beside it. The Go generators are installed from the lock by
+// prepare-agent-generators.sh; the TypeScript generators are workspace
+// devDependencies, which are only a pin if they are exact and equal to it.
+{
+  const lock = JSON.parse(readFileSync(join(REPO_ROOT, "packages", "contracts-codegen", "agent-generators.lock.json"), "utf8"));
+  const manifest = JSON.parse(readFileSync(join(REPO_ROOT, "packages", "contracts-codegen", "package.json"), "utf8"));
+  const declared: Record<string, unknown> = { ...(manifest.dependencies ?? {}), ...(manifest.devDependencies ?? {}) };
+  for (const key of ["typescriptOpenApi", "typescriptJsonSchema"] as const) {
+    const generator = lock.generators?.[key];
+    const version = declared[generator?.name];
+    if (version === undefined) {
+      failures.push("AK-PROFILE-001 generator " + generator?.name + " is locked but not a contracts-codegen dependency");
+    } else if (version !== generator.version) {
+      failures.push("AK-PROFILE-001 generator " + generator.name + " is declared " + version + " but locked at " + generator.version);
+    }
+  }
+  const installer = readFileSync(join(REPO_ROOT, "packages", "contracts-codegen", "prepare-agent-generators.sh"), "utf8");
+  if (!installer.includes("agent-generators.lock.json")) {
+    failures.push("AK-PROFILE-001 prepare-agent-generators.sh does not read the generator lock");
+  }
+  for (const key of ["goOpenApi", "goJsonSchema"] as const) {
+    const generator = lock.generators?.[key];
+    if (generator && installer.includes(generator.name + "@")) {
+      failures.push("AK-PROFILE-001 prepare-agent-generators.sh pins " + generator.name + " beside the lock: install it from the lock instead");
     }
   }
 }
