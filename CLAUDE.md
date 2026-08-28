@@ -107,7 +107,8 @@ The compose stack's render-origin is a **contract stand-in** (`mocks/renderorigi
 ## Testing
 
 - Unit tests run bare (`go test -race ./...`, wired into `make all`). Prefer table-driven tests; keep them deterministic and order-independent (packages run in parallel).
-- Integration tests **skip** unless `REDIS_TEST_URL` / `S3_TEST_ENDPOINT` are set, and then they **FLUSH their Redis DB** — point them only at disposable containers:
+- Agent Service PostgreSQL proofs (persistence, journal, DBOS, and the cmd-level restart/custody/vertical-slice tests) skip unless `POSTGRES_TEST_URL` / `DBOS_TEST_URL` are set, and **create and drop databases and schemas** — point them only at a disposable instance. `scripts/test-postgres.sh up` starts the repository's own and prints the URL; `scripts/kernel-verify.sh` finds it automatically. Set `ANVILKIT_REQUIRE_POSTGRES_PROOFS=1` (CI and `kernel-verify` do) to make a missing database fail instead of skip.
+- Export-worker integration tests **skip** unless `REDIS_TEST_URL` / `S3_TEST_ENDPOINT` are set, and then they **FLUSH their Redis DB** — point them only at disposable containers:
   ```
   REDIS_TEST_URL=redis://localhost:16379  S3_TEST_ENDPOINT=http://localhost:19000
   ```
@@ -129,7 +130,10 @@ bun packages/contracts-codegen/check-agent-profile.ts    # P0-Kernel Profile + c
 bun ./scripts/dependency-audit.ts               # boundary/dependency gate (AC-002/AC-018)
 bun test ./scripts/naming-governance.test.ts   # capability-naming gate: its regression suite
 bun ./scripts/naming-governance.ts             # capability-naming gate: the repository scan
+bash ./scripts/kernel-verify.sh                 # aggregate non-release verification: contracts, parity, governance, all kernel services + gate-report.json
+bash ./scripts/test-postgres.sh up              # disposable PostgreSQL for the kernel proofs (prints POSTGRES_TEST_URL; `down` removes it)
 bash ./scripts/release-precheck.sh             # local/release only: Agent Service evidence + resource budgets
+bash ./scripts/kernel-evidence.sh               # kernel evidence bundle: gate report + parity + releases + boundary/closure proofs + recovery-matrix and security-corpus JSON reports + requirement map
 
 make -C services/agent-service all              # Agent Service: format + vet + boundaries + contracts + race tests + build
 make -C services/export-worker all              # worker: vet + test + build
