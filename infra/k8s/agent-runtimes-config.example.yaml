@@ -1,0 +1,67 @@
+# Non-secret configuration for the deployed Agent Runtime Units (example —
+# real values land with the first deployed environment). Secrets are NEVER
+# here: each unit's ANVILKIT_RESULT_SIGNING_KEY seed arrives via its own
+# <unit>-result-signing Secret per ADR-006, one Secret per unit so revoking a
+# key touches exactly one identity.
+#
+# Three configuration surfaces meet at a runtime pod, on purpose:
+#   - anvilkit-runtime (below): the deployment's statement of where the
+#     governed control plane is. The deployment says where; the unit's released
+#     manifest says which routes on it may be used.
+#   - <unit>-runtime-manifest (generated, not in this repository): the release
+#     pipeline (`services/agent-service/cmd/runtime-release`) produces the
+#     manifest ConfigMap with the image, provenance, and protocol digests of
+#     the artifact actually deployed. A hand-written manifest would attest a
+#     release nobody made, so no example of one is provided here.
+#   - anvilkit-task-credential-trust (below): the operator-distributed trust
+#     root task credentials are verified against. It is distributed
+#     independently of Agent Service — the service that mints credentials must
+#     not also decide which keys are trusted to mint them.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: anvilkit-runtime
+  labels:
+    app.kubernetes.io/name: agent-runtimes
+    app.kubernetes.io/part-of: anvilkit-platform
+data:
+  # The one governed origin. Model invocations, artifact grants, and artifact
+  # submission are released routes on this origin; a unit has no other
+  # destination.
+  controlPlane: "http://agent-service:8080"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: anvilkit-task-credential-trust
+  labels:
+    app.kubernetes.io/name: agent-runtimes
+    app.kubernetes.io/part-of: anvilkit-platform
+data:
+  # Operator-distributed snapshot in the shared ContractTrustRoot format.
+  # The value below is shaped like the real document with placeholder key
+  # material; the deployed snapshot comes from the operator's own key
+  # distribution per ADR-006 and is rotated by distributing a new snapshot.
+  task-credential-trust-root.json: |
+    {
+      "kind": "ContractTrustRoot",
+      "snapshotId": "example-task-credential-trust-0001",
+      "issuedAt": "2026-08-27T00:00:00.000Z",
+      "nextUpdate": "2026-11-27T00:00:00.000Z",
+      "maximumClockSkewSeconds": 60,
+      "keys": [
+        {
+          "keyId": "urn:anvilkit:key:agent-service-task-credentials",
+          "issuer": "urn:anvilkit:service:agent-service",
+          "audiences": [
+            "urn:anvilkit:audience:runtime-page-change-manager",
+            "urn:anvilkit:audience:runtime-page-candidate-specialist"
+          ],
+          "algorithms": ["EdDSA"],
+          "publicKeyJwk": {"kty": "OKP", "crv": "Ed25519", "x": "REPLACED_BY_OPERATOR_KEY_DISTRIBUTION"},
+          "status": "active",
+          "notBefore": "2026-08-27T00:00:00.000Z",
+          "notAfter": "2026-11-27T00:00:00.000Z"
+        }
+      ]
+    }

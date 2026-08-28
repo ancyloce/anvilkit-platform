@@ -20,6 +20,10 @@ metadata:
     app.kubernetes.io/name: agent-service
     app.kubernetes.io/part-of: anvilkit-platform
 data:
+  # Staging is a deployed environment: it refuses every controlled, fake, and
+  # mock implementation and the in-process runtime exactly as production does,
+  # and requires the same runtime trust material. Only an explicitly declared
+  # development or test environment admits controlled implementations.
   ANVILKIT_ENVIRONMENT: "staging"
   ANVILKIT_HTTP_ADDRESS: ":8080"
   # The directory that *contains* `contracts/`: the runtime appends the
@@ -39,6 +43,32 @@ data:
   # operator-distributed trust root; production never trusts its own copy.
   ANVILKIT_DEFINITION_TRUST_ROOT: "/etc/anvilkit/definition-trust-root.json"
   ANVILKIT_DEFINITION_ATTESTATION: "/etc/anvilkit/definition-catalog.dsse.json"
+  # The approved runtime release catalog is authenticated the same way: a
+  # release set the service signed for itself would approve whatever it happened
+  # to carry.
+  ANVILKIT_RUNTIME_TRUST_ROOT: "/etc/anvilkit/runtime-trust-root.json"
+  ANVILKIT_RUNTIME_ATTESTATION: "/etc/anvilkit/runtime-releases.dsse.json"
+  # How a selected runtime release is reached, and where each runtime unit
+  # answers. Production accepts only a transport that crosses a process
+  # boundary: which unit must serve the work is contract material, where that
+  # unit is deployed is not.
+  ANVILKIT_RUNTIME_DISPATCHER: "http"
+  ANVILKIT_RUNTIME_ENDPOINTS: "runtime.platform.page-change-manager=https://page-change-manager.internal,runtime.platform.page-candidate-specialist=https://page-candidate-specialist.internal"
+  ANVILKIT_RUNTIME_DISPATCH_TIMEOUT: "2m"
+  # The two halves of the execution boundary's own authentication.
+  #
+  # The credential key identity names the key this service mints task-scoped
+  # credentials with; its public half is what the operator publishes in the
+  # credential trust root that both this service and every runtime unit read.
+  # Distributing that document independently is the point: the service that
+  # mints credentials must not also decide which keys are trusted to mint them.
+  ANVILKIT_RUNTIME_CREDENTIAL_KEY_ID: "urn:anvilkit:key:agent-service-task-credential"
+  ANVILKIT_RUNTIME_CREDENTIAL_TRUST_ROOT: "/etc/anvilkit/task-credential-trust-root.json"
+  # The signing trust store maps a runtime result-signing key to the runtime
+  # units, audiences, released manifests, and image provenances it is approved
+  # to sign for. A result signed by a key outside it cannot be attributed to a
+  # release, and an unattributable result commits nothing.
+  ANVILKIT_RUNTIME_SIGNING_TRUST: "/etc/anvilkit/runtime-signing-trust.json"
   # Externally owned services — contracts and authenticated APIs only.
   ANVILKIT_PAGIX_URL: "https://pagix.internal"
   ANVILKIT_CONTRACT_RUNTIME_URL: "https://contract-runtime.internal"

@@ -1,0 +1,45 @@
+# Disposable PostgreSQL for the kernel test suites.
+#
+# The Agent Service PostgreSQL proofs — persistence/migrations, the journal
+# store, the DBOS system database, and the cmd-level restart, custody,
+# composition, and vertical-slice integration tests — need a real PostgreSQL
+# they are allowed to create and drop databases and schemas in. This stack
+# provides exactly that and nothing else; it is deliberately separate from
+# infra/docker-compose.yml, which is the export-worker development stack.
+#
+# The data directory is a tmpfs and fsync is off: this database is for tests
+# whose isolation comes from creating a fresh database per run, so durability
+# buys nothing and costs test time. Never point anything but tests at it.
+#
+# Managed through scripts/test-postgres.sh (up / url / down / status), which
+# is also what scripts/kernel-verify.sh discovers.
+name: anvilkit-kernel-test
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    command:
+      - postgres
+      - -c
+      - fsync=off
+      - -c
+      - synchronous_commit=off
+      - -c
+      - full_page_writes=off
+      - -c
+      - max_connections=200
+    environment:
+      POSTGRES_USER: anvilkit
+      POSTGRES_PASSWORD: anvilkit-test
+      POSTGRES_DB: anvilkit_kernel_test
+    ports:
+      # 5432 + 10000, matching the disposable-port convention the Redis
+      # (16379) and MinIO (19000) test endpoints already follow.
+      - "127.0.0.1:15432:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U anvilkit -d anvilkit_kernel_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 30

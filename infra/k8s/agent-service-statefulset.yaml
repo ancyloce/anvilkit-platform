@@ -12,8 +12,10 @@
 #
 # Secrets are injected per ADR-006 — never from the repo. The referenced Secret
 # (anvilkit-agent-service-secrets) carries ANVILKIT_SIGNING_KEY,
-# ANVILKIT_ENCRYPTION_KEY, and the per-role database URLs, which embed
-# credentials. The ConfigMap carries the non-secret configuration
+# ANVILKIT_ENCRYPTION_KEY, ANVILKIT_RUNTIME_CREDENTIAL_KEY (the Ed25519 seed
+# this service mints task-scoped credentials with), and the per-role database
+# URLs, which embed credentials. The ConfigMap carries the non-secret
+# configuration
 # (see agent-service-config.example.yaml).
 #
 # Neither of them carries a protected-audit administrative credential, and
