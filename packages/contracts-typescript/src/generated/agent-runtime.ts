@@ -583,6 +583,89 @@ export interface components {
             readonly url: string;
         };
         /**
+         * CatalogReuseEvidence contract
+         * @description Per-generation record of how the catalog was consulted (PRD-CAT-0001 §9.3, CAT-FR-021, CAT-FR-022). It names the Run-local catalog snapshot and revision, the fingerprint of the search request, the entries selected with their role (reuse, reference, or dependency), the entries considered with their scores, the entries rejected with a reason, and, when similarity and API overlap exceed the reviewed threshold, the likely duplicate for the review surface. It is evidence for review only and never rejects a component on its own; it is carried by ComponentIntent and resolvable after restart.
+         */
+        readonly CatalogReuseEvidence: {
+            readonly catalogRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly considered: readonly {
+                readonly componentId: string;
+                readonly score: components["schemas"]["SharedPrimitivesDecimalString"];
+            }[];
+            readonly fingerprint: components["schemas"]["SharedPrimitivesDigest"];
+            /** @constant */
+            readonly kind: "CatalogReuseEvidence";
+            readonly likelyDuplicate?: {
+                readonly componentId: string;
+                readonly similarity: components["schemas"]["SharedPrimitivesDecimalString"];
+            };
+            readonly rejected: readonly {
+                readonly componentId: string;
+                readonly reason: string;
+            }[];
+            readonly selected: readonly {
+                readonly componentId: string;
+                /** @enum {unknown} */
+                readonly role: "reuse" | "reference" | "dependency";
+            }[];
+            readonly snapshotId: components["schemas"]["SharedPrimitivesOpaqueId"];
+        };
+        /**
+         * CatalogSearchRequest contract
+         * @description Catalog search command (PRD-CAT-0001 §9.3, CAT-FR-018, CAT-FR-019) issued by the workflow's anvilkit.tool.catalog-search context tool or by the Studio BFF through searchComponentCatalog. It names the workspace and project scope, optionally pins a catalog revision (the active revision otherwise), carries at least one query criterion (free text, exact identity, name prefix, tags, props, capabilities, or a runtime-compatibility filter), the visibilities the caller is authorized to see, a page limit of at most fifty, and an opaque cursor. Every result is additionally scoped server-side to the caller's authorization; the request never widens it.
+         */
+        readonly CatalogSearchRequest: {
+            readonly catalogRevision?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly cursor?: components["schemas"]["SharedPrimitivesCursor"];
+            /** @constant */
+            readonly kind: "CatalogSearchRequest";
+            readonly limit: number;
+            readonly query: {
+                readonly capabilities?: readonly string[];
+                readonly compatibility?: {
+                    readonly puckRuntime: string;
+                    readonly reactRuntime: string;
+                };
+                readonly identity?: string;
+                readonly namePrefix?: string;
+                readonly props?: readonly string[];
+                readonly tags?: readonly string[];
+                readonly text?: string;
+            };
+            readonly scope: {
+                readonly projectId: components["schemas"]["SharedPrimitivesProjectId"];
+                readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
+            };
+            readonly visibility: readonly ("public" | "workspace" | "project")[];
+        };
+        /**
+         * CatalogSearchResult contract
+         * @description Ranked, scoped catalog search page (PRD-CAT-0001 §9.3, CAT-FR-018 to CAT-FR-020). It binds the page to the catalog revision and digest it was answered from and to the fingerprint (digest of the canonical request) that identifies the query, and lists the authorized entries with their identity, package, name, description, tags, decimal score, the fields that matched, visibility, status, and exemplar flag, followed by the page information. A cached page must be byte-identical to the authoritative page for the same revision, scope, query, filters, and policy.
+         */
+        readonly CatalogSearchResult: {
+            readonly catalogDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly catalogRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly entries: readonly {
+                readonly componentId: string;
+                readonly componentName: string;
+                readonly description: string;
+                readonly exemplar: boolean;
+                readonly matchedFields: readonly ("identity" | "name" | "description" | "tags" | "props" | "capabilities" | "compatibility")[];
+                readonly packageName: string;
+                readonly packageVersion: string;
+                readonly score: components["schemas"]["SharedPrimitivesDecimalString"];
+                /** @enum {unknown} */
+                readonly status: "approved" | "deprecated" | "withdrawn";
+                readonly tags: readonly string[];
+                /** @enum {unknown} */
+                readonly visibility: "public" | "workspace" | "project";
+            }[];
+            readonly fingerprint: components["schemas"]["SharedPrimitivesDigest"];
+            /** @constant */
+            readonly kind: "CatalogSearchResult";
+            readonly pageInfo: components["schemas"]["SharedPrimitivesPageInfo"];
+        };
+        /**
          * CatalogSnapshot contract
          * @description Immutable snapshot of the component catalog a page-generation run is permitted to compose from. It freezes the catalog revision and digest, the exact Puck schema and runtime revisions, every allowed component with its package revision, prop schema, defaults, slot rules, and nesting bound, the components that are forbidden or deprecated with their replacements, and the approved design-token, asset, and font references. It is produced by the catalog authority rather than by an editor client, and its digest is the value carried by TargetSnapshot's catalogDigest so that admission, candidate validation, preview, and apply all resolve the same catalog bytes. It confers no authority: it states what may be composed, never who may compose or commit it.
          */
@@ -652,6 +735,91 @@ export interface components {
             };
         };
         /**
+         * ComponentCatalogArtifact contract
+         * @description Producer-side signed component catalog bundle (PRD-CAT-0001 §9.1, §9.4; CAT-FR-011, CAT-FR-012, CAT-FR-016). Components CI exports the unsigned catalog and exemplar sources with provenance for one qualified commit; the catalog authority (ADR-026 §D11, the Pagix Component Registry) merges its scoped private components and signs the result with the catalog-release key registered in the platform contract trust root. It carries the catalog revision, the source repository, commit, and workflow run, the Contract BOM digest, the Puck and React runtime ranges, one closed entry per component with identity, package, description, tags, props, slots, variants, capabilities, style targets, i18n keys, peer dependencies, exports, visibility, status, preview reference, source evidence, and exemplar flag, the component-by-runtime compatibility matrix, the carried files by path, digest, size, and role, and the signature block. Descriptions and every other text field are data: nothing in this artifact instructs an agent. Agent Service verifies the signature, digest, Contract BOM compatibility, and schema before activation (CAT-FR-013); CatalogSnapshot remains the Run-local pinned view derived from one activated revision.
+         */
+        readonly ComponentCatalogArtifact: {
+            readonly catalogRevision: components["schemas"]["SharedPrimitivesOpaqueId"];
+            readonly compatibilityMatrix: readonly {
+                readonly compatible: boolean;
+                readonly componentId: string;
+                readonly puckRuntime: string;
+                readonly reactRuntime: string;
+            }[];
+            readonly components: readonly components["schemas"]["ComponentCatalogArtifactEntry"][];
+            readonly contractBomDigest: components["schemas"]["SharedPrimitivesDigest"];
+            readonly createdAt: components["schemas"]["SharedPrimitivesTimestamp"];
+            readonly files: readonly {
+                readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly path: string;
+                /** @enum {unknown} */
+                readonly role: "metadata" | "exemplar-source" | "preview";
+                readonly size: number;
+            }[];
+            /** @constant */
+            readonly kind: "ComponentCatalogArtifact";
+            readonly puckRuntime: string;
+            readonly reactRuntime: string;
+            readonly schemaVersion: number;
+            readonly signature: string;
+            /** @enum {unknown} */
+            readonly signatureAlgorithm: "dsse-ed25519-v1" | "jws-eddsa-v1";
+            readonly signingKeyId: string;
+            /** @constant */
+            readonly signingPurpose: "catalog-release";
+            readonly sourceCommit: string;
+            readonly sourceRepository: string;
+            readonly sourceWorkflowRun: string;
+        };
+        readonly ComponentCatalogArtifactEntry: {
+            readonly capabilities: readonly string[];
+            readonly category: string;
+            readonly componentId: string;
+            readonly componentName: string;
+            readonly componentSlug: string;
+            readonly description: string;
+            readonly exemplar: boolean;
+            readonly exports: readonly {
+                readonly cjs: string;
+                readonly esm: string;
+                readonly subpath: string;
+                readonly types: string;
+            }[];
+            readonly i18nKeys: readonly string[];
+            readonly packageName: string;
+            readonly packageVersion: string;
+            readonly peerDependencies: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            readonly previewRef: string;
+            readonly props: readonly {
+                readonly default: string;
+                readonly name: string;
+                /** @enum {unknown} */
+                readonly puckField: "text" | "textarea" | "number" | "select" | "radio" | "array" | "object" | "external" | "custom" | "slot";
+                readonly required: boolean;
+            }[];
+            readonly scaffoldType: string;
+            readonly slots: readonly {
+                readonly allowedComponents: readonly string[];
+                readonly maxDepth: number;
+                readonly name: string;
+            }[];
+            readonly sourceEvidence: {
+                readonly commit: string;
+                readonly files: readonly {
+                    readonly digest: components["schemas"]["SharedPrimitivesDigest"];
+                    readonly path: string;
+                }[];
+                readonly path: string;
+            };
+            /** @enum {unknown} */
+            readonly status: "approved" | "deprecated" | "withdrawn";
+            readonly styleTargets: readonly string[];
+            readonly tags: readonly string[];
+            readonly variants: readonly string[];
+            /** @enum {unknown} */
+            readonly visibility: "public" | "workspace" | "project";
+        };
+        /**
          * ComponentDesignSpec contract
          * @description Reviewable design-only proposal for a new component. It states the intent and rationale, the namespace and component name, the props with kinds and defaults, the variants and state model, the slot and composition rules, the design tokens it consumes, its accessibility requirements, the approved assets it needs, the preview scenarios a reviewer should see, and the decisions still open for a human to settle. It is semantically distinct from ComponentPackageSpec, which remains the later build-oriented boundary and is untouched by this contract. ComponentDesignSpec carries no source bundle, no dependency request, no lifecycle script, no build authorization, and no publication grant, so approving one authorizes further design work only and can never be read as permission to execute code, build, publish, or promote anything into a catalog.
          */
@@ -711,6 +879,192 @@ export interface components {
             }[];
         };
         /**
+         * ComponentIntent contract
+         * @description Interpreted component request (PRD-CAT-0001 §9.5, CAT-FR-006; artifact kind component-intent). It records the purpose (extending the intent member of ComponentDesignSpec with summary and rationale), the resolved naming, the public API of props, slots, and events, the variants, states, interactions, responsiveness, accessibility, and content model, the assumptions made and the questions still unresolved for a human, the target scope with the recorded distribution intent, the catalog reuse evidence the interpretation rests on, and the Brand Context snapshot it was interpreted against. It is a reviewable interpretation only and authorizes no generation, build, or publication.
+         */
+        readonly ComponentIntent: {
+            readonly accessibility: {
+                readonly keyboard: readonly {
+                    readonly action: string;
+                    readonly key: string;
+                }[];
+                readonly labels: readonly string[];
+                readonly reducedMotion: boolean;
+                readonly role: string;
+            };
+            readonly assumptions: readonly string[];
+            readonly brandSnapshotRef: components["schemas"]["SharedPrimitivesArtifactReference"];
+            readonly catalogEvidence: components["schemas"]["CatalogReuseEvidence"];
+            readonly contentModel: readonly {
+                readonly description: string;
+                readonly key: string;
+                /** @enum {unknown} */
+                readonly kind: "text" | "rich-text" | "image" | "link" | "list";
+            }[];
+            readonly interactions: readonly {
+                readonly effect: string;
+                readonly trigger: string;
+            }[];
+            /** @constant */
+            readonly kind: "ComponentIntent";
+            readonly name: {
+                readonly componentName: string;
+                readonly componentSlug: string;
+                readonly packageName: string;
+            };
+            readonly publicApi: {
+                readonly events: readonly string[];
+                readonly props: readonly {
+                    readonly control: string;
+                    readonly default?: string;
+                    readonly name: string;
+                    readonly required: boolean;
+                    readonly type: string;
+                }[];
+                readonly slots: readonly string[];
+            };
+            readonly purpose: {
+                readonly rationale: string;
+                readonly summary: string;
+            };
+            readonly responsiveness: {
+                readonly breakpoints: readonly string[];
+                readonly rules: readonly {
+                    readonly breakpoint: string;
+                    readonly rule: string;
+                }[];
+            };
+            readonly states: readonly {
+                readonly description: string;
+                readonly state: string;
+                readonly trigger: string;
+            }[];
+            readonly targetScope: {
+                /** @enum {unknown} */
+                readonly distributionIntent: "private" | "public";
+                readonly projectId: components["schemas"]["SharedPrimitivesProjectId"];
+                readonly workspaceId: components["schemas"]["SharedPrimitivesWorkspaceId"];
+            };
+            readonly unresolved: readonly {
+                readonly blocking: boolean;
+                readonly question: string;
+                readonly responseSchema: components["schemas"]["SharedPrimitivesSchemaReference"];
+            }[];
+            readonly variants: readonly {
+                readonly description: string;
+                readonly name: string;
+            }[];
+        };
+        /**
+         * ComponentIR contract
+         * @description Canonical editable component model on the package path (PRD-CAT-0001 §9.5, CAT-FR-007, CAT-FR-008; artifact kind component-ir). It is a superset of the ComponentDesignSpec design (identity, props with their Puck field types and JSON-encoded serializable defaults, slots, a flat parent-linked composition tree of catalog components and primitives, variants, states, responsive overrides, accessibility semantics) plus its realization: design-token references by stable id from the Brand Context snapshot, approved asset references, the motion policy, the allowlisted dependency set, catalog lineage, locale content, the file plan naming which files the model writes and which the scaffold derives, and the generation binding (generator version and the Contract BOM, catalog, brand snapshot, and policy digests). schemaVersion is the IR content version: a document carrying an unknown version or field fails closed with COMPONENT_IR_INVALID. version is the monotonic edit counter advanced by each accepted patch. Studio, the generator, the Worker, and Pagix consume this one schema.
+         */
+        readonly ComponentIr: {
+            readonly accessibility: {
+                readonly aria: readonly {
+                    readonly attribute: string;
+                    readonly value: string;
+                }[];
+                /** @enum {unknown} */
+                readonly contrastPolicy: "wcag-aa" | "wcag-aaa";
+                readonly keyboard: readonly {
+                    readonly action: string;
+                    readonly key: string;
+                }[];
+                readonly role: string;
+            };
+            readonly assets: readonly {
+                readonly assetRef: components["schemas"]["SharedPrimitivesArtifactReference"];
+                readonly slot: string;
+            }[];
+            readonly catalogLineage: readonly {
+                readonly componentId: string;
+                /** @enum {unknown} */
+                readonly role: "reuse" | "reference" | "dependency";
+            }[];
+            readonly composition: readonly {
+                readonly nodeId: string;
+                readonly parentNodeId: string;
+                readonly ref: string;
+                readonly slot: string;
+                /** @enum {unknown} */
+                readonly source: "catalog" | "primitive";
+            }[];
+            readonly content: readonly {
+                readonly key: string;
+                readonly locale: string;
+                readonly value: string;
+            }[];
+            readonly dependencies: readonly {
+                readonly packageName: string;
+                /** @constant */
+                readonly source: "allowlist";
+                readonly versionRange: string;
+            }[];
+            readonly filePlan: readonly {
+                /** @enum {unknown} */
+                readonly generator: "model" | "scaffold";
+                readonly path: string;
+            }[];
+            readonly generation: {
+                readonly brandSnapshotDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly catalogDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly contractBomDigest: components["schemas"]["SharedPrimitivesDigest"];
+                readonly generatorVersion: string;
+                readonly policyDigest: components["schemas"]["SharedPrimitivesDigest"];
+            };
+            readonly identity: {
+                readonly componentName: string;
+                readonly componentSlug: string;
+                readonly packageName: string;
+                readonly packageVersion: string;
+            };
+            /** @constant */
+            readonly kind: "ComponentIR";
+            readonly motion: {
+                readonly presets: readonly {
+                    readonly params: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+                    readonly preset: string;
+                    readonly target: string;
+                }[];
+                readonly reducedMotion: boolean;
+            };
+            readonly props: readonly {
+                readonly control: string;
+                readonly default: string;
+                readonly description: string;
+                readonly name: string;
+                /** @enum {unknown} */
+                readonly puckField: "text" | "textarea" | "number" | "select" | "radio" | "array" | "object" | "external" | "custom" | "slot";
+                readonly required: boolean;
+                readonly type: string;
+            }[];
+            readonly responsive: readonly {
+                readonly breakpoint: string;
+                readonly overrides: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            }[];
+            readonly schemaVersion: number;
+            readonly slots: readonly {
+                readonly allowedComponents: readonly string[];
+                readonly maxDepth: number;
+                readonly name: string;
+            }[];
+            readonly states: readonly {
+                readonly description: string;
+                readonly state: string;
+                readonly trigger: string;
+            }[];
+            readonly tokens: readonly {
+                readonly path: string;
+                readonly tokenRef: string;
+            }[];
+            readonly variants: readonly {
+                readonly name: string;
+                readonly propOverrides: components["schemas"]["SharedPrimitivesBoundedStringMap"];
+            }[];
+            readonly version: number;
+        };
+        /**
          * ComponentPackageSpec contract
          * @description Bounded ComponentPackageSpec wire contract governed by PRD 0012.
          */
@@ -732,6 +1086,38 @@ export interface components {
                 readonly version: string;
             };
             readonly validationConstraints: readonly components["schemas"]["SharedPrimitivesPolicyReference"][];
+        };
+        /**
+         * ComponentRequest contract
+         * @description Structured component request a Studio user submits to start a component-design or component-package run (PRD-CAT-0001 §9.5; master §8.1 / UX-FR-002). It carries the bounded prompt, naming and package-scope hints, the target project, preferred catalog components, brand and asset constraints, responsive, accessibility, and motion preferences, a recorded (never authorizing) distribution intent, and the caller's idempotency key. It is caller intent only: no run identity, workspace, actor, or authority is carried, and it is transported as CreateAgentRunRequest.input.componentRequest.
+         */
+        readonly ComponentRequest: {
+            readonly accessibility?: {
+                /** @enum {unknown} */
+                readonly level: "A" | "AA" | "AAA";
+            };
+            readonly assetConstraints?: {
+                readonly allowedAssetIds: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
+                readonly disallowed: readonly components["schemas"]["SharedPrimitivesOpaqueId"][];
+            };
+            readonly brandId?: components["schemas"]["SharedPrimitivesOpaqueId"];
+            /** @enum {unknown} */
+            readonly distributionIntent?: "private" | "public";
+            readonly idempotencyKey: string;
+            /** @constant */
+            readonly kind: "ComponentRequest";
+            readonly motion?: {
+                readonly allowed: boolean;
+                readonly reducedMotion: boolean;
+            };
+            readonly nameHint?: string;
+            readonly packageScope?: string;
+            readonly preferredComponents?: readonly string[];
+            readonly prompt: string;
+            readonly responsive?: {
+                readonly breakpoints: readonly string[];
+            };
+            readonly targetProjectId: components["schemas"]["SharedPrimitivesProjectId"];
         };
         /**
          * ContractBom contract
@@ -1475,6 +1861,34 @@ export interface components {
             readonly traceContext: components["schemas"]["SharedPrimitivesTraceContext"];
             /** @enum {unknown} */
             readonly unit: "token" | "millisecond" | "byte" | "count" | "usd-micro";
+        };
+        /**
+         * ValidationFinding contract
+         * @description One validation finding in the shape shared by validation-report artifacts, WorkerResult findings, the validateComponentModel response, and Studio's finding UI (PRD-CAT-0001 §9.7; WORK-FR-018, UX-FR-017). It names the stable check that produced it (for example puck.serializable-props), the governed problem code, the severity, the location by file, line, column, or IR pointer, a user-safe message, an optional remediation, the governed retryability, an optional evidence digest, and the producer kind and version. Messages carry no internal diagnostics, stack traces, credentials, or raw upstream bodies.
+         */
+        readonly ValidationFinding: {
+            readonly checkId: string;
+            readonly code: string;
+            readonly evidenceDigest?: components["schemas"]["SharedPrimitivesDigest"];
+            /** @constant */
+            readonly kind: "ValidationFinding";
+            readonly location: {
+                readonly column?: number;
+                readonly file?: string;
+                readonly irPath?: string;
+                readonly line?: number;
+            };
+            readonly message: string;
+            readonly producer: {
+                /** @enum {unknown} */
+                readonly kind: "contract-runtime" | "worker" | "agent-service";
+                readonly version: string;
+            };
+            readonly remediation?: string;
+            /** @enum {unknown} */
+            readonly retryability: "never" | "safe-immediate" | "safe-after-backoff" | "after-input" | "after-approval" | "after-rebase" | "operator-action";
+            /** @enum {unknown} */
+            readonly severity: "blocking" | "correctable" | "warning" | "info";
         };
         /**
          * WorkerLease contract

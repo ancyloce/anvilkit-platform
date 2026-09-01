@@ -55,6 +55,10 @@ const EXPECTED_CONTRACTS = [
   "SubmitApprovalDecisionRequest", "SubmitInputResponseRequest", "TargetReference",
   "TargetSnapshot", "ToolDefinition",
   "UsageObservation", "WorkerLease", "WorkerResult",
+  // PRD-CAT-0001 §9 component contract and catalog schemas (plan 0009 C0-02).
+  "CatalogReuseEvidence", "CatalogSearchRequest", "CatalogSearchResult",
+  "ComponentCatalogArtifact", "ComponentIntent", "ComponentIr", "ComponentRequest",
+  "ValidationFinding",
 ];
 
 // Contracts represented by a shared-primitives definition rather than a
@@ -87,6 +91,7 @@ const EXTENDED_COVERAGE = ["minimum", "full", "invalid", "adversarial"];
 const EXTENDED_COVERAGE_CONTRACTS = new Set([
   "AgentEvidence", "AgentStreamDelta", "CreateAgentRunRequest",
   "SubmitApprovalDecisionRequest", "ContractRuntimeRequest",
+  "ComponentCatalogArtifact", "ComponentIntent", "ComponentIr",
 ]);
 const BASE_COVERAGE = ["minimum", "invalid", "adversarial"];
 
