@@ -10,3 +10,6 @@
 [submodule "services/agent-runtimes"]
 	path = services/agent-runtimes
 	url = https://github.com/ancyloce/anvilkit-agent-runtimes
+[submodule "services/build-worker"]
+	path = services/build-worker
+	url = https://github.com/ancyloce/anvilkit-build-worker.git
