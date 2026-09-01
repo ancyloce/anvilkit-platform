@@ -1,0 +1,5 @@
+{
+  "kind": "ComponentRequest",
+  "prompt": "A primary call-to-action button with an optional leading icon.",
+  "targetProjectId": "project.synthetic"
+}

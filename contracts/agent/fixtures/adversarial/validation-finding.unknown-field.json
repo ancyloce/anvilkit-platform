@@ -1,0 +1,14 @@
+{
+  "kind": "ValidationFinding",
+  "checkId": "puck.serializable-props",
+  "code": "COMPONENT_IR_INVALID",
+  "severity": "blocking",
+  "location": {},
+  "message": "prop default is not JSON-serializable",
+  "retryability": "never",
+  "producer": {
+    "kind": "contract-runtime",
+    "version": "0.1.0"
+  },
+  "stackTrace": "at internal/execution/contractruntime.go:88"
+}

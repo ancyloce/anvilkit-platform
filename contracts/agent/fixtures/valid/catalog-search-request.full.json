@@ -1,0 +1,32 @@
+{
+  "kind": "CatalogSearchRequest",
+  "scope": {
+    "workspaceId": "workspace.synthetic",
+    "projectId": "project.synthetic"
+  },
+  "catalogRevision": "catalog.synthetic.001",
+  "query": {
+    "text": "button",
+    "namePrefix": "Icon",
+    "tags": [
+      "action"
+    ],
+    "props": [
+      "label"
+    ],
+    "capabilities": [
+      "interactive"
+    ],
+    "compatibility": {
+      "puckRuntime": "^0.23",
+      "reactRuntime": ">=19"
+    }
+  },
+  "visibility": [
+    "public",
+    "workspace",
+    "project"
+  ],
+  "limit": 50,
+  "cursor": "eyJvZmZzZXQiOjUwfQ"
+}

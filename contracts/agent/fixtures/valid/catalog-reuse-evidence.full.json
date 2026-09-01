@@ -1,0 +1,36 @@
+{
+  "kind": "CatalogReuseEvidence",
+  "snapshotId": "catalog-snapshot.synthetic.001",
+  "catalogRevision": "catalog.synthetic.001",
+  "fingerprint": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "selected": [
+    {
+      "componentId": "@anvilkit/button@1.4.0",
+      "role": "reuse"
+    },
+    {
+      "componentId": "@anvilkit/ui@0.1.9",
+      "role": "dependency"
+    }
+  ],
+  "considered": [
+    {
+      "componentId": "@anvilkit/button@1.4.0",
+      "score": "0.92"
+    },
+    {
+      "componentId": "@anvilkit/hero@2.0.0",
+      "score": "0.41"
+    }
+  ],
+  "rejected": [
+    {
+      "componentId": "@anvilkit/hero@2.0.0",
+      "reason": "layout capability does not match the requested control"
+    }
+  ],
+  "likelyDuplicate": {
+    "componentId": "@anvilkit/button@1.4.0",
+    "similarity": "0.92"
+  }
+}

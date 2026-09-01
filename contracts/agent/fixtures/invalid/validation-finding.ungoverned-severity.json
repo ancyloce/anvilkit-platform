@@ -1,0 +1,13 @@
+{
+  "kind": "ValidationFinding",
+  "checkId": "puck.serializable-props",
+  "code": "COMPONENT_IR_INVALID",
+  "severity": "fatal",
+  "location": {},
+  "message": "prop default is not JSON-serializable",
+  "retryability": "never",
+  "producer": {
+    "kind": "contract-runtime",
+    "version": "0.1.0"
+  }
+}

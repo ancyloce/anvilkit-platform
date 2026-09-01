@@ -1,0 +1,41 @@
+{
+  "kind": "ComponentIR",
+  "schemaVersion": 1,
+  "identity": {
+    "componentName": "Synthetic",
+    "componentSlug": "synthetic",
+    "packageName": "@anvilkit/synthetic",
+    "packageVersion": "0.1.0"
+  },
+  "props": [],
+  "slots": [],
+  "composition": [],
+  "variants": [],
+  "states": [],
+  "responsive": [],
+  "tokens": [],
+  "assets": [],
+  "motion": {
+    "presets": [],
+    "reducedMotion": true
+  },
+  "accessibility": {
+    "role": "region",
+    "aria": [],
+    "keyboard": [],
+    "contrastPolicy": "wcag-aa"
+  },
+  "dependencies": [],
+  "catalogLineage": [],
+  "content": [],
+  "filePlan": [],
+  "generation": {
+    "generatorVersion": "component-generator-0.1.0",
+    "contractBomDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "catalogDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "brandSnapshotDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "policyDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "version": 1,
+  "buildScript": "npm publish"
+}

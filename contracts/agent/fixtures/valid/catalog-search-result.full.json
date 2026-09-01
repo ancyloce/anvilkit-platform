@@ -1,0 +1,32 @@
+{
+  "kind": "CatalogSearchResult",
+  "catalogRevision": "catalog.synthetic.001",
+  "catalogDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "fingerprint": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "entries": [
+    {
+      "componentId": "@anvilkit/button@1.4.0",
+      "packageName": "@anvilkit/button",
+      "packageVersion": "1.4.0",
+      "componentName": "Button",
+      "description": "Primary and secondary action button.",
+      "tags": [
+        "action",
+        "cta"
+      ],
+      "score": "0.92",
+      "matchedFields": [
+        "name",
+        "tags"
+      ],
+      "visibility": "public",
+      "status": "approved",
+      "exemplar": true
+    }
+  ],
+  "pageInfo": {
+    "limit": 10,
+    "hasMore": true,
+    "nextCursor": "eyJvZmZzZXQiOjEwfQ"
+  }
+}

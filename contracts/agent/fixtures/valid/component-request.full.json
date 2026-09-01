@@ -1,0 +1,35 @@
+{
+  "kind": "ComponentRequest",
+  "prompt": "A primary call-to-action button with an optional leading icon.",
+  "nameHint": "IconButton",
+  "packageScope": "@anvilkit",
+  "targetProjectId": "project.synthetic",
+  "preferredComponents": [
+    "@anvilkit/button@1.4.0"
+  ],
+  "brandId": "brand.synthetic",
+  "assetConstraints": {
+    "allowedAssetIds": [
+      "asset.synthetic.icon"
+    ],
+    "disallowed": [
+      "asset.synthetic.legacy"
+    ]
+  },
+  "responsive": {
+    "breakpoints": [
+      "sm",
+      "md",
+      "lg"
+    ]
+  },
+  "accessibility": {
+    "level": "AA"
+  },
+  "motion": {
+    "allowed": true,
+    "reducedMotion": true
+  },
+  "distributionIntent": "private",
+  "idempotencyKey": "component-request-synthetic-001"
+}

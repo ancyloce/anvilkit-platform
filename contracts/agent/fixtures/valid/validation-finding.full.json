@@ -1,0 +1,20 @@
+{
+  "kind": "ValidationFinding",
+  "checkId": "i18n.key-coverage",
+  "code": "VALIDATION_FAILED",
+  "severity": "correctable",
+  "location": {
+    "file": "src/i18n/messages/ja.json",
+    "line": 4,
+    "column": 3,
+    "irPath": "/content/2"
+  },
+  "message": "message key title is missing from the ja locale pack",
+  "remediation": "add the title key to src/i18n/messages/ja.json",
+  "retryability": "after-input",
+  "evidenceDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+  "producer": {
+    "kind": "worker",
+    "version": "0.1.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "kind": "CatalogSearchResult",
+  "catalogRevision": "catalog.synthetic.001",
+  "catalogDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "entries": [],
+  "pageInfo": {
+    "limit": 10,
+    "hasMore": false
+  }
+}

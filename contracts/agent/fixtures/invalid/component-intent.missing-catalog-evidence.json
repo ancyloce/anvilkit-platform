@@ -1,0 +1,44 @@
+{
+  "kind": "ComponentIntent",
+  "purpose": {
+    "summary": "synthetic component",
+    "rationale": "synthetic rationale"
+  },
+  "name": {
+    "componentName": "Synthetic",
+    "componentSlug": "synthetic",
+    "packageName": "@anvilkit/synthetic"
+  },
+  "publicApi": {
+    "props": [],
+    "slots": [],
+    "events": []
+  },
+  "variants": [],
+  "states": [],
+  "interactions": [],
+  "responsiveness": {
+    "breakpoints": [],
+    "rules": []
+  },
+  "accessibility": {
+    "role": "region",
+    "labels": [],
+    "keyboard": [],
+    "reducedMotion": true
+  },
+  "contentModel": [],
+  "assumptions": [],
+  "unresolved": [],
+  "targetScope": {
+    "workspaceId": "workspace.synthetic",
+    "projectId": "project.synthetic",
+    "distributionIntent": "private"
+  },
+  "brandSnapshotRef": {
+    "artifactId": "artifact.synthetic.brand",
+    "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "mediaType": "application/json",
+    "sizeBytes": 128
+  }
+}

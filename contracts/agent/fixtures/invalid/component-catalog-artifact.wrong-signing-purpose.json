@@ -1,0 +1,19 @@
+{
+  "kind": "ComponentCatalogArtifact",
+  "schemaVersion": 1,
+  "catalogRevision": "catalog.synthetic.001",
+  "sourceRepository": "github.com/anvilkit/anvilkit-components",
+  "sourceCommit": "0123456789abcdef0123456789abcdef01234567",
+  "sourceWorkflowRun": "github-actions:123456789",
+  "createdAt": "2026-09-01T00:00:00.000Z",
+  "contractBomDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "puckRuntime": "^0.23",
+  "reactRuntime": ">=19",
+  "components": [],
+  "compatibilityMatrix": [],
+  "files": [],
+  "signatureAlgorithm": "dsse-ed25519-v1",
+  "signingKeyId": "urn:anvilkit:key:catalog-release:synthetic-001",
+  "signingPurpose": "release",
+  "signature": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

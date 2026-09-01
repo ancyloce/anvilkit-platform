@@ -11,7 +11,9 @@
       "page-candidate",
       "page-preview-task",
       "page-preview-result",
-      "component-design-spec"
+      "component-design-spec",
+      "component-intent",
+      "component-ir"
     ],
     "artifact-lifecycle": [
       "pending",
@@ -79,7 +81,9 @@
       "AK-FIX-002",
       "AK-INV-001",
       "AK-PROFILE-001",
-      "IDEMPOTENCY_KEY_REUSED"
+      "IDEMPOTENCY_KEY_REUSED",
+      "COMPONENT_IR_INVALID",
+      "DEPENDENCY_NOT_ALLOWED"
     ],
     "run-status": [
       "created",
@@ -263,7 +267,21 @@
       "anvilkit.contract.fixture-manifest",
       "anvilkit.contract.p0-kernel-profile",
       "anvilkit.contract.schema.model-invocation-request",
-      "anvilkit.contract.schema.model-invocation-result"
+      "anvilkit.contract.schema.model-invocation-result",
+      "anvilkit.contract.schema.component-request",
+      "anvilkit.contract.schema.component-intent",
+      "anvilkit.contract.schema.component-ir",
+      "anvilkit.contract.schema.component-catalog-artifact",
+      "anvilkit.contract.schema.catalog-search-request",
+      "anvilkit.contract.schema.catalog-search-result",
+      "anvilkit.contract.schema.catalog-reuse-evidence",
+      "anvilkit.contract.schema.validation-finding"
+    ],
+    "dependency-allowlist": [
+      "react",
+      "react-dom",
+      "@puckeditor/core",
+      "@anvilkit/ui"
     ]
   }
 }

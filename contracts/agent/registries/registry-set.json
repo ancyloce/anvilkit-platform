@@ -85,6 +85,22 @@
           "status": "active",
           "aliases": [],
           "replacement": null
+        },
+        {
+          "wireValue": "component-intent",
+          "meaning": "Immutable interpreted component request produced for review before any generation (PRD-CAT-0001 §9.5).",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "component-ir",
+          "meaning": "Immutable canonical editable component model on the package path; the single source every generator, Worker, and Pagix consumes (PRD-CAT-0001 §9.5).",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
         }
       ]
     },
@@ -642,6 +658,24 @@
           "wireValue": "IDEMPOTENCY_KEY_REUSED",
           "meaning": "An idempotency key was replayed with different canonical request bytes (ADR-021 §4).",
           "owner": "Agent Service owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null,
+          "retryability": "never"
+        },
+        {
+          "wireValue": "COMPONENT_IR_INVALID",
+          "meaning": "ComponentIR carries an unsupported field or schema version; the document fails closed and must be migrated or regenerated (CAT-FR-010).",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null,
+          "retryability": "never"
+        },
+        {
+          "wireValue": "DEPENDENCY_NOT_ALLOWED",
+          "meaning": "A declared dependency is outside the governed dependency-allowlist registry pinned by the generator and the Worker (PRD-CAT-0001 §9.6).",
+          "owner": "Platform Contracts owner",
           "status": "active",
           "aliases": [],
           "replacement": null,
@@ -1938,6 +1972,112 @@
           "status": "active",
           "aliases": [],
           "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.component-request",
+          "meaning": "ComponentRequest authoritative schema component: structured caller input for a component run.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.component-intent",
+          "meaning": "ComponentIntent authoritative schema component: the interpreted component request.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.component-ir",
+          "meaning": "ComponentIR authoritative schema component: the canonical editable component model.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.component-catalog-artifact",
+          "meaning": "ComponentCatalogArtifact authoritative schema component: the signed producer-side catalog bundle.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.catalog-search-request",
+          "meaning": "CatalogSearchRequest authoritative schema component: scoped catalog search command.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.catalog-search-result",
+          "meaning": "CatalogSearchResult authoritative schema component: ranked scoped catalog search page.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.catalog-reuse-evidence",
+          "meaning": "CatalogReuseEvidence authoritative schema component: per-generation catalog consultation evidence.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        },
+        {
+          "wireValue": "anvilkit.contract.schema.validation-finding",
+          "meaning": "ValidationFinding authoritative schema component: the shared validation finding shape.",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null
+        }
+      ]
+    },
+    {
+      "registryId": "dependency-allowlist",
+      "owner": "Platform Contracts owner",
+      "entries": [
+        {
+          "wireValue": "react",
+          "meaning": "React runtime peer dependency approved for generated component packages (OI-05 initial set).",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null,
+          "versionRange": ">=19"
+        },
+        {
+          "wireValue": "react-dom",
+          "meaning": "React DOM renderer peer dependency approved for generated component packages (OI-05 initial set).",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null,
+          "versionRange": ">=19"
+        },
+        {
+          "wireValue": "@puckeditor/core",
+          "meaning": "Puck editor core peer dependency approved for generated component packages (OI-05 initial set).",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null,
+          "versionRange": "^0.23"
+        },
+        {
+          "wireValue": "@anvilkit/ui",
+          "meaning": "AnvilKit UI primitives peer dependency approved for generated component packages (OI-05 initial set).",
+          "owner": "Platform Contracts owner",
+          "status": "active",
+          "aliases": [],
+          "replacement": null,
+          "versionRange": "^0.1"
         }
       ]
     }

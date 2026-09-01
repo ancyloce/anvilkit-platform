@@ -1,0 +1,14 @@
+{
+  "kind": "CatalogSearchRequest",
+  "scope": {
+    "workspaceId": "workspace.synthetic",
+    "projectId": "project.synthetic"
+  },
+  "query": {
+    "text": "call to action button"
+  },
+  "visibility": [
+    "public"
+  ],
+  "limit": 51
+}

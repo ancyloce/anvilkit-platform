@@ -1,0 +1,141 @@
+{
+  "kind": "ComponentCatalogArtifact",
+  "schemaVersion": 1,
+  "catalogRevision": "catalog.synthetic.001",
+  "sourceRepository": "github.com/anvilkit/anvilkit-components",
+  "sourceCommit": "0123456789abcdef0123456789abcdef01234567",
+  "sourceWorkflowRun": "github-actions:123456789",
+  "createdAt": "2026-09-01T00:00:00.000Z",
+  "contractBomDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "puckRuntime": "^0.23",
+  "reactRuntime": ">=19",
+  "components": [
+    {
+      "componentId": "@anvilkit/button@1.4.0",
+      "packageName": "@anvilkit/button",
+      "packageVersion": "1.4.0",
+      "componentName": "Button",
+      "componentSlug": "button",
+      "scaffoldType": "block",
+      "category": "actions",
+      "description": "Primary and secondary action button.",
+      "tags": [
+        "action",
+        "cta"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "puckField": "text",
+          "default": "\"Click\"",
+          "required": true
+        },
+        {
+          "name": "variant",
+          "puckField": "select",
+          "default": "\"primary\"",
+          "required": false
+        }
+      ],
+      "slots": [
+        {
+          "name": "icon",
+          "allowedComponents": [
+            "@anvilkit/icon@1.0.0"
+          ],
+          "maxDepth": 1
+        }
+      ],
+      "variants": [
+        "primary",
+        "secondary"
+      ],
+      "capabilities": [
+        "interactive"
+      ],
+      "styleTargets": [
+        "root",
+        "label"
+      ],
+      "i18nKeys": [
+        "button.label"
+      ],
+      "peerDependencies": {
+        "react": ">=19",
+        "react-dom": ">=19",
+        "@puckeditor/core": "^0.23",
+        "@anvilkit/ui": "^0.1"
+      },
+      "exports": [
+        {
+          "subpath": ".",
+          "esm": "./dist/index.js",
+          "cjs": "./dist/index.cjs",
+          "types": "./dist/index.d.ts"
+        },
+        {
+          "subpath": "./styles.css",
+          "esm": "./dist/styles.css",
+          "cjs": "./dist/styles.css",
+          "types": "./dist/styles.d.ts"
+        }
+      ],
+      "visibility": "public",
+      "status": "approved",
+      "previewRef": "previews/button.png",
+      "sourceEvidence": {
+        "commit": "0123456789abcdef0123456789abcdef01234567",
+        "path": "packages/extensions/components/src/button",
+        "files": [
+          {
+            "path": "src/config.ts",
+            "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+          },
+          {
+            "path": "src/Button.tsx",
+            "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+          }
+        ]
+      },
+      "exemplar": true
+    }
+  ],
+  "compatibilityMatrix": [
+    {
+      "componentId": "@anvilkit/button@1.4.0",
+      "puckRuntime": "^0.23",
+      "reactRuntime": ">=19",
+      "compatible": true
+    }
+  ],
+  "files": [
+    {
+      "path": "catalog.json",
+      "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "size": 4096,
+      "role": "metadata"
+    },
+    {
+      "path": "exemplars/button/src/config.ts",
+      "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "size": 1024,
+      "role": "exemplar-source"
+    },
+    {
+      "path": "exemplars/button/src/Button.tsx",
+      "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "size": 2048,
+      "role": "exemplar-source"
+    },
+    {
+      "path": "previews/button.png",
+      "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "size": 8192,
+      "role": "preview"
+    }
+  ],
+  "signatureAlgorithm": "dsse-ed25519-v1",
+  "signingKeyId": "urn:anvilkit:key:catalog-release:synthetic-001",
+  "signingPurpose": "catalog-release",
+  "signature": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

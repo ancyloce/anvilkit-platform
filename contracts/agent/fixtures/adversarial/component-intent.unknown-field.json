@@ -1,0 +1,56 @@
+{
+  "kind": "ComponentIntent",
+  "purpose": {
+    "summary": "synthetic component",
+    "rationale": "synthetic rationale"
+  },
+  "name": {
+    "componentName": "Synthetic",
+    "componentSlug": "synthetic",
+    "packageName": "@anvilkit/synthetic"
+  },
+  "publicApi": {
+    "props": [],
+    "slots": [],
+    "events": []
+  },
+  "variants": [],
+  "states": [],
+  "interactions": [],
+  "responsiveness": {
+    "breakpoints": [],
+    "rules": []
+  },
+  "accessibility": {
+    "role": "region",
+    "labels": [],
+    "keyboard": [],
+    "reducedMotion": true
+  },
+  "contentModel": [],
+  "assumptions": [],
+  "unresolved": [],
+  "targetScope": {
+    "workspaceId": "workspace.synthetic",
+    "projectId": "project.synthetic",
+    "distributionIntent": "private"
+  },
+  "catalogEvidence": {
+    "kind": "CatalogReuseEvidence",
+    "snapshotId": "catalog-snapshot.synthetic.001",
+    "catalogRevision": "catalog.synthetic.001",
+    "fingerprint": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "selected": [],
+    "considered": [],
+    "rejected": []
+  },
+  "brandSnapshotRef": {
+    "artifactId": "artifact.synthetic.brand",
+    "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "mediaType": "application/json",
+    "sizeBytes": 128
+  },
+  "approvalGrant": {
+    "publish": true
+  }
+}

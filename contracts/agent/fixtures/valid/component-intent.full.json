@@ -1,0 +1,166 @@
+{
+  "kind": "ComponentIntent",
+  "purpose": {
+    "summary": "Primary call-to-action button with an optional leading icon",
+    "rationale": "The catalog button lacks an icon slot and the brand needs one for hero sections"
+  },
+  "name": {
+    "componentName": "IconButton",
+    "componentSlug": "icon-button",
+    "packageName": "@anvilkit/icon-button"
+  },
+  "publicApi": {
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Get started\"",
+        "required": true,
+        "control": "text"
+      },
+      {
+        "name": "variant",
+        "type": "\"primary\" | \"secondary\"",
+        "default": "\"primary\"",
+        "required": false,
+        "control": "select"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "control": "toggle"
+      }
+    ],
+    "slots": [
+      "icon"
+    ],
+    "events": [
+      "onClick"
+    ]
+  },
+  "variants": [
+    {
+      "name": "primary",
+      "description": "Filled brand-colored button"
+    },
+    {
+      "name": "secondary",
+      "description": "Outlined button"
+    }
+  ],
+  "states": [
+    {
+      "state": "hover",
+      "trigger": "pointer-over",
+      "description": "Elevated surface"
+    },
+    {
+      "state": "disabled",
+      "trigger": "prop-disabled",
+      "description": "Muted, not focusable"
+    }
+  ],
+  "interactions": [
+    {
+      "trigger": "click",
+      "effect": "emits onClick with the current variant"
+    }
+  ],
+  "responsiveness": {
+    "breakpoints": [
+      "sm",
+      "md"
+    ],
+    "rules": [
+      {
+        "breakpoint": "sm",
+        "rule": "full-width with the icon stacked above the label"
+      }
+    ]
+  },
+  "accessibility": {
+    "role": "button",
+    "labels": [
+      "label prop is the accessible name"
+    ],
+    "keyboard": [
+      {
+        "key": "Enter",
+        "action": "activate"
+      },
+      {
+        "key": "Space",
+        "action": "activate"
+      }
+    ],
+    "reducedMotion": true
+  },
+  "contentModel": [
+    {
+      "key": "label",
+      "kind": "text",
+      "description": "Button label"
+    }
+  ],
+  "assumptions": [
+    "Icons come from the approved asset set only"
+  ],
+  "unresolved": [
+    {
+      "question": "Should the secondary variant use the outline token or the subtle surface token?",
+      "responseSchema": {
+        "componentName": "anvilkit.contract.schema.submit-input-response-request",
+        "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "blocking": false
+    }
+  ],
+  "targetScope": {
+    "workspaceId": "workspace.synthetic",
+    "projectId": "project.synthetic",
+    "distributionIntent": "private"
+  },
+  "catalogEvidence": {
+    "kind": "CatalogReuseEvidence",
+    "snapshotId": "catalog-snapshot.synthetic.001",
+    "catalogRevision": "catalog.synthetic.001",
+    "fingerprint": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "selected": [
+      {
+        "componentId": "@anvilkit/button@1.4.0",
+        "role": "reuse"
+      },
+      {
+        "componentId": "@anvilkit/ui@0.1.9",
+        "role": "dependency"
+      }
+    ],
+    "considered": [
+      {
+        "componentId": "@anvilkit/button@1.4.0",
+        "score": "0.92"
+      },
+      {
+        "componentId": "@anvilkit/hero@2.0.0",
+        "score": "0.41"
+      }
+    ],
+    "rejected": [
+      {
+        "componentId": "@anvilkit/hero@2.0.0",
+        "reason": "layout capability does not match the requested control"
+      }
+    ],
+    "likelyDuplicate": {
+      "componentId": "@anvilkit/button@1.4.0",
+      "similarity": "0.92"
+    }
+  },
+  "brandSnapshotRef": {
+    "artifactId": "artifact.synthetic.brand",
+    "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "mediaType": "application/json",
+    "sizeBytes": 128
+  }
+}

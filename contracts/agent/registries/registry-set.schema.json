@@ -80,7 +80,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 160,
-          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+          "pattern": "^[@A-Za-z0-9][A-Za-z0-9._:/-]*$"
         },
         "meaning": {
           "type": "string",
@@ -131,13 +131,20 @@
             "after-rebase",
             "operator-action"
           ]
+        },
+        "versionRange": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[\\x20-\\x7E]+$"
         }
       },
       "minProperties": 6,
       "maxProperties": 7,
       "unevaluatedProperties": false,
       "x-anvilkit-omittedSemantics": {
-        "retryability": "absence means the registry is not a problem-code registry"
+        "retryability": "absence means the registry is not a problem-code registry",
+        "versionRange": "absence means the registry is not a dependency-allowlist registry"
       }
     }
   },
