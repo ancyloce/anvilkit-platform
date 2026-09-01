@@ -2,8 +2,8 @@
 
 | Item | Decision |
 | --- | --- |
-| Status | **Proposed** — drafted 2026-08-29 to record the decisions the Component Agent PRD suite (`docs/prd/components/`, v1.1) depends on. Nothing in this ADR is accepted until the Architecture Owner and the accountable owners named in the decision register approve it; until then the suite is a baseline for review, not an authority. |
-| Date | 2026-08-29 |
+| Status | **Accepted** — approved 2026-09-01 by **Rhett**, who holds every accountable role in §6 (OI-01 complete; `docs/acceptance/component-agent/m0/m0-07-08-owner-signoff-packet.md` §3). **D1–D10 and D11–D17 are frozen as of 2026-09-01.** Any deviation from a frozen decision requires an approved superseding record before the affected milestone continues (PRD-CA-0001 §25; plan 0008 §10). Conditions carried as amendments (M0-02 §5, K-1…K-7): D3/D15 and D4/D16 accepted jointly; D6 accepted as a commitment discharged by OI-03 (2026-10-02) and OI-11 (2026-12-11); D9 frozen with the M0-06 readings (load-model mapping, row budget); D13 accepted with the exact audience string fixed by OI-02 and the `client_credentials` service principal delivered by plan 0010 AS-M0-04 before the M1 freeze; D17 accepted with the plan 0006 §2.2/§18 amendment applied in the same act (2026-09-01); D11's team confirmation for the `anvilkit-component-build-worker` submodule remains a separate act (K-6, plan 0013 WM0-02). Acceptance packet: `docs/acceptance/component-agent/m0/m0-02-decision-freeze-packet.md`. |
+| Date | Drafted 2026-08-29; accepted 2026-09-01 |
 | Scope | Component Agent product (PRD-CA-0001 and child PRDs); Phases 0–3 |
 | Relates to | ADR-018 (canonical contracts), ADR-019 (DBOS), ADR-022 (Contract Runtime topology), ADR-023 (local-only docs), ADR-025 (page generation dispositions, runtimes, preview worker); PRD 0009, 0012, 0013, 0015, 0016; plan 0006 §2.2, §8.2, §18 |
 | Supersedes | None. Where a decision below conflicts with an accepted ADR, §4 records the conflict and the proposed resolution; acceptance of this ADR requires the amendment named there. |
@@ -16,6 +16,8 @@ Nothing here changes the shape of the platform: three repositories integrating o
 
 ## 2. Decisions D1–D10 (as frozen by the suite)
 
+**Frozen 2026-09-01** by the acceptance of this ADR, subject to the conditions in the Status row. The "status against accepted governance" column records consistency with governance, not the decision's own state; each row's decision state is `Frozen 2026-09-01` and is mirrored in the register §1.
+
 | # | Decision | Frozen choice (suite v1.0) | Status against accepted governance |
 |---|---|---|---|
 | D1 | Catalog index | PostgreSQL `tsvector` + GIN + `pg_trgm`; bounded process-local cache non-authoritative; no vector store in P0/P1 | Consistent. Not implemented (no catalog module exists). |
@@ -27,9 +29,11 @@ Nothing here changes the shape of the platform: three repositories integrating o
 | D7 | Provider continuation | Encrypted 24-hour optional cache with strict invalidation; replay always available | Consistent; implemented except the 24 h ceiling, which is caller-supplied today (PRD-AS-0001 AS-FR-030, PRD-MEM-0001 MEM-FR-002 now require the store to enforce it). |
 | D8 | Memory | Off in P0/P1; opt-in Controlled Beta in P2; gated GA in P3; new Teams default off | Consistent and proven (empty `agent_memory`, `policy.memory.none`). |
 | D9 | Load, SLO, budget, size limits | Frozen in PRD-CA-0001 §16 | Consistent as targets; only the durable-create proof exists as evidence. The ×1.25 reservation and ×2 ceiling are not implemented (budget uses headroom micros and basis points). |
-| D10 | Decision governance | Named owner, date, and record per decision; role placeholders replaced before implementation | Consistent. The register now exists; every individual is still "TBD". |
+| D10 | Decision governance | Named owner, date, and record per decision; role placeholders replaced before implementation | Consistent and satisfied. The register exists and every role now names Rhett (OI-01 complete 2026-09-01); no role placeholder remains. |
 
-## 3. Additional decisions D11–D17 (proposed by this ADR)
+## 3. Additional decisions D11–D17 (decided by this ADR)
+
+**Frozen 2026-09-01** by the acceptance of this ADR. Each was verified against the working tree on 2026-08-30 (M0-02 §2) before signature; the conditions attached to D11, D13, D15, and D17 are carried in the Status row and tracked as K-1…K-7.
 
 | # | Decision | Proposed choice | Rationale |
 |---|---|---|---|
@@ -64,17 +68,37 @@ Nothing here changes the shape of the platform: three repositories integrating o
 
 ## 6. Approval
 
+Every accountable role below is held by **Rhett**, recorded as the OI-01 named individual for all fourteen roles in `docs/acceptance/component-agent/m0/m0-07-08-owner-signoff-packet.md` §3. One person holding several roles satisfies D10 — D10 requires a *named individual* per decision, not a distinct individual per role — and the role column is retained because it is the unit the register, the PRDs, and the plans address.
+
 | Role | Decision(s) | Name | Decision | Date |
 |---|---|---|---|---|
-| Architecture Owner | all; D11, D12, D13, D17 | TBD | Pending | — |
-| Platform Contracts Owner | D1, D11 (catalog key) | TBD | Pending | — |
-| Agent Service Technical Owner | D7, D12, D13 | TBD | Pending | — |
-| Pagix Domain Owner | D2, D11, D13 | TBD | Pending | — |
-| Platform Execution Owner | D3, D4, D11 (worker), D14, D15, D16 | TBD | Pending | — |
-| Components Release Owner | D5, D6 | TBD | Pending | — |
-| Product and Platform Policy Owner | D8 | TBD | Pending | — |
-| Evaluation Owner | D9 | TBD | Pending | — |
-| Security Owner | D13, D14 | TBD | Pending | — |
+| Architecture Owner | all; D11, D12, D13, D17 | Rhett | **Approved** | 2026-09-01 |
+| Product Owner | D17 (co-sign) | Rhett | **Approved** | 2026-09-01 |
+| Platform Contracts Owner | D1, D11 (catalog key) | Rhett | **Approved** | 2026-09-01 |
+| Agent Service Technical Owner | D7, D12, D13 | Rhett | **Approved** | 2026-09-01 |
+| Pagix Domain Owner | D2, D11, D13 | Rhett | **Approved** | 2026-09-01 |
+| Platform Execution Owner | D3, D4, D11 (worker), D14, D15, D16 | Rhett | **Approved** | 2026-09-01 |
+| Components Release Owner | D5, D6 | Rhett | **Approved** | 2026-09-01 |
+| Studio Product and Engineering Owner | D12 (co-sign) | Rhett | **Approved** | 2026-09-01 |
+| Product and Platform Policy Owner | D8 | Rhett | **Approved** | 2026-09-01 |
+| Evaluation Owner | D9 | Rhett | **Approved** | 2026-09-01 |
+| Security Owner | D13, D14 | Rhett | **Approved** | 2026-09-01 |
+
+### 6.1 Conditions carried by this approval
+
+Signature does not discharge these; each is tracked in `m0-02-decision-freeze-packet.md` §5 and remains open at the stated date.
+
+| # | Condition | Discharged by | Due |
+|---|---|---|---|
+| K-1 | D3+D15 and D4+D16 accepted jointly | this signature | discharged 2026-09-01 |
+| K-2 | D6: single publishing workflow + GitHub App; Components branch protection and required checks | OI-11; OI-03 | 2026-12-11; 2026-10-02 |
+| K-3 | D9: M0-06 §1.2 (two load models) and §4 (row budget) readings confirmed | M0-06 §11 signature | 2026-09-04 |
+| K-4 | D13: exact audience string; `client_credentials` service principal and actor context; workspace claim issued by Pagix Auth | OI-02; plan 0010 AS-M0-04 | 2026-10-02 |
+| K-5 | D17: plan 0006 §2.2 non-goals lifted for the build worker and Components CI; §18 closed | applied 2026-09-01 in the same act | discharged 2026-09-01 |
+| K-6 | D11: team confirmation for the `anvilkit-component-build-worker` submodule — **not** conferred by this signature | plan 0013 WM0-02 | end W2 (2026-09-11) |
+| K-7 | D7: 24 h continuation ceiling enforced by the store | plan 0010 AS-M2-12 | M2 |
+
+Not covered by this approval: PRD-CA-0001 §26 suite approval (plan 0008 M0-08), which is a separate signature and the last remaining M0 exit criterion.
 
 ## 7. References
 
