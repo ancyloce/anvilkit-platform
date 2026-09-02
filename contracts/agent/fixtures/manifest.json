@@ -11,8 +11,8 @@
       "schema": {
         "logicalId": "AgentArtifact",
         "path": "contracts/agent/schemas/agent-artifact.schema.json",
-        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43",
-        "digest": "sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43"
+        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8",
+        "digest": "sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8"
       },
       "category": "adversarial",
       "tags": [
@@ -2596,8 +2596,8 @@
       "schema": {
         "logicalId": "AgentArtifact",
         "path": "contracts/agent/schemas/agent-artifact.schema.json",
-        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43",
-        "digest": "sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43"
+        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8",
+        "digest": "sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8"
       },
       "category": "invalid",
       "tags": [
@@ -6306,8 +6306,8 @@
       "schema": {
         "logicalId": "AgentArtifact",
         "path": "contracts/agent/schemas/agent-artifact.schema.json",
-        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43",
-        "digest": "sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43"
+        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8",
+        "digest": "sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8"
       },
       "category": "full",
       "tags": [
@@ -6335,8 +6335,8 @@
       "schema": {
         "logicalId": "AgentArtifact",
         "path": "contracts/agent/schemas/agent-artifact.schema.json",
-        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43",
-        "digest": "sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43"
+        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8",
+        "digest": "sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8"
       },
       "category": "maximum-bound",
       "tags": [
@@ -6364,8 +6364,8 @@
       "schema": {
         "logicalId": "AgentArtifact",
         "path": "contracts/agent/schemas/agent-artifact.schema.json",
-        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43",
-        "digest": "sha256:0776014482233fa9db255075fd51ca229e421b2232c624213cb09d13795aac43"
+        "logicalUri": "anvilkit://schema/agent-artifact?digest=sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8",
+        "digest": "sha256:ad13f62312765d898c106d12da58b77b5d1124211d8a4e8ecadd0db65a55e2b8"
       },
       "category": "minimum",
       "tags": [
