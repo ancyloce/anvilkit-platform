@@ -597,6 +597,12 @@ for (const field of ["authorizationId", "issuer", "audience", "runId", "actionDi
 }
 const expectedLifecycle = ["pending", "scanning", "valid", "finalized", "committed", "quarantined", "expired", "deleted"];
 if (JSON.stringify(registryValues("artifact-lifecycle")) !== JSON.stringify(expectedLifecycle)) failures.push("AK-INV-001 artifact lifecycle registry differs");
+// CAT-FR-003 (plan 0009 C4-04): the artifact-kind registry is the authority for
+// what an artifact may be; the AgentArtifact schema enum must mirror it exactly,
+// in registry order, so schema/DB enum drift fails here before it can merge.
+if (JSON.stringify(rootEnum("AgentArtifact", "kind")) !== JSON.stringify(registryValues("artifact-kind"))) {
+  failures.push("AK-INV-001 AgentArtifact kind enum must equal the artifact-kind registry (schema/DB enum drift)");
+}
 
 // ADR-018: TargetReference requires projectId; run/definition bindings exist
 {
