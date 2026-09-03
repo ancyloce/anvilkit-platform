@@ -116,7 +116,7 @@ export interface components {
             readonly createdAt: components["schemas"]["SharedPrimitivesTimestamp"];
             readonly digest: components["schemas"]["SharedPrimitivesDigest"];
             /** @enum {unknown} */
-            readonly kind: "compiled-context" | "target-snapshot" | "agent-plan" | "worker-result" | "validation-report";
+            readonly kind: "compiled-context" | "target-snapshot" | "agent-plan" | "worker-result" | "validation-report" | "catalog-snapshot" | "page-candidate" | "page-preview-task" | "page-preview-result" | "component-design-spec" | "component-intent" | "component-ir";
             /** @enum {unknown} */
             readonly lifecycle: "pending" | "scanning" | "valid" | "finalized" | "committed" | "quarantined" | "expired" | "deleted";
             readonly lineage: readonly components["schemas"]["SharedPrimitivesArtifactReference"][];
